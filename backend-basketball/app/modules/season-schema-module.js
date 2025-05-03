@@ -6,7 +6,7 @@ const seasonSchema = new Schema({
         type:String,
         required:true
     },
-    stateDate:{
+    startDate:{
         type:Date,
         required:true
     },
@@ -14,14 +14,14 @@ const seasonSchema = new Schema({
         type:Date,
         required:true
     },
-    league:{
+    leagueId:{
         type: Schema.Types.ObjectId,
         ref:'League',
         required:true
     },
     isActive:{
         type:Boolean,
-        required: true
+        default:true
     }
 },{timestamps:true});
 

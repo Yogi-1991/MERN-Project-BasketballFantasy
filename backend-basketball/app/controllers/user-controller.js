@@ -20,8 +20,8 @@ userControl.register = async(req,res)=>{
         user.role = 'registered'
         await user.save();
         res.status(201).json(user)
-    }catch(error){
-        console.log(error);
+    }catch(err){
+        console.log(err);
         res.status(500).json({error: 'Somehting went wrong'})
     }    
 
@@ -47,9 +47,9 @@ userControl.login = async(req,res)=>{
     const token =  jwt.sign(payload,process.env.SECRET_KEY, {expiresIn:'7d'});
     return res.json({token: `bearer ${token}`});      
 
-    }catch(error){
-        console.log(error);
-        res.status(500).json({errors:'Something went wrong'})
+    }catch(err){
+        console.log(err);
+        res.status(500).json({error:'Something went wrong'})
     }
     
 }
@@ -62,7 +62,7 @@ userControl.account = async(req,res)=>{
         if(user){
             return res.status(200).json(user);
         }
-    }catch(error){
+    }catch(err){
         return res.status(500).json({errors : 'Something went wrong'})
     }
 }
@@ -77,8 +77,8 @@ userControl.update = async(req,res)=>{
     const userId = req.userId;
     const user = await User.findByIdAndUpdate(userId,{name,email,password},{new:true});
     return res.status(200).json(user);
-   }catch(error){
-        console.log(error);
+   }catch(err){
+        console.log(err);
        return res.status(500).json({errors:'Something went wrong'})
    }
      
@@ -93,8 +93,8 @@ userControl.updatebyId = async(req,res)=>{
     try{
         const user = await User.findByIdAndUpdate(id,{isActive:false},{new:true});
         return res.status(200).json(user);
-    }catch(error){
-        console.log(error);
+    }catch(err){
+        console.log(err);
         return res.status(500).json({errors: 'Somehting went wrong'});
     }
 }
@@ -110,9 +110,9 @@ userControl.userList = async(req,res)=>{
         return res.status(404).json({errors:"No user record found"})
       }
 
-    }catch(error){
-        console.log(error);
-        return res.status(500).json({errors: 'Something went wrong'})
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: 'Something went wrong'})
 
     }
 }
@@ -133,8 +133,8 @@ userControl.createDataEntryAccount = async(req,res)=>{
         user.dataEntryTasks = dataEntryTasks;
         await user.save();
         res.status(201).json(user)
-    }catch(error){
-        console.log(error);
+    }catch(err){
+        console.log(err);
         res.status(500).json({error: 'Somehting went wrong'})
     }    
 
@@ -151,9 +151,9 @@ userControl.createDataEntryAccountUpdate = async(req,res)=>{
     try{
         const user = await User.findByIdAndUpdate(id,{isActive,dataEntryTasks},{new:true});
         return res.status(200).json(user);
-    }catch(error){
-        console.log(error);
-        return res.status(500).json({erros: 'Something went wrong'});
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: 'Something went wrong'});
     }
 
 }
