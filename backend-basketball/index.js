@@ -15,6 +15,7 @@ import seasonControl from './app/controllers/season-controller.js';
 import teamControl from './app/controllers/team-comtroller.js';
 import teamValidation from './app/validations/team-validation.js';
 import dataEntryAuthorization from './app/middlewares/dataEntryAuthorization.js';
+import playerValidation from './app/validations/player-validation.js';
 import upload from './app/middlewares/upload.js';
 
 
@@ -56,6 +57,13 @@ app.get('/teams',authenticate,teamControl.listTeams);
 app.get('/team/:id',authenticate,checkSchema(idValidation),teamControl.listTeamsByLeague);
 app.put('/team/:id',authenticate,dataEntryAuthorization('teams'),checkSchema(idValidation),checkSchema(teamValidation),teamControl.teamUpdate);//I have wrote dataEntryAuthorization 
 app.delete('/team/:id',authenticate,authorization(['admin']),checkSchema(idValidation),teamControl.teamRemove)
+
+//player
+app.post('/player/create',authenticate,authorization(['admin']),upload.single('logoImage'),checkSchema(playerValidation),playerControl.create)
+app.get('/player',authenticate,playerControl.listplayer);
+app.get('/player/:id',authenticate,checkSchema(idValidation),playerControl.listPlayersById);
+app.put('/player/:id',authenticate,dataEntryAuthorization('player'),checkSchema(idValidation),checkSchema(playerValidation),playerControl.playerUpdate);//I have wrote dataEntryAuthorization 
+app.delete('/player/:id',authenticate,authorization(['admin']),checkSchema(idValidation),playerControl.playerRemove)
 
 app.listen(port,()=>{
     console.log('Server is running on the Port number', port)
