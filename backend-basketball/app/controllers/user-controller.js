@@ -43,7 +43,7 @@ userControl.login = async(req,res)=>{
         if(!verifyPassword){
             res.status(400).json({error:'Email or Password incorrect'})
         }
-    const payload = {userId:user._id,role:user.role};
+    const payload = {userId:user._id,role:user.role,dataEntryTasks:user.dataEntryTasks};
     const token =  jwt.sign(payload,process.env.SECRET_KEY, {expiresIn:'7d'});
     return res.json({token: `bearer ${token}`});      
 

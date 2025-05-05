@@ -12,6 +12,7 @@ const authenticate = async(req,res,next)=>{
         if(verifytoken){
             req.userId = verifytoken.userId;   
             req.role = verifytoken.role;
+            req.dataEntryTasks = verifytoken.dataEntryTasks || [];
             next();
         }
     }catch(error){
