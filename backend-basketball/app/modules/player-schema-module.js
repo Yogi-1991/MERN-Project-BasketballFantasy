@@ -28,7 +28,7 @@ const playerSchema = new Schema(
     birthdate: {
       type: Date,
     },
-    profileImageUrl: {
+    profileImage: {
       type: String,
     },
     isActive: {
@@ -36,11 +36,11 @@ const playerSchema = new Schema(
       default: true,
     },
     createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
     },
     updatedBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
     },
   },

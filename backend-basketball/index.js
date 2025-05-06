@@ -16,6 +16,7 @@ import teamControl from './app/controllers/team-comtroller.js';
 import teamValidation from './app/validations/team-validation.js';
 import dataEntryAuthorization from './app/middlewares/dataEntryAuthorization.js';
 import playerValidation from './app/validations/player-validation.js';
+import playerControl from './app/controllers/player-controller.js';
 import upload from './app/middlewares/upload.js';
 
 
@@ -52,16 +53,17 @@ app.put('/season/:id',authenticate,authorization(['admin']),checkSchema(idValida
 app.delete('/season/remove/:id',authenticate,authorization(['admin']),checkSchema(idValidation),seasonControl.seasonRemove)
 
 //Team 
-app.post('/team/create',authenticate,authorization(['admin']),upload.single('logoImage'),checkSchema(teamValidation),teamControl.create)
+app.post('/team/create',authenticate,authorization(['admin']),upload.single('logoImage'),checkSchema(teamValidation),teamControl.create);
+app.put('/team/add-player',authenticate,dataEntryAuthorization('teams'),teamControl.addPlayerToTeamSeason);
 app.get('/teams',authenticate,teamControl.listTeams);
 app.get('/team/:id',authenticate,checkSchema(idValidation),teamControl.listTeamsByLeague);
 app.put('/team/:id',authenticate,dataEntryAuthorization('teams'),checkSchema(idValidation),checkSchema(teamValidation),teamControl.teamUpdate);//I have wrote dataEntryAuthorization 
 app.delete('/team/:id',authenticate,authorization(['admin']),checkSchema(idValidation),teamControl.teamRemove)
 
 //player
-app.post('/player/create',authenticate,authorization(['admin']),upload.single('logoImage'),checkSchema(playerValidation),playerControl.create)
-app.get('/player',authenticate,playerControl.listplayer);
-app.get('/player/:id',authenticate,checkSchema(idValidation),playerControl.listPlayersById);
+app.post('/player/create',authenticate,dataEntryAuthorization('players'),upload.single('logoImage'),checkSchema(playerValidation),playerControl.create)
+app.get('/players',authenticate,playerControl.listplayers);
+app.get('/player/:id',authenticate,checkSchema(idValidation),playerControl.listplayersById);
 app.put('/player/:id',authenticate,dataEntryAuthorization('player'),checkSchema(idValidation),checkSchema(playerValidation),playerControl.playerUpdate);//I have wrote dataEntryAuthorization 
 app.delete('/player/:id',authenticate,authorization(['admin']),checkSchema(idValidation),playerControl.playerRemove)
 

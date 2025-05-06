@@ -17,6 +17,16 @@ teamControl.create = async(req,res)=>{
     const parsedSeasons = typeof seasons === 'string' ? JSON.parse(seasons) : seasons;// // Parse seasons only if it's a string (i.e., from multipart/form-data)
 
     try{
+        for(const season of parsedSeasons){
+            const {seasonYear, players} = season;
+             for(const playerId of players){
+                const existingTeam = await Teams.findOne({seasons:{$elemMatch:{seasonYear:seasonYear,players:playerId}}});
+                if (existingTeam) {
+                    return res.status(400).json({error: `Player ${playerId} is already assigned to a team for season ${seasonYear}`});
+                  }
+             }
+        }
+        
         const team = await Teams.create({teamName,logoImage, homeCity, seasons:parsedSeasons,leagueId,createdBy:userId});
         console.log(team)
         return res.status(201).json(team);
@@ -26,6 +36,32 @@ teamControl.create = async(req,res)=>{
     }
     
 }
+
+teamControl.addPlayerToTeamSeason = async(req,res)=>{
+    const { teamId, seasonYear, playerId } = req.body;
+
+  try {
+    // Validate if player is already in a team for that season
+    const existingTeam = await Teams.findOne({seasons:{$elemMatch:{seasonYear: seasonYear,players: playerId}}});
+
+    if (existingTeam) {
+      return res.status(400).json({error: `Player is already assigned to a team for season ${seasonYear}`});
+    }
+
+    // Add the player to the specific season's player list
+    const updatedTeam = await Teams.findOneAndUpdate({_id: teamId,'seasons.seasonYear':seasonYear},{$push:{'seasons.$.players': playerId}},{ new: true });
+
+    if (!updatedTeam) {
+      return res.status(404).json({ error: 'Team or season not found' });
+    }
+
+    return res.status(200).json(updatedTeam);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+};
+
 
 teamControl.listTeams = async(req,res)=>{
     try{

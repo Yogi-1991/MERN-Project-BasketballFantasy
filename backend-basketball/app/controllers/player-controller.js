@@ -1,6 +1,5 @@
-
 import { validationResult } from "express-validator";
-import player from "../modules/player-schema-module.js";
+import Player from "../modules/player-schema-module.js";
 
 const playerControl = {};
 
@@ -10,14 +9,12 @@ playerControl.create = async(req,res)=>{
         return res.status(400).json({errors : error.array()});
     }
 
-    const { playerName, homeCity, seasons,leagueId } = req.body;
-    const logoImage = req.file ? `/uploads/${req.file.filename}` : null; // used turnery operator
+    const { firstName, lastName, position,jerseyNumber,height,weight,nationality,birthdate ,isActive,createdBy} = req.body;
+    const profileImage = req.file ? `/uploads/${req.file.filename}` : null; // used turnery operator
     const userId = req.userId
 
-    const parsedSeasons = typeof seasons === 'string' ? JSON.parse(seasons) : seasons;// // Parse seasons only if it's a string (i.e., from multipart/form-data)
-
     try{
-        const player = await players.create({teamName,logoImage, homeCity, seasons:parsedSeasons,leagueId,createdBy:userId});
+        const player = await Player.create({firstName, lastName,profileImage, position,jerseyNumber,height,weight,nationality,birthdate ,isActive,createdBy:userId});
         console.log(player)
         return res.status(201).json(player);
     }catch(err){
@@ -29,7 +26,7 @@ playerControl.create = async(req,res)=>{
 
 playerControl.listplayers = async(req,res)=>{
     try{
-        const players = await players.find().select('teamName homeCity')
+        const players = await Player.find();
         if(players){
             return res.status(200).json(players);
         }else{
@@ -50,11 +47,11 @@ playerControl.listplayersById = async(req,res)=>{
  const {id} = req.params;
  console.log(req.params)
  try{
-    const players = await players.find({leagueId: id})
-    if(players.length ===0){
+    const player = await Player.find({_id: id})
+    if(player.length ===0){
         return res.status(404).json({error:'No players found for this league'});
     }
-    return res.status(200).json(players);
+    return res.status(200).json(player);
  }catch(err){
     console.log(err)
     return res.status(500).json({error:'Something went wrong'});
@@ -68,14 +65,12 @@ playerControl.playerUpdate = async(req,res)=>{
     }
     const userId = req.userId;
     const {id} = req.params;
-    const {teamName, homeCity, seasons,leagueId } = req.body;
-    const logoImage = req.file ? `/uploads/${req.file.filename}` : null;
-
-    const parsedSeasons = typeof seasons === 'string' ? JSON.parse(seasons) : seasons;
-    
+    const {firstName, lastName, position,jerseyNumber,height,weight,nationality,birthdate ,isActive} = req.body;
+    const profileImage = req.file ? `/uploads/${req.file.filename}` : null;
+   
     try{
-        const player = await players.findByIdAndUpdate({_id:id},{teamName,logoImage, homeCity, seasons:parsedSeasons,leagueId,updatedBy:userId},{new:true});
-        return res.status(200).json(team);
+        const player = await Player.findByIdAndUpdate({_id:id},{firstName, lastName,profileImage, position,jerseyNumber,height,weight,nationality,birthdate ,isActive,updatedBy:userId},{new:true});
+        return res.status(200).json(player);
     }catch(err){
         console.log(err)
         return res.status(500).json({error: 'Something went wrong'});
@@ -90,7 +85,7 @@ playerControl.playerRemove = async(req,res)=>{
  }
  const {id} = req.params;
  try{
-    const player = await players.findByIdAndDelete(id)
+    const player = await Player.findByIdAndDelete(id)
     return res.status(200).json(player);
  }catch(err){
     return res.status(500).json({error: 'Something went wrong'});
