@@ -37,7 +37,7 @@ const teamValidation = {
             errorMessage: " Season year cannot be empty"
         }
     },
-    'seasons.*players.*':{
+    'seasons.*.players.*':{
         isMongoId: {
             errorMessage: "Enter valid mongoDB id"
         }

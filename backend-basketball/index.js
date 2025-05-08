@@ -4,7 +4,6 @@ import configDb from './config/db.js';
 import userControl from './app/controllers/user-controller.js';
 import { checkSchema } from 'express-validator';
 import { userRegisterValidation, userLoginValidation } from './app/validations/user-register-login-validator.js';
-// import {  } from './app/validations/user-register-login-validator.js';
 import authenticate from './app/middlewares/authenticate.js';
 import authorization from './app/middlewares/authorization.js';
 import idValidation from './app/validations/idValidation.js';
@@ -17,6 +16,10 @@ import teamValidation from './app/validations/team-validation.js';
 import dataEntryAuthorization from './app/middlewares/dataEntryAuthorization.js';
 import playerValidation from './app/validations/player-validation.js';
 import playerControl from './app/controllers/player-controller.js';
+import scheduleValidation from './app/validations/schedule-validation.js';
+import scheduleControl from './app/controllers/schedule-controller.js';
+import lineupValidation from './app/validations/lineup-validation.js';
+import lineupControl from './app/controllers/lineup-controller.js';
 import upload from './app/middlewares/upload.js';
 
 
@@ -31,29 +34,29 @@ app.use('/uploads', express.static('uploads'));
 //Register - Login
 app.post('/register',checkSchema(userRegisterValidation),userControl.register);
 app.post('/login',checkSchema(userLoginValidation),userControl.login);
-app.get('/user/profile',authenticate, userControl.account);
+app.get('/user',authenticate, userControl.account);
 app.put('/user/profile',authenticate, checkSchema(userLoginValidation), userControl.update);
 app.put('/user/profile/:id',authenticate, checkSchema(idValidation),authorization(['admin']), userControl.updatebyId);//Deactivate user isactive false
 app.get('/users',authenticate,authorization(['admin']), userControl.userList)
 
 //admin create data entry account
-app.post('/dataentry/create',authenticate,authorization(['admin']),checkSchema(userRegisterValidation),userControl.createDataEntryAccount);
-app.put('/dataentry/update/:id',authenticate,authorization(['admin']),checkSchema(idValidation),userControl.createDataEntryAccountUpdate);
+app.post('/dataentry',authenticate,authorization(['admin']),checkSchema(userRegisterValidation),userControl.createDataEntryAccount);
+app.put('/dataentry/:id',authenticate,authorization(['admin']),checkSchema(idValidation),userControl.createDataEntryAccountUpdate);
 
 //League 
-app.post('/league/create',authenticate,authorization(['admin']),checkSchema(leagueValidations),legaueControl.create);
+app.post('/league',authenticate,authorization(['admin']),checkSchema(leagueValidations),legaueControl.create);
 app.get('/leagues',authenticate,legaueControl.listLeagues);
 app.put('/league/:id',authenticate,authorization(['admin']),checkSchema(idValidation),checkSchema(leagueValidations),legaueControl.leagueUpdate);
-app.delete('/league/remove/:id',authenticate,authorization(['admin']),checkSchema(idValidation),legaueControl.leagueRemove)
+app.delete('/league/:id',authenticate,authorization(['admin']),checkSchema(idValidation),legaueControl.leagueRemove)
 
 //season 
-app.post('/season/create',authenticate,authorization(['admin']),checkSchema(seasonValidations),seasonControl.create);
+app.post('/season',authenticate,authorization(['admin']),checkSchema(seasonValidations),seasonControl.create);
 app.get('/seasons',authenticate,seasonControl.listseasons);
 app.put('/season/:id',authenticate,authorization(['admin']),checkSchema(idValidation),checkSchema(seasonValidations),seasonControl.seasonUpdate);
 app.delete('/season/remove/:id',authenticate,authorization(['admin']),checkSchema(idValidation),seasonControl.seasonRemove)
 
 //Team 
-app.post('/team/create',authenticate,authorization(['admin']),upload.single('logoImage'),checkSchema(teamValidation),teamControl.create);
+app.post('/team',authenticate,authorization(['admin']),upload.single('logoImage'),checkSchema(teamValidation),teamControl.create);
 app.put('/team/add-player',authenticate,dataEntryAuthorization('teams'),teamControl.addPlayerToTeamSeason);
 app.get('/teams',authenticate,teamControl.listTeams);
 app.get('/team/:id',authenticate,checkSchema(idValidation),teamControl.listTeamsByLeague);
@@ -61,11 +64,26 @@ app.put('/team/:id',authenticate,dataEntryAuthorization('teams'),checkSchema(idV
 app.delete('/team/:id',authenticate,authorization(['admin']),checkSchema(idValidation),teamControl.teamRemove)
 
 //player
-app.post('/player/create',authenticate,dataEntryAuthorization('players'),upload.single('logoImage'),checkSchema(playerValidation),playerControl.create)
+app.post('/player',authenticate,dataEntryAuthorization('players'),upload.single('logoImage'),checkSchema(playerValidation),playerControl.create)
 app.get('/players',authenticate,playerControl.listplayers);
 app.get('/player/:id',authenticate,checkSchema(idValidation),playerControl.listplayersById);
 app.put('/player/:id',authenticate,dataEntryAuthorization('player'),checkSchema(idValidation),checkSchema(playerValidation),playerControl.playerUpdate);//I have wrote dataEntryAuthorization 
 app.delete('/player/:id',authenticate,authorization(['admin']),checkSchema(idValidation),playerControl.playerRemove)
+
+//Schedule
+app.post('/schedule',authenticate,dataEntryAuthorization('schedule'),checkSchema(scheduleValidation),scheduleControl.create)
+app.get('/schedule',authenticate,scheduleControl.listschedules);
+app.get('/schedule/:id',authenticate,checkSchema(idValidation),scheduleControl.listschedulesById);
+app.put('/schedule/:id',authenticate,dataEntryAuthorization('schedule'),checkSchema(idValidation),checkSchema(scheduleValidation),scheduleControl.scheduleUpdate);//I have wrote dataEntryAuthorization 
+app.delete('/schedule/:id',authenticate,authorization(['admin']),checkSchema(idValidation),scheduleControl.scheduleRemove)
+
+//lineups
+app.post('/lineup',authenticate,dataEntryAuthorization('lineup'),checkSchema(lineupValidation),lineupControl.create)
+app.get('/lineup',authenticate,lineupControl.listLineupById);
+// app.put('/schedule/:id',authenticate,dataEntryAuthorization('schedule'),checkSchema(idValidation),checkSchema(scheduleValidation),scheduleControl.scheduleUpdate);//I have wrote dataEntryAuthorization 
+// app.delete('/schedule/:id',authenticate,authorization(['admin']),checkSchema(idValidation),scheduleControl.scheduleRemove)
+
+
 
 app.listen(port,()=>{
     console.log('Server is running on the Port number', port)
