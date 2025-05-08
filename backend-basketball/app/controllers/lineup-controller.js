@@ -169,14 +169,16 @@ for (const starter of teamAway.starters) {
     }
 }
 
-lineupControl.lineupRemove = async(req,res)=>{
+lineupControl.lineupRemovebyGameID = async(req,res)=>{
  const error = validationResult(req);
  if(!error.isEmpty()){
     return res.status(400).json({errors:error.array()});
  }
- const {id} = req.params;
+ const {gameId} = req.params;
+
+ //need logic here - if I planned to delete the lineup then lineups related this gameId also needs to be deleted
  try{
-    const lineup = await Lineup.findByIdAndDelete(id)
+    const lineup = await Lineup.findOneAndDelete({gameId})
     return res.status(200).json(lineup);
  }catch(err){
     return res.status(500).json({error: 'Something went wrong'});

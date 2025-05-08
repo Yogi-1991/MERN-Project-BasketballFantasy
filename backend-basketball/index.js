@@ -20,6 +20,8 @@ import scheduleValidation from './app/validations/schedule-validation.js';
 import scheduleControl from './app/controllers/schedule-controller.js';
 import lineupValidation from './app/validations/lineup-validation.js';
 import lineupControl from './app/controllers/lineup-controller.js';
+import matchStatsValidation from './app/validations/matchStats-validation.js';
+import matchStatsControl from './app/controllers/matchStats-controller.js';
 import upload from './app/middlewares/upload.js';
 
 
@@ -81,9 +83,11 @@ app.delete('/schedule/:id',authenticate,authorization(['schedule']),checkSchema(
 app.post('/lineup',authenticate,dataEntryAuthorization('lineup'),checkSchema(lineupValidation),lineupControl.create)
 app.get('/lineup',authenticate,lineupControl.listLineupByGameId);
 app.put('/lineup/:id',authenticate,dataEntryAuthorization('lineup'),checkSchema(idValidation),checkSchema(lineupValidation),lineupControl.lineupUpdate); 
-app.delete('/lineup/:id',authenticate,authorization(['lineup']),checkSchema(idValidation),lineupControl.lineupRemove)
+app.delete('/lineup/',authenticate,authorization(['lineup']),checkSchema(idValidation),lineupControl.lineupRemovebyGameID)
 
-
+//matchStats
+app.post('/match-stats',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.create)
+app.put('/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.matchStatsUpdate)
 
 app.listen(port,()=>{
     console.log('Server is running on the Port number', port)
