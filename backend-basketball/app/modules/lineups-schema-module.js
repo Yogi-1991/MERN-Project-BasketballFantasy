@@ -61,6 +61,10 @@ const lineupSchema = new Schema({
           }
     ]
   },
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'Users'
+  },
   updatedBy: {
     type: Schema.Types.ObjectId,
     ref: 'Users'

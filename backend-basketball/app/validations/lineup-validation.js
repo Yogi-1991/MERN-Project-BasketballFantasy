@@ -21,10 +21,10 @@ const lineupValidation = {
     'teamHome.starters.*.player':{
         in:['body'],
         exists:{
-            errorMessage: 'team field is required'
+            errorMessage: 'player field is required'
         },
         notEmpty:{
-            errorMessage: 'team cannot be empty'
+            errorMessage: 'player cannot be empty'
         }
     },
     'teamHome.starters.*.position':{
@@ -39,10 +39,10 @@ const lineupValidation = {
     'teamHome.substitutions.*.player':{
         in:['body'],
         exists:{
-            errorMessage: 'team field is required'
+            errorMessage: 'player field is required'
         },
         notEmpty:{
-            errorMessage: 'team cannot be empty'
+            errorMessage: 'player cannot be empty'
         }
     },
     'teamHome.substitutions.*.position':{
@@ -57,19 +57,19 @@ const lineupValidation = {
     'teamAway.team':{
         in:['body'],
         exists:{
-            errorMessage: 'position field is required'
+            errorMessage: 'team field is required'
         },
         notEmpty:{
-            errorMessage: 'position cannot be empty'
+            errorMessage: 'team cannot be empty'
         }
     },
     'teamAway.starters.*.player':{
         in:['body'],
         exists:{
-            errorMessage: 'position field is required'
+            errorMessage: 'player field is required'
         },
         notEmpty:{
-            errorMessage: 'position cannot be empty'
+            errorMessage: 'player cannot be empty'
         }
     },
     'teamAway.starters.*.position':{
@@ -84,10 +84,10 @@ const lineupValidation = {
     'teamAway.substitutions.*.player':{
         in:['body'],
         exists:{
-            errorMessage: 'position field is required'
+            errorMessage: 'player field is required'
         },
         notEmpty:{
-            errorMessage: 'position cannot be empty'
+            errorMessage: 'player cannot be empty'
         }
     },
     'teamAway.substitutions.*.position':{

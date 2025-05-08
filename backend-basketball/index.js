@@ -60,28 +60,28 @@ app.post('/team',authenticate,authorization(['admin']),upload.single('logoImage'
 app.put('/team/add-player',authenticate,dataEntryAuthorization('teams'),teamControl.addPlayerToTeamSeason);
 app.get('/teams',authenticate,teamControl.listTeams);
 app.get('/team/:id',authenticate,checkSchema(idValidation),teamControl.listTeamsByLeague);
-app.put('/team/:id',authenticate,dataEntryAuthorization('teams'),checkSchema(idValidation),checkSchema(teamValidation),teamControl.teamUpdate);//I have wrote dataEntryAuthorization 
-app.delete('/team/:id',authenticate,authorization(['admin']),checkSchema(idValidation),teamControl.teamRemove)
+app.put('/team/:id',authenticate,dataEntryAuthorization('teams'),checkSchema(idValidation),checkSchema(teamValidation),teamControl.teamUpdate);//added one more middleware dataEntryAuthorization to check data entry task
+app.delete('/team/:id',authenticate,authorization(['teams']),checkSchema(idValidation),teamControl.teamRemove)
 
 //player
 app.post('/player',authenticate,dataEntryAuthorization('players'),upload.single('logoImage'),checkSchema(playerValidation),playerControl.create)
 app.get('/players',authenticate,playerControl.listplayers);
 app.get('/player/:id',authenticate,checkSchema(idValidation),playerControl.listplayersById);
-app.put('/player/:id',authenticate,dataEntryAuthorization('player'),checkSchema(idValidation),checkSchema(playerValidation),playerControl.playerUpdate);//I have wrote dataEntryAuthorization 
-app.delete('/player/:id',authenticate,authorization(['admin']),checkSchema(idValidation),playerControl.playerRemove)
+app.put('/player/:id',authenticate,dataEntryAuthorization('player'),checkSchema(idValidation),checkSchema(playerValidation),playerControl.playerUpdate); 
+app.delete('/player/:id',authenticate,authorization(['player']),checkSchema(idValidation),playerControl.playerRemove)
 
 //Schedule
 app.post('/schedule',authenticate,dataEntryAuthorization('schedule'),checkSchema(scheduleValidation),scheduleControl.create)
 app.get('/schedule',authenticate,scheduleControl.listschedules);
 app.get('/schedule/:id',authenticate,checkSchema(idValidation),scheduleControl.listschedulesById);
-app.put('/schedule/:id',authenticate,dataEntryAuthorization('schedule'),checkSchema(idValidation),checkSchema(scheduleValidation),scheduleControl.scheduleUpdate);//I have wrote dataEntryAuthorization 
-app.delete('/schedule/:id',authenticate,authorization(['admin']),checkSchema(idValidation),scheduleControl.scheduleRemove)
+app.put('/schedule/:id',authenticate,dataEntryAuthorization('schedule'),checkSchema(idValidation),checkSchema(scheduleValidation),scheduleControl.scheduleUpdate);
+app.delete('/schedule/:id',authenticate,authorization(['schedule']),checkSchema(idValidation),scheduleControl.scheduleRemove)
 
 //lineups
 app.post('/lineup',authenticate,dataEntryAuthorization('lineup'),checkSchema(lineupValidation),lineupControl.create)
-app.get('/lineup',authenticate,lineupControl.listLineupById);
-// app.put('/schedule/:id',authenticate,dataEntryAuthorization('schedule'),checkSchema(idValidation),checkSchema(scheduleValidation),scheduleControl.scheduleUpdate);//I have wrote dataEntryAuthorization 
-// app.delete('/schedule/:id',authenticate,authorization(['admin']),checkSchema(idValidation),scheduleControl.scheduleRemove)
+app.get('/lineup',authenticate,lineupControl.listLineupByGameId);
+app.put('/lineup/:id',authenticate,dataEntryAuthorization('lineup'),checkSchema(idValidation),checkSchema(lineupValidation),lineupControl.lineupUpdate); 
+app.delete('/lineup/:id',authenticate,authorization(['lineup']),checkSchema(idValidation),lineupControl.lineupRemove)
 
 
 
