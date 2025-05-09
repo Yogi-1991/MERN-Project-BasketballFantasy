@@ -13,11 +13,21 @@ userControl.register = async(req,res)=>{
     try{
         const {name,email,password} = req.body;
         console.log(name,email,password)
-        const user = new User({name,email,password});
+        const wallet = {
+            points: 20,
+            history: [
+              {
+                amount: 20,
+                type: 'credit',
+                reason: 'Free points on registration'
+              }
+            ]
+          }
+        const user = new User({name,email,password,wallet});
         const salt = await bcryptjs.genSalt();
         const hash = await bcryptjs.hash(password,salt);
         user.password = hash;
-        user.role = 'registered'
+        user.role = 'registered';    
         await user.save();
         res.status(201).json(user)
     }catch(err){
@@ -156,6 +166,24 @@ userControl.createDataEntryAccountUpdate = async(req,res)=>{
         return res.status(500).json({error: 'Something went wrong'});
     }
 
+}
+
+userControl.walletUpdate = async(req,res)=>{
+    const error = validationResult(req);
+    if(!error.isEmpty()){
+        return res.status(500).json({errors:error.array()});
+    }
+    const {id} = req.params;
+    const {points,history} = req.body;
+    console.log(points,history)
+
+    try{
+        const user = await User.findByIdAndUpdate(id,{$set:{'wallet.points':points},$push:{'wallet.history':{ $each:history}}},{new:true})
+        return res.status(200).json(user);
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: "Something went wrong"});
+    }
 }
 
 

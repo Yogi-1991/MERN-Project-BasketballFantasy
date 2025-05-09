@@ -23,6 +23,17 @@ const userSchema = new Schema({
     profileImage:{
         type: String
     },
+    wallet: {
+        points: { type: Number, default: 5 }, // Free points on registration
+        history: [
+          {
+            amount: Number,
+            type: { type: String, enum: ['credit', 'debit'] }, // Transaction type
+            reason: String, // Why the points were added/deducted
+            date: { type: Date, default: Date.now }
+          }
+        ]
+      },
     isActive:{
         type: Boolean,
         default: true

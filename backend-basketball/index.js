@@ -24,6 +24,7 @@ import matchStatsValidation from './app/validations/matchStats-validation.js';
 import matchStatsControl from './app/controllers/matchStats-controller.js';
 import upload from './app/middlewares/upload.js';
 
+import walletControl from './app/controllers/wallet-controller.js';
 
 const app = express();
 dotenv.config();
@@ -40,6 +41,9 @@ app.get('/user',authenticate, userControl.account);
 app.put('/user/profile',authenticate, checkSchema(userLoginValidation), userControl.update);
 app.put('/user/profile/:id',authenticate, checkSchema(idValidation),authorization(['admin']), userControl.updatebyId);//Deactivate user isactive false
 app.get('/users',authenticate,authorization(['admin']), userControl.userList)
+
+//registred user wallet update
+app.put('/user-wallet/:id',authenticate,userControl.walletUpdate)
 
 //admin create data entry account
 app.post('/dataentry',authenticate,authorization(['admin']),checkSchema(userRegisterValidation),userControl.createDataEntryAccount);
@@ -88,6 +92,9 @@ app.delete('/lineup/',authenticate,authorization(['lineup']),checkSchema(idValid
 //matchStats
 app.post('/match-stats',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.create)
 app.put('/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.matchStatsUpdate)
+
+//Stripe payment
+app.post('/createPaymentIntent',walletControl.createPaymentIntent)
 
 app.listen(port,()=>{
     console.log('Server is running on the Port number', port)
