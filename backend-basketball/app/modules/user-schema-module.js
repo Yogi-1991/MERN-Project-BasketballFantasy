@@ -24,12 +24,12 @@ const userSchema = new Schema({
         type: String
     },
     wallet: {
-        points: { type: Number, default: 5 }, // Free points on registration
+        balance: { type: Number, default: 5 }, // Free points on registration
         history: [
           {
             amount: Number,
             type: { type: String, enum: ['credit', 'debit'] }, // Transaction type
-            reason: String, // Why the points were added/deducted
+            description: String, // Why the points were added/deducted
             date: { type: Date, default: Date.now }
           }
         ]

@@ -9,12 +9,12 @@ playerControl.create = async(req,res)=>{
         return res.status(400).json({errors : error.array()});
     }
 
-    const { firstName, lastName, position,jerseyNumber,height,weight,nationality,birthdate ,isActive,createdBy} = req.body;
+    const { firstName, lastName, position,jerseyNumber,height,weight,nationality,birthdate ,credit,isActive} = req.body;
     const profileImage = req.file ? `/uploads/${req.file.filename}` : null; // used turnery operator
     const userId = req.userId
 
     try{
-        const player = await Player.create({firstName, lastName,profileImage, position,jerseyNumber,height,weight,nationality,birthdate ,isActive,createdBy:userId});
+        const player = await Player.create({firstName, lastName,profileImage, position,jerseyNumber,height,weight,nationality,birthdate ,isActive,credit,createdBy:userId});
         console.log(player)
         return res.status(201).json(player);
     }catch(err){
@@ -65,11 +65,11 @@ playerControl.playerUpdate = async(req,res)=>{
     }
     const userId = req.userId;
     const {id} = req.params;
-    const {firstName, lastName, position,jerseyNumber,height,weight,nationality,birthdate ,isActive} = req.body;
+    const {firstName, lastName, position,jerseyNumber,height,weight,nationality,birthdate ,credit,isActive} = req.body;
     const profileImage = req.file ? `/uploads/${req.file.filename}` : null;
    
     try{
-        const player = await Player.findByIdAndUpdate({_id:id},{firstName, lastName,profileImage, position,jerseyNumber,height,weight,nationality,birthdate ,isActive,updatedBy:userId},{new:true});
+        const player = await Player.findByIdAndUpdate({_id:id},{firstName, lastName,profileImage, position,jerseyNumber,height,weight,nationality,birthdate ,credit,isActive,updatedBy:userId},{new:true});
         return res.status(200).json(player);
     }catch(err){
         console.log(err)

@@ -14,12 +14,12 @@ userControl.register = async(req,res)=>{
         const {name,email,password} = req.body;
         console.log(name,email,password)
         const wallet = {
-            points: 20,
+            balance: 5,
             history: [
               {
                 amount: 20,
                 type: 'credit',
-                reason: 'Free points on registration'
+                description: 'Free points on registration'
               }
             ]
           }
@@ -174,11 +174,11 @@ userControl.walletUpdate = async(req,res)=>{
         return res.status(500).json({errors:error.array()});
     }
     const {id} = req.params;
-    const {points,history} = req.body;
-    console.log(points,history)
+    const {balance,history} = req.body;
+    console.log(balance,history)
 
     try{
-        const user = await User.findByIdAndUpdate(id,{$set:{'wallet.points':points},$push:{'wallet.history':{ $each:history}}},{new:true})
+        const user = await User.findByIdAndUpdate(id,{$set:{'wallet.balance':points},$push:{'wallet.history':{ $each:history}}},{new:true})
         return res.status(200).json(user);
     }catch(err){
         console.log(err);

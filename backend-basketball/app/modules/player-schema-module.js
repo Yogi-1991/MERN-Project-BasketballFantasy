@@ -31,6 +31,10 @@ const playerSchema = new Schema(
     profileImage: {
       type: String,
     },
+    credit: { 
+      type: Number,
+      required: true
+     },
     isActive: {
       type: Boolean,
       default: true,
