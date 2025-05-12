@@ -7,7 +7,8 @@ const playerValidation = {
         },
         notEmpty:{
             errorMessage: 'First name cannot be empty'
-        }
+        },
+        trim:true
     },
     lastName:{
         in:['body'],
@@ -16,7 +17,9 @@ const playerValidation = {
         },
         notEmpty:{
             errorMessage: 'First name cannot be empty'
-        }
+        },
+        trim:true
+
     },
     
 }

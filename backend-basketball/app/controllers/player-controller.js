@@ -14,6 +14,10 @@ playerControl.create = async(req,res)=>{
     const userId = req.userId
 
     try{
+        const playerExsists = await Player.findOne({firstName:firstName,lastName:lastName});
+        if(playerExsists){
+            return res.status(400).json({notice:`${firstName} ${lastName} already exist in the Database` })
+        }
         const player = await Player.create({firstName, lastName,profileImage, position,jerseyNumber,height,weight,nationality,birthdate ,isActive,credit,createdBy:userId});
         console.log(player)
         return res.status(201).json(player);

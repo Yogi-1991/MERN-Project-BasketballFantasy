@@ -11,7 +11,9 @@ legaueControl.create = async(req,res)=>{
         return res.status(400).json({errors: error.array()})
     }
 
-    const {name,country,logo,active} = req.body;
+    const {name,country,active} = req.body;
+    const logo = req.file ? `/uploads/${req.file.filename}` : null; // used turnery operator
+
     try{
         const league = await League.create({name,country,logo,active});
         return res.status(201).json(league)
@@ -40,8 +42,10 @@ legaueControl.leagueUpdate = async(req,res)=>{
 
     const id = req.params.id;
     const {name,country,isActive} = req.body;
+    const logo = req.file ? `/uploads/${req.file.filename}` : null; // used turnery operator
+
     try{
-        const league = await League.findByIdAndUpdate(id,{name,country,isActive},{new:true});
+        const league = await League.findByIdAndUpdate(id,{name,country,logo,isActive},{new:true});
             return res.status(200).json(league);
     }catch(err){
         console.log(err);

@@ -24,7 +24,7 @@ import matchStatsValidation from './app/validations/matchStats-validation.js';
 import matchStatsControl from './app/controllers/matchStats-controller.js';
 import upload from './app/middlewares/upload.js';
 
-import walletControl from './app/controllers/wallet-controller.js';
+// import walletControl from './app/controllers/wallet-controller.js';
 
 const app = express();
 dotenv.config();
@@ -62,12 +62,14 @@ app.put('/season/:id',authenticate,authorization(['admin']),checkSchema(idValida
 app.delete('/season/remove/:id',authenticate,authorization(['admin']),checkSchema(idValidation),seasonControl.seasonRemove)
 
 //Team 
+
 app.post('/team',authenticate,authorization(['admin']),upload.single('logoImage'),checkSchema(teamValidation),teamControl.create);
 app.put('/team/add-player',authenticate,dataEntryAuthorization('teams'),teamControl.addPlayerToTeamSeason);
 app.get('/teams',authenticate,teamControl.listTeams);
 app.get('/team/:id',authenticate,checkSchema(idValidation),teamControl.listTeamsByLeague);
 app.put('/team/:id',authenticate,dataEntryAuthorization('teams'),checkSchema(idValidation),checkSchema(teamValidation),teamControl.teamUpdate);//added one more middleware dataEntryAuthorization to check data entry task
-app.delete('/team/:id',authenticate,authorization(['teams']),checkSchema(idValidation),teamControl.teamRemove)
+app.delete('/team/:id',authenticate,authorization(['teams']),checkSchema(idValidation),teamControl.teamRemove);
+app.put('/team/:teamId/player-remove',authenticate,dataEntryAuthorization(['teams']),teamControl.teamPlayerRemove);
 
 //player
 app.post('/player',authenticate,dataEntryAuthorization('players'),upload.single('logoImage'),checkSchema(playerValidation),playerControl.create)
@@ -94,7 +96,7 @@ app.post('/match-stats',authenticate,dataEntryAuthorization('matchStats'),matchS
 app.put('/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.matchStatsUpdate)
 
 //Stripe payment
-app.post('/createPaymentIntent',walletControl.createPaymentIntent)
+// app.post('/createPaymentIntent',walletControl.createPaymentIntent)
 
 app.listen(port,()=>{
     console.log('Server is running on the Port number', port)

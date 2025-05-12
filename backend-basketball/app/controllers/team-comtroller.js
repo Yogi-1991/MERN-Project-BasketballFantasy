@@ -1,6 +1,7 @@
 
 import { validationResult } from "express-validator";
 import Teams from "../modules/team-schema-module.js";
+import Player from "../modules/player-schema-module.js";
 
 const teamControl = {};
 
@@ -12,11 +13,15 @@ teamControl.create = async(req,res)=>{
 
     const { teamName, homeCity, seasons,leagueId } = req.body;
     const logoImage = req.file ? `/uploads/${req.file.filename}` : null; // used turnery operator
-    const userId = req.userId
+    const userId = req.userId;
 
     const parsedSeasons = typeof seasons === 'string' ? JSON.parse(seasons) : seasons;// // Parse seasons only if it's a string (i.e., from multipart/form-data)
 
     try{
+        const teamNameExsits = await Teams.findOne({teamName:teamName});
+        if(teamNameExsits){
+            return res.status(400).json({notice:`Team name ${teamName} already exists in the Database`})
+        }
         for(const season of parsedSeasons){
             const {seasonYear, players} = season;
              for(const playerId of players){
@@ -24,8 +29,13 @@ teamControl.create = async(req,res)=>{
                 if (existingTeam) {
                     return res.status(400).json({error: `Player ${playerId} is already assigned to a team for season ${seasonYear}`});
                   }
-             }
-        }
+                const notFromPlayers = await Player.find({_id:playerId});
+                if(notFromPlayers){
+                    return res.status(400).json({error:`Player profile not found for the player ID ${playerId}`})
+                }
+
+                }
+             }       
         
         const team = await Teams.create({teamName,logoImage, homeCity, seasons:parsedSeasons,leagueId,createdBy:userId});
         console.log(team)
@@ -48,6 +58,11 @@ teamControl.addPlayerToTeamSeason = async(req,res)=>{
       return res.status(400).json({error: `Player is already assigned to a team for season ${seasonYear}`});
     }
 
+    const notFromPlayers = await Player.find({_id:playerId});
+    console.log(notFromPlayers);
+    if(notFromPlayers.length==0){
+        return res.status(400).json({error:`Player profile not found for the player ID ${playerId}`})
+    }
     // Add the player to the specific season's player list
     const updatedTeam = await Teams.findOneAndUpdate({_id: teamId,'seasons.seasonYear':seasonYear},{$push:{'seasons.$.players': playerId}},{ new: true });
 
@@ -132,6 +147,46 @@ teamControl.teamRemove = async(req,res)=>{
     return res.status(500).json({error: 'Something went wrong'});
  }
 
+}
+
+teamControl.teamPlayerRemove = async(req,res)=>{
+    
+    
+    const {teamId} = req.params;
+    const {seasonYear,playerId} = req.body;
+
+    try{
+        const team = await Teams.findById(teamId);
+    if(!team){
+        return res.status(404).json({notice:'Team not found'})
+    }
+    const season = team.seasons.find((s)=>{
+        return s.seasonYear.toString() === seasonYear;
+    })
+    if(!season){
+        return res.status(404).json({notice: 'season not found'})
+    }
+
+    const player = season.players.find((p)=>{
+        return p?.toString() === playerId;
+    })
+    if(!player){
+        return res.status(404).json({notice: 'Player not found'})
+
+    }
+
+    // Remove player from season.players
+    season.players = season.players.filter((p)=>{
+         p.playerId?.toString() !== playerId;
+    })
+    await team.save();
+    return res.status(200).json(team)
+
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error:'Something went wrong'});
+    }
+    
 }
 
 export default teamControl;

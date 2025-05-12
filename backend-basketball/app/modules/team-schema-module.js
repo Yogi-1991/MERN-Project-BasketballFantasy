@@ -5,6 +5,7 @@ const teamSchema = new Schema({
   teamName: {
     type: String,
     required: true,
+    trim:true
   },
   logoImage: {
     type: String,
@@ -12,6 +13,7 @@ const teamSchema = new Schema({
   homeCity: {
     type: String,
     required: true,
+    trim:true
   },
   seasons: [{
     seasonYear: {
@@ -20,7 +22,8 @@ const teamSchema = new Schema({
     },
     coachName: {
       type: String,
-      required: true
+      required: true,
+      trim:true
     },
     players: [{
       type: Schema.Types.ObjectId,
