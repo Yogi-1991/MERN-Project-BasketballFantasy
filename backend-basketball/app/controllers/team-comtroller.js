@@ -29,10 +29,10 @@ teamControl.create = async(req,res)=>{
                 if (existingTeam) {
                     return res.status(400).json({error: `Player ${playerId} is already assigned to a team for season ${seasonYear}`});
                   }
-                const notFromPlayers = await Player.find({_id:playerId});
-                if(notFromPlayers){
+                const notFromPlayers = await Player.findOne({_id:playerId});
+                if(!notFromPlayers){
                     return res.status(400).json({error:`Player profile not found for the player ID ${playerId}`})
-                }
+                } 
 
                 }
              }       
@@ -80,7 +80,7 @@ teamControl.addPlayerToTeamSeason = async(req,res)=>{
 
 teamControl.listTeams = async(req,res)=>{
     try{
-        const teams = await Teams.find().select('teamName homeCity')
+        const teams = await Teams.find()
         if(teams){
             return res.status(200).json(teams);
         }else{

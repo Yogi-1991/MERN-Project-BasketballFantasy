@@ -1,7 +1,17 @@
 
 const fantasyTeamValidation = {
-    userId:{},
-    gameId:{},
+    gameId:{
+        in:['body'],
+        exists:{
+            errorMessage: 'gameId field required'
+        },
+        notEmpty:{
+            errorMessage:'gameId cannot be empty'
+        },
+        isMongoId:{
+            errorMessage:'valid mongoDb id required'
+        }
+    },
     'players.*.playerId':{
         in: ['body'],
         exists:{
@@ -27,15 +37,6 @@ const fantasyTeamValidation = {
         },
         notEmpty:{
             errorMessage:'isViceCaptain cannot be empty'
-        }
-    },
-    'players.totalCreditsUsed':{
-        in: ['body'],
-        exists:{
-            errorMessage: 'totalCreditsUsed field required'
-        },
-        notEmpty:{
-            errorMessage:'totalCreditsUsed cannot be empty'
         }
     }
 }

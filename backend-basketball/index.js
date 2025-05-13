@@ -23,6 +23,8 @@ import lineupControl from './app/controllers/lineup-controller.js';
 import matchStatsValidation from './app/validations/matchStats-validation.js';
 import matchStatsControl from './app/controllers/matchStats-controller.js';
 import upload from './app/middlewares/upload.js';
+import fantasyTeamControl from './app/controllers/fantasyTeam-controller.js';
+import fantasyTeamValidation from './app/validations/fantasyTeam-validation.js';
 
 // import walletControl from './app/controllers/wallet-controller.js';
 
@@ -68,7 +70,7 @@ app.put('/team/add-player',authenticate,dataEntryAuthorization('teams'),teamCont
 app.get('/teams',authenticate,teamControl.listTeams);
 app.get('/team/:id',authenticate,checkSchema(idValidation),teamControl.listTeamsByLeague);
 app.put('/team/:id',authenticate,dataEntryAuthorization('teams'),checkSchema(idValidation),checkSchema(teamValidation),teamControl.teamUpdate);//added one more middleware dataEntryAuthorization to check data entry task
-app.delete('/team/:id',authenticate,authorization(['teams']),checkSchema(idValidation),teamControl.teamRemove);
+app.delete('/team/:id',authenticate,dataEntryAuthorization(['teams']),checkSchema(idValidation),teamControl.teamRemove);
 app.put('/team/:teamId/player-remove',authenticate,dataEntryAuthorization(['teams']),teamControl.teamPlayerRemove);
 
 //player
@@ -94,6 +96,12 @@ app.delete('/lineup/',authenticate,authorization(['lineup']),checkSchema(idValid
 //matchStats
 app.post('/match-stats',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.create)
 app.put('/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.matchStatsUpdate)
+
+//Fantasy Team
+
+app.post('/fantasy-team',authenticate,checkSchema(fantasyTeamValidation),fantasyTeamControl.createFantasyTeam);
+app.put('/fantasy-team',authenticate,checkSchema(fantasyTeamValidation),fantasyTeamControl.updateFantasyTeam);
+
 
 //Stripe payment
 // app.post('/createPaymentIntent',walletControl.createPaymentIntent)

@@ -12,7 +12,7 @@ const playerSchema = new Schema(
     },
     position: {
       type: String,
-      enum:['point guard', 'shooting guard', 'small forward', 'power forward',  'center','guard','forward','PG','SG','SF','PF','c','G'],
+      enum:['point guard', 'shooting guard', 'small forward', 'power forward',  'center','guard','forward','PG','SG','SF','PF','C','G','F'],
       default:'center'
     },
     jerseyNumber: {
