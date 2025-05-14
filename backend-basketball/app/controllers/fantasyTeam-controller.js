@@ -12,7 +12,7 @@ fantasyTeamControl.createFantasyTeam = async(req,res)=>{
         return res.status(400).json({errors:error.array()})
     }
 
-    const {gameId, players} = req.body;
+    const {gameId,teamName, players} = req.body;
     const userId = req.userId;
 
     try{
@@ -82,7 +82,7 @@ fantasyTeamControl.createFantasyTeam = async(req,res)=>{
          return res.status(400).json({ notice: 'Total credits used exceeds 100.' });
        }
  
-       const fantasyTeam = await FantasyTeams.create({userId,gameId,players,totalCreditsUsed });  
+       const fantasyTeam = await FantasyTeams.create({userId,gameId,teamName,players,totalCreditsUsed });  
    
        return res.status(201).json(fantasyTeam);
 
@@ -99,7 +99,7 @@ fantasyTeamControl.updateFantasyTeam = async (req, res) => {
           return res.status(400).json({ errors: error.array() });
         }
       
-        const { gameId, players } = req.body;
+        const { gameId,teamName, players } = req.body;
         const userId = req.userId;
       
         if (players.length !== 8) {
@@ -163,7 +163,8 @@ fantasyTeamControl.updateFantasyTeam = async (req, res) => {
             if (totalCreditsUsed > 100) {
                  return res.status(400).json({ notice: 'Total credits used exceeds 100.' });
                  }
-      
+          
+          existingTeam.teamName = teamName;
           existingTeam.players = players;
           existingTeam.totalCreditsUsed = totalCreditsUsed;
       

@@ -54,15 +54,6 @@ const contestValidation = {
             errorMessage:'userId caanot be empty'
         }
    },
-   'participants.*.fantasyTeamId':{
-    in:['body'],
-        exists:{
-            errorMessage:'fantasyTeamId field is required'
-        },
-        notEmpty:{
-            errorMessage:'fantasyTeamId caanot be empty'
-        }
-   },
    type:{
     in:['body'],
         exists:{

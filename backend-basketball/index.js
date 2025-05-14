@@ -25,6 +25,7 @@ import matchStatsControl from './app/controllers/matchStats-controller.js';
 import upload from './app/middlewares/upload.js';
 import fantasyTeamControl from './app/controllers/fantasyTeam-controller.js';
 import fantasyTeamValidation from './app/validations/fantasyTeam-validation.js';
+import contestControl from './app/controllers/contest-controller.js';
 
 // import walletControl from './app/controllers/wallet-controller.js';
 
@@ -101,6 +102,15 @@ app.put('/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('ma
 
 app.post('/fantasy-team',authenticate,checkSchema(fantasyTeamValidation),fantasyTeamControl.createFantasyTeam);
 app.put('/fantasy-team',authenticate,checkSchema(fantasyTeamValidation),fantasyTeamControl.updateFantasyTeam);
+
+
+//contest
+app.post('/contest-public',authenticate,authorization(['admin']),contestControl.createPublicContest);
+app.post('/contest-private',authenticate,contestControl.createPrivateContest);
+app.put('/join-contest',authenticate,contestControl.joinContest);
+app.get('/contest/joined',authenticate,contestControl.getJoinedContests);
+app.put('/contest-status/:contestId',authenticate,authorization(['admin']),contestControl.updateContestStatus);
+
 
 
 //Stripe payment

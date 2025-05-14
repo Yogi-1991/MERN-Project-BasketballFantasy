@@ -25,8 +25,13 @@ const contestSchema = new Schema({
     type: { 
         type: String, 
         enum: ['public', 'private'], 
-        default: 'public' 
     },
+    invitationCode: String, // for the private contest
+    createdBy: {
+             type: Schema.Types.ObjectId,
+             ref: "User",
+             required: true,
+  },
     status: { 
         type: String,
          enum: ['upcoming', 'running', 'completed'], 
@@ -34,4 +39,5 @@ const contestSchema = new Schema({
   });
   
   const Contest = model('Contest',contestSchema);
+
   export default Contest;

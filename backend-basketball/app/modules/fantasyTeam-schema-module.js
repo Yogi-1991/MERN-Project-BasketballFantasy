@@ -11,6 +11,9 @@ const fantasyTeamSchema = new Schema({
             ref: 'Schedule', 
             required: true 
             },
+   teamName: {
+                type:String
+   },
     players: [
                  {
                     playerId: { 

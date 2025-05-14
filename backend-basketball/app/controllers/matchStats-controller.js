@@ -25,8 +25,8 @@ matchStatsControl.create = async(req,res)=>{
              
           })
       
-          await MatchStat.insertMany(data); // try to load the data in one go
-          res.status(201).json({ message: 'Match stats saved successfully.' });        
+         const matchStats = await MatchStat.insertMany(data); // try to load the data in one go
+          res.status(201).json(matchStats);        
 
     }catch(err){
         console.log(err);

@@ -17,7 +17,7 @@ userControl.register = async(req,res)=>{
             balance: 5,
             history: [
               {
-                amount: 20,
+                amount: 5,
                 type: 'credit',
                 description: 'Free points on registration'
               }
