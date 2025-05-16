@@ -27,8 +27,8 @@ import fantasyTeamControl from './app/controllers/fantasyTeam-controller.js';
 import fantasyTeamValidation from './app/validations/fantasyTeam-validation.js';
 import contestControl from './app/controllers/contest-controller.js';
 import leaderboardContrl from './app/controllers/leaderboard-controller.js';
+import walletControl from './app/controllers/wallet-controller.js'
 
-// import walletControl from './app/controllers/wallet-controller.js';
 
 const app = express();
 dotenv.config();
@@ -119,7 +119,9 @@ app.put('/contest-status/:contestId',authenticate,authorization(['admin']),conte
 app.get('/leaderboard/:contestId',authenticate,checkSchema(idValidation),leaderboardContrl.leaderboard);
 
 //Stripe payment
-// app.post('/createPaymentIntent',walletControl.createPaymentIntent)
+app.post('/createPaymentIntent',authenticate,walletControl.createPaymentIntent)
+app.post('/confirmPayment',authenticate,walletControl.confirmPayment)
+
 
 app.listen(port,()=>{
     console.log('Server is running on the Port number', port)
