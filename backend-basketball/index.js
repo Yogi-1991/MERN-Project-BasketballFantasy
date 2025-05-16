@@ -102,6 +102,8 @@ app.put('/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('ma
 
 app.post('/fantasy-team',authenticate,checkSchema(fantasyTeamValidation),fantasyTeamControl.createFantasyTeam);
 app.put('/fantasy-team',authenticate,checkSchema(fantasyTeamValidation),fantasyTeamControl.updateFantasyTeam);
+app.get('/fantasy-teams',authenticate,fantasyTeamControl.myteams);
+app.get('/fantasy-contest',authenticate,fantasyTeamControl.myContest);
 
 
 //contest

@@ -55,6 +55,10 @@ const scheduleSchema = new Schema({
       default: 0,
     },
   }],
+  isStatsCompleted:{
+    type:Boolean,
+    default:false
+  },
   createdBy: {
     type: Schema.Types.ObjectId,
     ref: 'User',  // Reference to the User model (admin or data-entry)

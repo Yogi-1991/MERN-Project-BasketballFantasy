@@ -3,6 +3,7 @@ import { validationResult } from "express-validator";
 import FantasyTeams from "../modules/fantasyTeam-schema-module.js";
 import Player from "../modules/player-schema-module.js";
 import Schedule from "../modules/schedule-schema-module.js";
+import Contest from "../modules/contest-schema-module.js";
 
 const fantasyTeamControl = {};
 
@@ -175,6 +176,33 @@ fantasyTeamControl.updateFantasyTeam = async (req, res) => {
         } catch (err) {
           console.error(err);
           return res.status(500).json({ error: 'Something went wrong' });
+        }
+      }
+
+      fantasyTeamControl.myteams = async(req,res)=>{
+
+        try{
+            const userId = req.userId;
+            const fantasyTeams = await FantasyTeams.find({userId:userId});
+            if(fantasyTeams.length === 0){
+                return res.status(404).json({notice: "No teams created yet"});
+            }
+            return res.status(200).json(fantasyTeams)
+        }catch(err){
+            return res.status(500).json({error:'Somehting went wrong'});
+        }
+      }
+
+      fantasyTeamControl.myContest = async(req,res)=>{
+        try{
+            const contest = await Contest.find({userId:req.userId});
+             if(contest.length ===0){
+                return res.status(404).json({notice:'not joined to the contest Yet'});
+             }
+             return res.status(200).json(contest);
+        }catch(err){
+            console.log(err);
+            return res.status(500).json({error:'Something went wrong'});
         }
       }
 

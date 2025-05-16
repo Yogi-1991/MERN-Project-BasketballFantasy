@@ -35,7 +35,11 @@ const contestSchema = new Schema({
     status: { 
         type: String,
          enum: ['upcoming', 'running', 'completed'], 
-         default: 'upcoming' }
+         default: 'upcoming' },
+    prizesDistributed: {
+            type: Boolean,
+            default: false
+    }
   });
   
   const Contest = model('Contest',contestSchema);

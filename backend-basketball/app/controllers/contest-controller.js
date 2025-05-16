@@ -21,6 +21,14 @@ contestControl.createPublicContest  = async(req,res)=>{
         if(!schedule){
             return res.status(404).json({error:'Match not found '})
         }
+
+        const now = new Date();
+        const matchStartTime = new Date(schedule.matchDate); 
+
+        if (now >= matchStartTime) {
+            return res.status(400).json({ notice: 'Cannot create team after match has started.' });
+        }
+
         const contest = await Contest.create({name,gameId,entryFee,prizePool,maxPlayers,type:'public',createdBy:userId});
         return res.status(201).json(contest);
     }catch(err){
@@ -43,6 +51,13 @@ contestControl.createPrivateContest = async(req,res)=>{
         if(!schedule){
             return res.status(404).json({error:'Match not found '})
         }
+        const now = new Date();
+        const matchStartTime = new Date(schedule.matchDate);       
+
+        if (now >= matchStartTime) {
+            return res.status(400).json({ notice: 'Cannot create contest after match has started.' });
+        }
+
         const contest = await Contest.create({name,gameId,entryFee,prizePool,maxPlayers,type:'private',invitationCode,createdBy:userId});
         return res.status(201).json(contest);
     }catch(err){
@@ -58,10 +73,17 @@ contestControl.joinContest = async(req,res)=>{
     const userId = req.userId;
     try{
     //checking contest in the db
-    const contest = await Contest.findById(contestId);
+    const contest = await Contest.findById(contestId).populate('gameId');
     if (!contest) {
         return res.status(404).json({ error: 'Contest not found' });
     }
+
+    const now = new Date();
+    const matchStartTime = new Date(contest.gameId.matchDate); 
+
+    if (now >= matchStartTime) {
+            return res.status(400).json({ notice: 'Cannot create team after match has started.' });
+        }
 
     const fantasyTeam = await FantasyTeams.findOne({_id:fantasyTeamId,userId:userId});
     if(!fantasyTeam){
