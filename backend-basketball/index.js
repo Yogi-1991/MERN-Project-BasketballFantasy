@@ -26,6 +26,7 @@ import upload from './app/middlewares/upload.js';
 import fantasyTeamControl from './app/controllers/fantasyTeam-controller.js';
 import fantasyTeamValidation from './app/validations/fantasyTeam-validation.js';
 import contestControl from './app/controllers/contest-controller.js';
+import leaderboardContrl from './app/controllers/leaderboard-controller.js';
 
 // import walletControl from './app/controllers/wallet-controller.js';
 
@@ -114,6 +115,8 @@ app.get('/contest/joined',authenticate,contestControl.getJoinedContests);
 app.put('/contest-status/:contestId',authenticate,authorization(['admin']),contestControl.updateContestStatus);
 
 
+//Leaderboard
+app.get('/leaderboard/:contestId',authenticate,checkSchema(idValidation),leaderboardContrl.leaderboard);
 
 //Stripe payment
 // app.post('/createPaymentIntent',walletControl.createPaymentIntent)

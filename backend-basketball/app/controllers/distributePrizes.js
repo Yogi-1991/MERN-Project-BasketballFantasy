@@ -6,20 +6,20 @@ import FantasyPoints from '../modules/fantasyPoint-schema-module.js';
 
 const distributePrizes = async (contestId) => {
   try {
-    const contestCheck = await Contest.findById(contestId);
-    if (!contestCheck){
-        return console.error("Contest not found");
-    } 
+    
 
     const contest = await Contest.findById(contestId).populate('participants.userId');
+        if (!contest){
+            return console.error("Contest not found");
+          } 
         if (!contest || contest.prizesDistributed) {
-             return; // Skip if already distributed
+             return  console.log("Prizes already distributed");
         }
 
     const participantPoints = [];
 
 for (const p of contest.participants) {
-    const pointsDoc = await FantasyPoints.findOne({fantasyTeamId: p.fantasyTeamId});
+    const pointsDoc = await FantasyPoints.findOne({fantasyTeamId: p.fantasyTeamId,contestId: contest._id});
   
     if (!pointsDoc || typeof pointsDoc.totalPoints !== "number"){
         continue
@@ -43,7 +43,7 @@ for (const p of contest.participants) {
     if (participantPoints.length === 1) {
         winners.push({ userId: participantPoints[0].userId, amount: pool }); // 100%
       } else if (participantPoints.length === 2) {
-        winners.push({ userId: participantPoints[0].userId, amount: pool * 0.6 }); // 60%
+        winners.push({ userId: participantPoints[0].userId, amount: pool * 0.6 }); // 60% 
         winners.push({ userId: participantPoints[1].userId, amount: pool * 0.4 }); // 40%
       } else if (participantPoints.length >= 3) {
         winners.push({ userId: participantPoints[0].userId, amount: pool * 0.5 });
@@ -64,7 +64,6 @@ for (const p of contest.participants) {
       });
       await user.save();
 
-// After distributing prizes:
 contest.prizesDistributed = true;
 await contest.save();
 }

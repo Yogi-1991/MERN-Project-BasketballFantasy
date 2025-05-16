@@ -1,6 +1,11 @@
 import { Schema, model } from "mongoose";
 
 const fantasyPointsSchema = new Schema({
+  contestId: {
+    type: Schema.Types.ObjectId,
+    ref: "Contest",
+    required: true
+  },
   userId: { 
     type: Schema.Types.ObjectId,
      ref: "Users" 
