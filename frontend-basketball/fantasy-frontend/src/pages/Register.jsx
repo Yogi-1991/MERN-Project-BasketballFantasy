@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { use, useState } from 'react';
+import { useNavigate,Link } from 'react-router-dom';
 import axios from '../config/axios';
 
 export default function Register() {
@@ -7,15 +7,25 @@ export default function Register() {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const [serverError, setServerError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/register', { email, name, password });
+      await axios.post('/register', { email, name, password });      
       alert('Registered successfully. You can login now.');
       navigate('/');
     } catch (err) {
-      alert('Registration failed');
+        console.log(err.response.data.errors)
+        const errors = err.response?.data?.errors;
+    if (Array.isArray(errors) && errors.length > 0) {
+      setServerError(errors[0].msg); // Show first validation error
+      alert(serverError);
+    } else {
+      setServerError('Registration failed. Please try again.');
+      alert(serverError);
+    }
+      
     }
   };
 

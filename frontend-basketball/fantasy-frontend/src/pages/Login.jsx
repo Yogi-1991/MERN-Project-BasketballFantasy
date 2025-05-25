@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,Link} from "react-router-dom";
 import axios from "../config/axios";
 
 export default function  Login(){
@@ -12,7 +12,9 @@ export default function  Login(){
         e.preventDefault();
         try {
           const res = await axios.post('/login', { email, password });
-          localStorage.setItem('token', res.data.token);
+          console.log(res);
+          localStorage.setItem('token', res.data.token);       
+
           navigate('/dashboard');
         } catch (err) {
           alert('Login failed');
