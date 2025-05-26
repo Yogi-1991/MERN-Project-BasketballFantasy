@@ -1,7 +1,10 @@
 import { Route,Routes, Link } from 'react-router-dom';
-import Login from './pages/login';
+import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Account from './pages/Account';
+import PrivateRoute from './components/PrivateRoute';
+
 
 function App() {
 
@@ -10,7 +13,16 @@ function App() {
     <Routes>
       <Route path="/" element={<Login/>}/>  
       <Route path="/register" element={<Register />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/account" element={
+        <PrivateRoute>
+          <Account/>
+        </PrivateRoute>
+        }/>
+      <Route path="/dashboard" element={
+          <PrivateRoute>
+              <Dashboard />
+          </PrivateRoute>
+          } />
     </Routes>
     </>
   )
