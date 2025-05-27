@@ -6,7 +6,7 @@ const authorization = (permittedUsers)=>{
         {
             next()
         }else{
-            res.status(403).json({errors: 'Not Authorized'})
+            res.status(403).json({error: 'Not Authorized'})
         }
     })
 }

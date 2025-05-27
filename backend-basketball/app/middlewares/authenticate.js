@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 const authenticate = async(req,res,next)=>{
     const token =  req.headers['authorization'];
     if(!token){
-        return res.status(400).json({Notice:'Please enter the valid token'})
+        return res.status(400).json({error:'Please enter the valid token'})
     }
 
     try{       

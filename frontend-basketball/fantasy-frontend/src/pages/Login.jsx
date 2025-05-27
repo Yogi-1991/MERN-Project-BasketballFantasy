@@ -42,8 +42,8 @@ export default function Login() {
             const response = await axios.post('/login',formdata)
             localStorage.setItem('token',response.data.token)
             const userResponse = await axios.get('/user',{headers:{Authorization: localStorage.getItem('token')}});
-            console.log(userResponse.data)
-            dispatch(login(userResponse.data))
+            console.log("userResponse",userResponse.data);
+            dispatch(login(userResponse.data));
             navigate('/dashboard');
         }catch(err){
             console.log(err);
@@ -63,10 +63,8 @@ export default function Login() {
 
   return (
     <div className="relative min-h-screen bg-[url('/src/assets/basketball-background/basketball-court-22261472.webp')] bg-cover bg-center">
-  {/* Overlay for readability */}
+ 
   <div className="absolute inset-0 bg-black bg-opacity-60"></div>
-
-  {/* Form content with existing styles */}
   <div className="relative z-10 flex items-center justify-center min-h-screen">
     <form 
       onSubmit={handleSubmit} 
