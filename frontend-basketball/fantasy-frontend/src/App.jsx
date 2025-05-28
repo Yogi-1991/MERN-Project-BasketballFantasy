@@ -1,13 +1,20 @@
 import { Route,Routes } from 'react-router-dom';
 import {  useEffect } from 'react';
-import { ToastContainer } from 'react-toastify';//
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch } from 'react-redux';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Account from './pages/Account';
+import MyTeam from './pages/MyTeam';
+import Contests from './pages/Contests';
+import Sidebar from './components/Sidebar';
+import Layout from './components/Layout';
 import {fetchUserdetails} from './slices/userSlice';
-import { useDispatch } from 'react-redux';
+import ProtectedRoute from './components/ProtectedRoute';
+import Unauthorized from './pages/Unauthorized';
+
 import PrivateRoute from './components/PrivateRoute';
 
 function App() {
@@ -24,18 +31,15 @@ useEffect(()=>{
     <Routes>
       <Route path="/" element={<Login/>}/>  
       <Route path="/register" element={<Register />} />
-      <Route path="/account" element={
-        <PrivateRoute>
-          <Account/>
-        </PrivateRoute>
-        }/>
-      <Route path="/dashboard" element={
-          <PrivateRoute>
-              <Dashboard />
-          </PrivateRoute>
-          } />
+      <Route path='/unauthorized' element={<Unauthorized/>}/>
+
+      <Route element={<PrivateRoute><ProtectedRoute roles={['registered']}><Layout /></ProtectedRoute></PrivateRoute>}>
+        <Route path="/dashboard" element={<Dashboard />} /> 
+       <Route to="/my-team" element={<MyTeam/>}/>
+       <Route to="/contests" element={<Contests/>}/>
+       </Route>
     </Routes>
-    <ToastContainer position="top-center" autoClose={2000} />
+    <ToastContainer position="top-center" autoClose={500} />
     </>
     
   )

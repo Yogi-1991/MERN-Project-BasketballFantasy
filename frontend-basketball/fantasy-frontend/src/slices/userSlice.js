@@ -17,13 +17,13 @@ export const fetchUserdetails = createAsyncThunk('user/fetchUserdetails',async(_
 const userSlice = createSlice({
     name: 'user',
     initialState: {
-        data: null,
+        userData: null,
         isLoggedIn: false,
         serverError:null
     },
     extraReducers: (builder)=>{
         builder.addCase(fetchUserdetails.fulfilled,(state,action)=>{
-            state.data = action.payload;
+            state.userData = action.payload;
             state.isLoggedIn = true;
         });
         builder.addCase(fetchUserdetails.rejected,(state,action)=>{
@@ -32,12 +32,12 @@ const userSlice = createSlice({
     },
     reducers:{
         login:(state,action)=>{
-            state.data = action.payload;
+            state.userData = action.payload;
             state.isLoggedIn = true;
             console.log("login Slice")
         },
         logout:(state)=>{
-            state.data = null;
+            state.userData = null;
             state.isLoggedIn = false;
         }
     }

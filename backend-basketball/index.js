@@ -88,6 +88,7 @@ app.delete('/player/:id',authenticate,authorization(['player']),checkSchema(idVa
 //Schedule
 app.post('/schedule',authenticate,dataEntryAuthorization('schedule'),checkSchema(scheduleValidation),scheduleControl.create)
 app.get('/schedule',authenticate,scheduleControl.listschedules);
+app.get('/schedule/upcoming',authenticate,scheduleControl.upcomingSchedule);
 app.get('/schedule/:id',authenticate,checkSchema(idValidation),scheduleControl.listschedulesById);
 app.put('/schedule/:id',authenticate,dataEntryAuthorization('schedule'),checkSchema(idValidation),checkSchema(scheduleValidation),scheduleControl.scheduleUpdate);
 app.delete('/schedule/:id',authenticate,authorization(['schedule']),checkSchema(idValidation),scheduleControl.scheduleRemove)

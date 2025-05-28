@@ -38,6 +38,22 @@ scheduleControl.listschedules = async(req,res)=>{
     }
 }
 
+scheduleControl.upcomingSchedule = async(req,res)=>{
+    const now = new Date();
+    console.log(now)
+    try{
+        const schedules = await Schedule.find({matchDate: {$gte: now}})
+        if(schedules.length === 0){
+            return res.status(404).json({error :"Data not found"});
+        }
+        return res.status(200).json(schedules)
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({error:"Somehting went wrong"});
+    }
+
+}
+
 scheduleControl.listschedulesById = async(req,res)=>{
     const error = validationResult(req);
     if(!error.isEmpty()){
