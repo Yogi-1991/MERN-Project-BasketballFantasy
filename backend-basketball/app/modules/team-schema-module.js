@@ -17,8 +17,9 @@ const teamSchema = new Schema({
   },
   seasons: [{
     seasonYear: {
-      type: String, // or Schema.Types.ObjectId if referencing a separate Season collection
-      required: true
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'Season'
     },
     coachName: {
       type: String,

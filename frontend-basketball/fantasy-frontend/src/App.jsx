@@ -14,8 +14,9 @@ import Layout from './components/Layout';
 import {fetchUserdetails} from './slices/userSlice';
 import ProtectedRoute from './components/ProtectedRoute';
 import Unauthorized from './pages/Unauthorized';
-
+import MyContests from './pages/MyContests';
 import PrivateRoute from './components/PrivateRoute';
+import ContestDetails from './pages/ContestDetails';
 
 function App() {
   const dispatch = useDispatch();
@@ -35,8 +36,10 @@ useEffect(()=>{
 
       <Route element={<PrivateRoute><ProtectedRoute roles={['registered']}><Layout /></ProtectedRoute></PrivateRoute>}>
         <Route path="/dashboard" element={<Dashboard />} /> 
-       <Route to="/my-team" element={<MyTeam/>}/>
-       <Route to="/contests" element={<Contests/>}/>
+       <Route path="/my-team" element={<MyTeam/>}/>
+       <Route path="/contests" element={<Contests/>}/>
+       <Route path="/my-contests" element={<MyContests/>}/>
+       <Route path="/contest/:contestId" element={<ContestDetails/>}/>
        </Route>
     </Routes>
     <ToastContainer position="top-center" autoClose={500} />

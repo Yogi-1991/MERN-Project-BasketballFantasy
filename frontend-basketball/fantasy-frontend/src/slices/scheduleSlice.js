@@ -28,7 +28,6 @@ const scheduleSlice = createSlice({
     extraReducers:(builder)=>{
         builder.addCase(scheduleUpcoming.pending,(state)=>{
             state.loading = true;
-            state.serverError = null;
         });
         builder.addCase(scheduleUpcoming.fulfilled,(state,action)=>{
             state.loading = false;
@@ -36,7 +35,7 @@ const scheduleSlice = createSlice({
         });
         builder.addCase(scheduleUpcoming.rejected,(state,action)=>{
             state.loading = false;
-            state.serverError = action.payload?.error || "Something went wrong";
+            state.serverError = action.payload;
             
         });
     }

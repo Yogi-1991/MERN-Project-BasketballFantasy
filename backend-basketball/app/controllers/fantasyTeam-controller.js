@@ -5,6 +5,7 @@ import Player from "../modules/player-schema-module.js";
 import Schedule from "../modules/schedule-schema-module.js";
 import Contest from "../modules/contest-schema-module.js";
 
+
 const fantasyTeamControl = {};
 
 fantasyTeamControl.createFantasyTeam = async(req,res)=>{
@@ -181,17 +182,45 @@ fantasyTeamControl.updateFantasyTeam = async (req, res) => {
 
       fantasyTeamControl.myteams = async(req,res)=>{
 
-        try{
-            const userId = req.userId;
-            const fantasyTeams = await FantasyTeams.find({userId:userId});
-            if(fantasyTeams.length === 0){
-                return res.status(404).json({notice: "No teams created yet"});
+        try {
+            const gameId = req.query.gameId;
+            if (!gameId) {
+              return res.status(400).json({ error: 'gameId is required' });
             }
-            return res.status(200).json(fantasyTeams)
-        }catch(err){
-            return res.status(500).json({error:'Somehting went wrong'});
-        }
-      }
+        
+            const team = await FantasyTeams.findOne({
+              userId: req.user.id,
+              gameId: gameId
+            }).populate({
+                path: 'players.playerId',
+                select: 'name position teamId',
+                populate: {
+                  path: 'teamId',
+                  model: 'Teams',
+                  select: 'teamName logoImage homeCity'
+                }
+              });
+        
+            if (!team) return res.status(404).json({ error: 'No team found' });
+        
+            res.json(team);
+          } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Something went wrong' });
+          }
+        };
+
+        // try{
+        //     const userId = req.userId;
+        //     const fantasyTeams = await FantasyTeams.find({userId:userId});
+        //     if(fantasyTeams.length === 0){
+        //         return res.status(404).json({notice: "No teams created yet"});
+        //     }
+        //     return res.status(200).json(fantasyTeams)
+        // }catch(err){
+        //     return res.status(500).json({error:'Somehting went wrong'});
+        // }
+      
 
       fantasyTeamControl.myContest = async(req,res)=>{
         try{

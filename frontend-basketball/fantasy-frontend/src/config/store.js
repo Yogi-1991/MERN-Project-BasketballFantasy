@@ -7,7 +7,7 @@ const store = configureStore({
     reducer: {
         user: userReducer,
         schedule: scheduleReducer,
-        contests: contestsReducer
+        contest: contestsReducer
     }
 });
 

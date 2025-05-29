@@ -14,8 +14,8 @@ export const getUserContests = createAsyncThunk('contests/getUSerContests',async
     }
 })
 
-const contestSlice = createSlice({
-    name:'contests',
+const contestsSlice = createSlice({
+    name:'contest',
     initialState:{
         contestsData:[],
         loading:false,
@@ -37,4 +37,4 @@ const contestSlice = createSlice({
     }
 })
 
-export default contestSlice.reducer;
+export default contestsSlice.reducer;

@@ -1,9 +1,12 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {scheduleUpcoming} from '../slices/scheduleSlice';
 import { getUserContests } from "../slices/contestsSlice";
 
 export default function Dashboard() {
+
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -15,7 +18,7 @@ export default function Dashboard() {
     return state.schedule
   });
   const {contestsData,loading:contestLoading,} = useSelector((state)=>{
-      return state.contests
+      return state.contest
   })
 
   useEffect(()=>{
@@ -54,6 +57,9 @@ export default function Dashboard() {
         <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
           <h2 className="text-lg font-semibold text-gray-700">My Contests</h2>
           <p className="text-2xl mt-2 text-purple-600">{contestLoading ? 'Loading...' : `${contestsData.length} active`}</p>
+          <button onClick={() => navigate("/my-contests")} className="mt-4 text-sm text-orange-600 underline hover:text-orange-800">
+            View All
+          </button>
         </div>
       </div>
 

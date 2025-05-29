@@ -1,8 +1,12 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import {logout} from '../slices/userSlice';
+import { toast } from "react-toastify";
 
 export default function Unauthorized() {
   const [redirect, setRedirect] = useState(false);
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -13,6 +17,9 @@ export default function Unauthorized() {
   }, []);
 
   if (redirect) {
+    localStorage.removeItem('token');
+    dispatch(logout());
+    toast.success('Logged out successfully 👋');    
     return <Navigate to="/" />;
   }
 

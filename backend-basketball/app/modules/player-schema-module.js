@@ -37,6 +37,17 @@ const playerSchema = new Schema(
       type: Number,
       required: true
      },
+     teamId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Teams',
+      required: true,
+    },
+    seasonYear: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'Season'
+    },
+
     isActive: {
       type: Boolean,
       default: true,
