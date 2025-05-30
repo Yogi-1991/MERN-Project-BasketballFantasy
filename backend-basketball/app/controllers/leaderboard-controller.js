@@ -9,7 +9,12 @@ leaderboardContrl.leaderboard = async(req,res)=>{
             .populate('fantasyTeamId')
             .populate("userId", "name email")
             .sort({ totalPoints: -1 }) // descending
+
+            if(!leaderboard){
+                return res.status(404).json({error : "No data found for this contest"})
+             }
              res.status(200).json(leaderboard);
+             
     }catch(err){
         console.log(err);
         return res.status(500).json({error:'Somehting went wrong'});

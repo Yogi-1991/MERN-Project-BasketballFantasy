@@ -18,7 +18,7 @@ const fantasyTeamSchema = new Schema({
                  {
                     playerId: { 
                              type: Schema.Types.ObjectId, 
-                             ref: 'Players'
+                             ref: 'Player'
                             },
                      isCaptain: { 
                                 type: Boolean, 

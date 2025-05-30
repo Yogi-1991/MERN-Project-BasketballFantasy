@@ -4,6 +4,7 @@ import FantasyTeams from "../modules/fantasyTeam-schema-module.js";
 import Player from "../modules/player-schema-module.js";
 import Schedule from "../modules/schedule-schema-module.js";
 import Contest from "../modules/contest-schema-module.js";
+import mongoose from "mongoose";
 
 
 const fantasyTeamControl = {};
@@ -180,35 +181,62 @@ fantasyTeamControl.updateFantasyTeam = async (req, res) => {
         }
       }
 
-      fantasyTeamControl.myteams = async(req,res)=>{
-
+      fantasyTeamControl.myteams = async (req, res) => {
         try {
-            const gameId = req.query.gameId;
-            if (!gameId) {
-              return res.status(400).json({ error: 'gameId is required' });
-            }
-        
-            const team = await FantasyTeams.findOne({
-              userId: req.user.id,
-              gameId: gameId
-            }).populate({
-                path: 'players.playerId',
-                select: 'name position teamId',
-                populate: {
-                  path: 'teamId',
-                  model: 'Teams',
-                  select: 'teamName logoImage homeCity'
-                }
-              });
-        
-            if (!team) return res.status(404).json({ error: 'No team found' });
-        
-            res.json(team);
-          } catch (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Something went wrong' });
+          const gameId = req.query.gameId;
+      
+          if (!gameId) {
+            return res.status(400).json({ error: 'gameId is required' });
           }
-        };
+      
+          if (!mongoose.Types.ObjectId.isValid(gameId)) {
+            return res.status(400).json({ error: 'Invalid gameId format' });
+          }
+      
+          const team = await FantasyTeams.findOne({
+            userId: req.userId,
+            gameId: gameId
+          }).populate({
+            path: 'players.playerId',
+            select: 'firstName lastName position teamId profileImage',
+            populate: {
+              path: 'teamId',
+              model: 'Teams',
+              select: 'teamName logoImage homeCity'
+            }
+          });
+      
+          if (!team) {
+            return res.status(404).json({ error: 'No team found' });
+          }
+      
+          // Construct response with player details and captain/viceCaptain flags
+          const enrichedPlayers = team.players.map(p => {
+            return {
+              playerInfo: p.playerId, // already populated
+              isCaptain: p.isCaptain,
+              isViceCaptain: p.isViceCaptain
+            };
+          });
+      
+          const responseData = {
+            _id: team._id,
+            teamName: team.teamName,
+            gameId: team.gameId,
+            userId: team.userId,
+            totalCreditsUsed: team.totalCreditsUsed,
+            players: enrichedPlayers,
+            createdAt: team.createdAt,
+            updatedAt: team.updatedAt
+          };
+      
+          res.json(responseData);
+      
+        } catch (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Something went wrong' });
+        }
+      };
 
         // try{
         //     const userId = req.userId;
