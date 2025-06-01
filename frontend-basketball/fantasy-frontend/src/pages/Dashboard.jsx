@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link} from "react-router-dom";
 import {scheduleUpcoming} from '../slices/scheduleSlice';
 import { getUserContests } from "../slices/contestsSlice";
 
@@ -42,7 +42,7 @@ export default function Dashboard() {
       <h1 className="text-3xl font-bold text-orange-600">Welcome, {userData.name || Player}!</h1>
       <p className="text-gray-600">Get ready to build your dream basketball fantasy team.</p>
 
-      {/* Cards */}
+     
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">   
         <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
           <h2 className="text-lg font-semibold text-gray-700">Wallet Balance</h2>
@@ -52,6 +52,7 @@ export default function Dashboard() {
         <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
           <h2 className="text-lg font-semibold text-gray-700">Upcoming Matches</h2>
           <p className="text-2xl mt-2 text-blue-600">{loading ? 'Loading...': `${todaysMatches.length} matches today`}</p>
+          <Link to="/matches" className="text-blue-600 hover:underline float-right"> View All</Link>
         </div>
 
         <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
@@ -63,7 +64,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* CTA */}
+ 
       <div className="bg-gradient-to-r from-orange-400 to-orange-500 text-white p-6 rounded-xl shadow-lg mt-8 text-center">
         <h2 className="text-2xl font-semibold mb-2">Build Your Fantasy Team Now</h2>
         <p className="mb-4">Join contests and win exciting rewards!</p>

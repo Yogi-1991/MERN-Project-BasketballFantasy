@@ -109,6 +109,8 @@ app.post('/fantasy-team',authenticate,checkSchema(fantasyTeamValidation),fantasy
 app.put('/fantasy-team',authenticate,checkSchema(fantasyTeamValidation),fantasyTeamControl.updateFantasyTeam);
 app.get('/fantasy-teams',authenticate,fantasyTeamControl.myteams);
 app.get('/fantasy-contest',authenticate,fantasyTeamControl.myContest);
+//try to load the players to create the fantasy team 
+app.get('/fantasy/players/:gameId',authenticate,fantasyTeamControl.getPlayersForMatch)
 
 
 //contest

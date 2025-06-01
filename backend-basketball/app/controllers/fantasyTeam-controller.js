@@ -4,6 +4,8 @@ import FantasyTeams from "../modules/fantasyTeam-schema-module.js";
 import Player from "../modules/player-schema-module.js";
 import Schedule from "../modules/schedule-schema-module.js";
 import Contest from "../modules/contest-schema-module.js";
+import Teams from "../modules/team-schema-module.js";
+
 import mongoose from "mongoose";
 
 
@@ -210,7 +212,7 @@ fantasyTeamControl.updateFantasyTeam = async (req, res) => {
             return res.status(404).json({ error: 'No team found' });
           }
       
-          // Construct response with player details and captain/viceCaptain flags
+          // player details and captain/viceCaptain flags
           const enrichedPlayers = team.players.map(p => {
             return {
               playerInfo: p.playerId, // already populated
@@ -262,6 +264,72 @@ fantasyTeamControl.updateFantasyTeam = async (req, res) => {
             return res.status(500).json({error:'Something went wrong'});
         }
       }
+
+
+
+
+fantasyTeamControl.getPlayersForMatch = async (req, res) => {
+  try {
+    
+    const { gameId } = req.params;
+    
+    if (!gameId) {
+        return res.status(400).json({ error: 'gameId is required' });
+      }
+  
+      if (!mongoose.Types.ObjectId.isValid(gameId)) {
+        return res.status(400).json({ error: 'Invalid gameId format' });
+      }
+
+    const schedule = await Schedule.findById(gameId);
+    if (!schedule) {
+        console.log(schedule)
+      return res.status(404).json({ notice: 'Match not found.' });
+    }
+
+    const { homeTeam, awayTeam, seasonYear } = schedule;
+
+    console.log("homeTeam:", homeTeam.toString());
+console.log("awayTeam:", awayTeam.toString());
+console.log("seasonYear:", seasonYear.toString());
+
+
+const players11 = await Player.find({});
+players11.forEach(p => {
+  console.log("player.teamId:", p.teamId.toString());
+  console.log("player.seasonYear:", p.seasonYear.toString());
+});
+
+console.log("Schedule seasonYear:", seasonYear.toString());
+
+console.log("Match ID:", gameId);
+console.log("Schedule found:", schedule);
+console.log("homeTeam:", homeTeam);
+console.log("awayTeam:", awayTeam);
+console.log("seasonYear:", seasonYear);
+
+const players1 = await Player.find({
+    teamId: { $in: [homeTeam, awayTeam] },
+    seasonYear,
+    isActive: true
+  });
+  console.log("Found players:", players1);
+
+    const players = await Player.find({
+      teamId: { $in: [homeTeam, awayTeam] },
+      seasonYear,
+      isActive: true
+    })
+    .populate('teamId', 'teamName') // optional: to show team name
+    .select('firstName lastName position credit profileImage teamId'); // optional fields  
+      
+
+    return res.json({players});
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Something went wrong while fetching players.' });
+  }
+};
 
 
 export default fantasyTeamControl;

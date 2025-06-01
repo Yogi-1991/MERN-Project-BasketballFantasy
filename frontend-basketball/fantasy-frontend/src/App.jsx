@@ -17,6 +17,8 @@ import Unauthorized from './pages/Unauthorized';
 import MyContests from './pages/MyContests';
 import PrivateRoute from './components/PrivateRoute';
 import ContestDetails from './pages/ContestDetails';
+import UpcomingMatches from './pages/UpcomingMatches';
+import SelectPlayers from './pages/SelectPlayers';
 
 function App() {
   const dispatch = useDispatch();
@@ -39,6 +41,8 @@ useEffect(()=>{
        <Route path="/my-team" element={<MyTeam/>}/>
        <Route path="/contests" element={<Contests/>}/>
        <Route path="/my-contests" element={<MyContests/>}/>
+       <Route path="/matches" element={<UpcomingMatches />}/>
+       <Route path="/create-team/:gameId" element={<SelectPlayers />} />
        <Route path="/contest/:contestId" element={<ContestDetails/>}/>
        </Route>
     </Routes>

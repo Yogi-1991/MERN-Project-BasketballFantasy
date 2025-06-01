@@ -13,12 +13,12 @@ const scheduleSchema = new Schema({
   },
   homeTeam: {
     type:Schema.Types.ObjectId,
-    ref: 'Team',  // Reference to the Team model
+    ref: 'Teams',  // Reference to the Team model
     required: true,
   },
   awayTeam: {
     type: Schema.Types.ObjectId,
-    ref: 'Team',  // Reference to the Team model
+    ref: 'Teams',  // Reference to the Team model
     required: true,
   },
   venue: {

@@ -32,6 +32,7 @@ const scheduleSlice = createSlice({
         builder.addCase(scheduleUpcoming.fulfilled,(state,action)=>{
             state.loading = false;
             state.scheduleData = action.payload;
+            console.log("state.scheduleData",state.scheduleData)
         });
         builder.addCase(scheduleUpcoming.rejected,(state,action)=>{
             state.loading = false;
