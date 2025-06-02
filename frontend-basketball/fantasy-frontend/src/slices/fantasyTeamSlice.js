@@ -18,7 +18,7 @@ export const myContestTeam = createAsyncThunk('fantasyTeam/myContestTeam', async
 
 export const createFantasyTeam = createAsyncThunk('fantasyTeams/createFantasyTeam',async (teamData, { rejectWithValue }) => {
       try {
-        const response = await axios.post('/fantasy-teams', teamData, {headers:{Authorization:localStorage.getItem('token')}});
+        const response = await axios.post('/fantasy-team', teamData, {headers:{Authorization:localStorage.getItem('token')}});
         return response.data;
       } catch (err) {        
         return rejectWithValue({
@@ -33,7 +33,8 @@ export const createFantasyTeam = createAsyncThunk('fantasyTeams/createFantasyTea
 const fantasyTeamSlice = createSlice({
     name:'fantasyTeam',
     initialState: {
-        fantasyTeamData:null,
+        fantasyTeamData:[],
+        fantasyTeamCreated: null,
         loading: false,
         serverError: null
     },
@@ -45,7 +46,6 @@ const fantasyTeamSlice = createSlice({
         builder.addCase(myContestTeam.fulfilled,(state,action)=>{
             state.loading = false;
             state.fantasyTeamData = action.payload;  
-            console.log( " state.fantasyData",state.fantasyData)          
         });
         builder.addCase(myContestTeam.rejected,(state,action)=>{
             state.loading = false;
@@ -53,11 +53,11 @@ const fantasyTeamSlice = createSlice({
         });
         // create fanstasy team
         builder.addCase(createFantasyTeam.pending,(state,action)=>{
-            loading = true;
+            state.loading = true;
         });
         builder.addCase(createFantasyTeam.fulfilled,(state,action)=>{
             state.loading = false;
-            state.fantasyTeamData = action.payload;
+            state.fantasyTeamCreated = action.payload;
         })
         builder.addCase(createFantasyTeam.rejected,(state,action)=>{
             state.loading = false;

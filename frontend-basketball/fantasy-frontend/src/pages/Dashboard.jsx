@@ -81,8 +81,9 @@ const upcomingMatches = scheduleData.filter((match) => {
       <div className="bg-gradient-to-r from-orange-400 to-orange-500 text-white p-6 rounded-xl shadow-lg mt-8 text-center">
         <h2 className="text-2xl font-semibold mb-2">Build Your Fantasy Team Now</h2>
         <p className="mb-4">Join contests and win exciting rewards!</p>
-        <button className="bg-white text-orange-600 font-bold px-6 py-2 rounded hover:bg-orange-100 transition">
-          Create Team
+        
+        <button className="bg-white text-orange-600 font-bold px-6 py-2 rounded hover:bg-orange-100 transition">         
+        <Link to="/matches" className="text-blue-600 hover:underline float-right">Create Team</Link>
         </button>
       </div>
     </div>

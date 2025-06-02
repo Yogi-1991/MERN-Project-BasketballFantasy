@@ -119,6 +119,7 @@ app.post('/contest-private',authenticate,contestControl.createPrivateContest);
 app.put('/join-contest',authenticate,contestControl.joinContest);
 app.get('/contest/joined',authenticate,contestControl.getJoinedContests);
 app.put('/contest-status/:contestId',authenticate,authorization(['admin']),contestControl.updateContestStatus);
+app.get('/contest',authenticate,contestControl.allContest)
 
 
 //Leaderboard

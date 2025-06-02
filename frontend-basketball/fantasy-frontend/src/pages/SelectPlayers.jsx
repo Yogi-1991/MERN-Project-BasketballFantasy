@@ -12,7 +12,7 @@ export default function SelectPlayers() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { playersData, loading, ServerError } = useSelector(state => state.players);
-  const {fantasyTeamData} = useSelector(state =>  state.fantasyTeam);
+  const {fantasyTeamCreated, ServerError:fantasyTeamError} = useSelector(state =>  state.fantasyTeam);
 
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [captainId, setCaptainId] = useState('');
@@ -42,7 +42,7 @@ export default function SelectPlayers() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     if (selectedPlayers.length !== MAX_PLAYERS) 
       {
         return alert(`Select exactly ${MAX_PLAYERS} players.`);
@@ -58,26 +58,27 @@ export default function SelectPlayers() {
     if (!teamName.trim()) 
       {
       return alert("Please enter a team name.");
-    }
+    }   
 
-    // const fantasyTeam = {
-    //   gameId,
-    //   players: selectedPlayers.map(p => p._id),
-    //   captain: captainId,
-    //   viceCaptain: viceCaptainId
-    // };
-
-    const players = selectedPlayers.map(playerId => ({
-      playerId,
-      isCaptain: playerId === captainId,
-      isViceCaptain: playerId === viceCaptainId
+    const players = selectedPlayers.map(player => ({
+      playerId: player._id,
+      isCaptain: player._id === captainId,
+      isViceCaptain: player._id === viceCaptainId
     }));
 
-    // TODO: Dispatch action or call API to save fantasyTeam
-    dispatch(createFantasyTeam({gameId,teamName, players }))
-    console.log("new fanstay team",fantasyTeamData)
-    navigate('/contest')
-    // console.log("Submitting fantasy team:", fantasyTeam);
+    try {
+  const response = await dispatch(createFantasyTeam({ gameId, teamName, players })).unwrap();
+
+  // if successful, response will be the new fantasy team
+  console.log("new fantasy team created:", response);
+  navigate('/contests');
+
+} catch (err) {
+  // If there's an error, navigate to an error/fallback page
+  console.error("Failed to create fantasy team:", err);
+  navigate('/team-found'); // or any fallback page
+}
+    
   };
 
   if (loading) return <p>Loading players...</p>;
@@ -121,7 +122,7 @@ export default function SelectPlayers() {
                 <p className="text-sm text-gray-700">Credit: {player.credit}</p>
                 <p className="text-sm text-gray-600">Team: {player.teamId?.teamName}</p>
               </div>
-              {isSelected && (
+              {/* {isSelected && (
                 <div className="mt-2 space-x-2 flex justify-center">
                   <label>
                     <input
@@ -140,11 +141,57 @@ export default function SelectPlayers() {
                     /> VC
                   </label>
                 </div>
+              )} */}
+
+          {isSelected && (
+                 <p className="text-xs text-center text-green-600 mt-2">Selected</p>
               )}
+
+
             </div>
           );
         })}
       </div>
+
+      {selectedPlayers.length === MAX_PLAYERS && (
+  <div className="mt-6 p-4 border rounded bg-gray-50">
+    <h3 className="text-lg font-semibold mb-2">Assign Captain and Vice-Captain</h3>
+    
+    <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
+      <div className="flex-1">
+        <label className="block text-sm font-medium mb-1">Captain</label>
+        <select
+          value={captainId}
+          onChange={(e) => setCaptainId(e.target.value)}
+          className="w-full border rounded px-3 py-2"
+        >
+          <option value="">Select Captain</option>
+          {selectedPlayers.map(player => (
+            <option key={player._id} value={player._id}>
+              {player.firstName} {player.lastName}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="flex-1">
+        <label className="block text-sm font-medium mb-1">Vice-Captain</label>
+        <select
+          value={viceCaptainId}
+          onChange={(e) => setViceCaptainId(e.target.value)}
+          className="w-full border rounded px-3 py-2"
+        >
+          <option value="">Select Vice-Captain</option>
+          {selectedPlayers.map(player => (
+            <option key={player._id} value={player._id}>
+              {player.firstName} {player.lastName}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  </div>
+)}
 
       <div className="mt-6 text-center">
         <button

@@ -72,6 +72,11 @@ contestControl.joinContest = async(req,res)=>{
     const { contestId, fantasyTeamId, invitationCode } = req.body;
     const userId = req.userId;
     try{
+
+        if (!contestId || !fantasyTeamId) {
+            return res.status(400).json({ error: 'contestId and fantasyTeamId are required' });
+          }
+
     //checking contest in the db
     const contest = await Contest.findById(contestId).populate('gameId');
     if (!contest) {
@@ -177,6 +182,23 @@ contestControl.updateContestStatus = async(req,res)=>{
         console.error(err);
         return res.status(500).json({ error: 'Something went wrong' });
       }
+}
+
+contestControl.allContest = async(req,res)=>{
+    try{
+
+        const contest = await Contest.find();
+        if(contest.length === 0){
+            return res.status(404).json({error: "No contest created"})
+        }
+        return res.status(200).json(contest);
+
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error:"Somehting went wrong"})
+
+    }
+
 }
 
 export default contestControl;

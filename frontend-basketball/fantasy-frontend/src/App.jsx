@@ -19,6 +19,7 @@ import PrivateRoute from './components/PrivateRoute';
 import ContestDetails from './pages/ContestDetails';
 import UpcomingMatches from './pages/UpcomingMatches';
 import SelectPlayers from './pages/SelectPlayers';
+import TeamFoundMsg  from './pages/TeamFoundMsg';
 
 function App() {
   const dispatch = useDispatch();
@@ -44,6 +45,9 @@ useEffect(()=>{
        <Route path="/matches" element={<UpcomingMatches />}/>
        <Route path="/select-team/:gameId" element={<SelectPlayers />} />
        <Route path="/contest/:contestId" element={<ContestDetails/>}/>
+       <Route path="/team-found" element={<TeamFoundMsg/>}/>
+
+       
 
        </Route>
     </Routes>
