@@ -42,8 +42,9 @@ useEffect(()=>{
        <Route path="/contests" element={<Contests/>}/>
        <Route path="/my-contests" element={<MyContests/>}/>
        <Route path="/matches" element={<UpcomingMatches />}/>
-       <Route path="/create-team/:gameId" element={<SelectPlayers />} />
+       <Route path="/select-team/:gameId" element={<SelectPlayers />} />
        <Route path="/contest/:contestId" element={<ContestDetails/>}/>
+
        </Route>
     </Routes>
     <ToastContainer position="top-center" autoClose={500} />

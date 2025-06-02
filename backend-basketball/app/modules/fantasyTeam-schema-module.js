@@ -10,7 +10,7 @@ const fantasyTeamSchema = new Schema({
             type: Schema.Types.ObjectId, 
             ref: 'Schedule', 
             required: true 
-            },
+            },   
    teamName: {
                 type:String
    },

@@ -30,7 +30,7 @@ const {scheduleData,loading,serverError} = useSelector((state)=>{
             <p className="font-bold">{match.homeTeam.teamName} vs {match.awayTeam.teamName}</p>
             <p className="text-sm text-gray-600">{new Date(match.matchDate).toLocaleString()}</p>
             <Link
-              to={`/create-team/${match._id}`}
+              to={`/select-team/${match._id}`}
               className="inline-block mt-3 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
             >
               Create Team

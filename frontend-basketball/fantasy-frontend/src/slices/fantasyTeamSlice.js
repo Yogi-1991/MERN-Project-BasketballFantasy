@@ -16,6 +16,20 @@ export const myContestTeam = createAsyncThunk('fantasyTeam/myContestTeam', async
     }
 })
 
+export const createFantasyTeam = createAsyncThunk('fantasyTeams/createFantasyTeam',async (teamData, { rejectWithValue }) => {
+      try {
+        const response = await axios.post('/fantasy-teams', teamData, {headers:{Authorization:localStorage.getItem('token')}});
+        return response.data;
+      } catch (err) {        
+        return rejectWithValue({
+            message: err.message,
+            error: err.response?.data?.error || "Unknown error"
+        })
+
+      }
+    }
+  );
+
 const fantasyTeamSlice = createSlice({
     name:'fantasyTeam',
     initialState: {
@@ -24,6 +38,7 @@ const fantasyTeamSlice = createSlice({
         serverError: null
     },
     extraReducers:(builder)=>{
+        //My team
         builder.addCase(myContestTeam.pending,(state,action)=>{
             state.loading = true;
         });
@@ -35,7 +50,20 @@ const fantasyTeamSlice = createSlice({
         builder.addCase(myContestTeam.rejected,(state,action)=>{
             state.loading = false;
             state.serverError = action.payload
+        });
+        // create fanstasy team
+        builder.addCase(createFantasyTeam.pending,(state,action)=>{
+            loading = true;
+        });
+        builder.addCase(createFantasyTeam.fulfilled,(state,action)=>{
+            state.loading = false;
+            state.fantasyTeamData = action.payload;
         })
+        builder.addCase(createFantasyTeam.rejected,(state,action)=>{
+            state.loading = false;
+            state.serverError = action.payload
+        })
+
     }
 })
 

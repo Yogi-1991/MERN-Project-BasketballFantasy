@@ -26,14 +26,27 @@ export default function Dashboard() {
     dispatch(getUserContests());
   },[dispatch]);
 
-  const today = new Date().toLocaleDateString('en-CA');
+  // const today = new Date().toLocaleDateString('en-CA');
 
-   const todaysMatches = scheduleData.filter((match) => {
-    const matchDate = new Date(match.matchDate).toLocaleDateString('en-CA');
-    console.log(matchDate,"compare",today)
-    return matchDate === today;
+  //  const todaysMatches = scheduleData.filter((match) => {
+  //   const matchDate = new Date(match.matchDate).toLocaleDateString('en-CA');
+  //   console.log(matchDate,"compare",today)
+  //   return matchDate === today;
 
-  });
+  // });
+
+  const today = new Date();
+const twoDaysLater = new Date();
+twoDaysLater.setDate(today.getDate() + 2);
+
+// Convert both to YYYY-MM-DD format
+const todayStr = today.toISOString().split('T')[0];
+const twoDaysLaterStr = twoDaysLater.toISOString().split('T')[0];
+
+const upcomingMatches = scheduleData.filter((match) => {
+  const matchDateStr = new Date(match.matchDate).toISOString().split('T')[0];
+  return matchDateStr >= todayStr && matchDateStr <= twoDaysLaterStr;
+});
   
 
 
@@ -51,7 +64,7 @@ export default function Dashboard() {
 
         <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
           <h2 className="text-lg font-semibold text-gray-700">Upcoming Matches</h2>
-          <p className="text-2xl mt-2 text-blue-600">{loading ? 'Loading...': `${todaysMatches.length} matches today`}</p>
+          <p className="text-2xl mt-2 text-blue-600">{loading ? 'Loading...': `${upcomingMatches.length} matches today`}</p>
           <Link to="/matches" className="text-blue-600 hover:underline float-right"> View All</Link>
         </div>
 

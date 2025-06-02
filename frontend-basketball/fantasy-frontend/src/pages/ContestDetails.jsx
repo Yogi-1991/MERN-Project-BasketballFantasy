@@ -29,7 +29,7 @@ export default function ContestDetails(){
         })
 
         if(fantasyTeamData){
-            console.log(fantasyTeamData)
+            console.log("FantasTema data",fantasyTeamData)
         }
 
     const {fantasyPointsData, serverError} = useSelector((state)=>{

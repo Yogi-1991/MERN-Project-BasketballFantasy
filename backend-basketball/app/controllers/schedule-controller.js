@@ -41,11 +41,13 @@ scheduleControl.listschedules = async(req,res)=>{
 }
 
 scheduleControl.upcomingSchedule = async (req, res) => {
+      
     const now = new Date();
-    console.log(now);
-  
+    const twoDaysLater = new Date();
+    twoDaysLater.setDate(now.getDate() + 2);
+
     try {
-      const schedules = await Schedule.find({ matchDate: { $gte: now } })
+      const schedules = await Schedule.find({ matchDate: {  $gte: now,$lte: twoDaysLater } })
         .populate('homeTeam', 'teamName logoImage')  
         .populate('awayTeam', 'teamName logoImage'); 
   

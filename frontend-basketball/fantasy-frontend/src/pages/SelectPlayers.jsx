@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { fetchMatchPlayers } from '../slices/playersSlice';
+import {createFantasyTeam} from '../slices/fantasyTeamSlice';
 
 const MAX_PLAYERS = 8;
 const MAX_CREDIT = 100;
@@ -9,12 +10,16 @@ const MAX_CREDIT = 100;
 export default function SelectPlayers() {
   const { gameId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { playersData, loading, ServerError } = useSelector(state => state.players);
+  const {fantasyTeamData} = useSelector(state =>  state.fantasyTeam);
 
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [captainId, setCaptainId] = useState('');
   const [viceCaptainId, setViceCaptainId] = useState('');
   const [totalCredit, setTotalCredit] = useState(0);
+  const [teamName, setTeamName] = useState('');
+
 
   useEffect(() => {
     if (gameId) dispatch(fetchMatchPlayers(gameId));
@@ -38,19 +43,41 @@ export default function SelectPlayers() {
   };
 
   const handleSubmit = () => {
-    if (selectedPlayers.length !== MAX_PLAYERS) return alert(`Select exactly ${MAX_PLAYERS} players.`);
-    if (!captainId || !viceCaptainId) return alert(`Assign captain and vice-captain.`);
-    if (captainId === viceCaptainId) return alert(`Captain and Vice-captain cannot be the same.`);
+    if (selectedPlayers.length !== MAX_PLAYERS) 
+      {
+        return alert(`Select exactly ${MAX_PLAYERS} players.`);
+      }
+    if (!captainId || !viceCaptainId) 
+      {
+        return alert(`Assign captain and vice-captain.`);
+      }
+    if (captainId === viceCaptainId)
+      {
+         return alert(`Captain and Vice-captain cannot be the same.`);
+      }
+    if (!teamName.trim()) 
+      {
+      return alert("Please enter a team name.");
+    }
 
-    const fantasyTeam = {
-      gameId,
-      players: selectedPlayers.map(p => p._id),
-      captain: captainId,
-      viceCaptain: viceCaptainId
-    };
+    // const fantasyTeam = {
+    //   gameId,
+    //   players: selectedPlayers.map(p => p._id),
+    //   captain: captainId,
+    //   viceCaptain: viceCaptainId
+    // };
+
+    const players = selectedPlayers.map(playerId => ({
+      playerId,
+      isCaptain: playerId === captainId,
+      isViceCaptain: playerId === viceCaptainId
+    }));
 
     // TODO: Dispatch action or call API to save fantasyTeam
-    console.log("Submitting fantasy team:", fantasyTeam);
+    dispatch(createFantasyTeam({gameId,teamName, players }))
+    console.log("new fanstay team",fantasyTeamData)
+    navigate('/contest')
+    // console.log("Submitting fantasy team:", fantasyTeam);
   };
 
   if (loading) return <p>Loading players...</p>;
@@ -63,6 +90,16 @@ export default function SelectPlayers() {
         <p><strong>Selected:</strong> {selectedPlayers.length}/{MAX_PLAYERS}</p>
         <p><strong>Credits Used:</strong> {totalCredit}/{MAX_CREDIT}</p>
       </div>
+
+      <div className="mb-6 text-center">
+  <input
+    type="text"
+    value={teamName}
+    onChange={(e) => setTeamName(e.target.value)}
+    placeholder="Enter your fantasy team name"
+    className="border rounded px-4 py-2 w-full max-w-md mx-auto shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+  />
+</div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {playersData.map(player => {
