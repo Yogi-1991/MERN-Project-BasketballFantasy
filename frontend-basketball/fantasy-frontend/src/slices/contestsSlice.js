@@ -16,10 +16,11 @@ export const getUserContests = createAsyncThunk('contests/getUSerContests',async
 
 
 
-export const joinContest = createAsyncThunk('contest/joinContest', async ({joinContestinfo}, { rejectWithValue }) => {
+export const joinContest = createAsyncThunk('contest/joinContest', async ({contestId,joinContestinfo }, { rejectWithValue }) => {
       try {
-        const res = await axios.post('/join-contest', {joinContestinfo},{headers:{Authorization:localStorage.getItem('token')}});
-        return res.data;
+        const response = await axios.put(`/join-contest/${contestId}`, {...joinContestinfo},{headers:{Authorization:localStorage.getItem('token')}});
+        console.log("redux data join contets", response.data)
+        return response.data;
       } catch (err) {
         return rejectWithValue({
             message: err.message,
@@ -29,11 +30,25 @@ export const joinContest = createAsyncThunk('contest/joinContest', async ({joinC
     }
   );
 
+  export const getContestsByGame = createAsyncThunk('contest/getContestsByGame',async(gameId,{rejectWithValue})=>{
+        try{
+            const resposne = await axios.get(`/contest/${gameId}`, {headers:{Authorization:localStorage.getItem('token')}});
+            console.log("contest list for the game", resposne.data)
+            return resposne.data
+        }catch(err){
+            console.log(err);
+            return rejectWithValue({
+                message : err.msg,
+                error: err.response?.data?.error || "Unknown error"
+            })
+
+        }
+  })
+
 const contestsSlice = createSlice({
     name:'contest',
     initialState:{
         contestsData:[],
-        newJoinedContest: null,
         loading:false,
         serverError: null
     },
@@ -60,12 +75,33 @@ const contestsSlice = createSlice({
         });
         builder.addCase(joinContest.fulfilled,(state,action)=>{
             state.loading = false;
-            state.newJoinedContest = action.payload;
+            const updated = action.payload;
+            const index = state.contestsData.findIndex(c => c._id === updated._id);
+            if (index !== -1) {
+                state.constestByGame[index] = updated;
+            } else {
+            state.constestByGame.push(updated); 
             state.serverError = null;
+            }
         });
         builder.addCase(joinContest.rejected,(state,action)=>{
             state.loading = false;
             state.serverError = action.payload?.error || "Something went wrong"
+        });
+
+        //get contest by game ID
+        builder.addCase(getContestsByGame.pending, (state) => {
+            state.loading = true;
+            state.serverError = null;
+        });
+        builder.addCase(getContestsByGame.fulfilled, (state, action) => {
+            state.loading = false;
+            state.contestsData = action.payload;
+            state.serverError = null;
+        });
+        builder.addCase(getContestsByGame.rejected, (state, action) => {
+            state.loading = false;
+            state.serverError = action.payload
         });
 
     }

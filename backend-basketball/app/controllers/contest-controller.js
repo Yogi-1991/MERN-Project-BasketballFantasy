@@ -69,7 +69,8 @@ contestControl.createPrivateContest = async(req,res)=>{
 
 contestControl.joinContest = async(req,res)=>{
 
-    const { contestId, fantasyTeamId, invitationCode } = req.body;
+    const {contestId} = req.params;
+    const { fantasyTeamId, invitationCode } = req.body;
     const userId = req.userId;
     try{
 
@@ -197,6 +198,21 @@ contestControl.allContest = async(req,res)=>{
         console.log(err);
         return res.status(500).json({error:"Somehting went wrong"})
 
+    }
+
+}
+contestControl.contestByGameId = async(req,res)=>{
+    const {gameId} = req.params;
+    try{
+        const contest = await Contest.find({gameId})
+        console.log("contets data",contest)
+        if(contest.length === 0){
+            return res.status(404).json({error:"No contest for the game"})
+        }
+        return res.status(200).json(contest);
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({error:"Something went wrong"})
     }
 
 }

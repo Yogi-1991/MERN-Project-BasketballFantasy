@@ -20,6 +20,7 @@ import ContestDetails from './pages/ContestDetails';
 import UpcomingMatches from './pages/UpcomingMatches';
 import SelectPlayers from './pages/SelectPlayers';
 import TeamFoundMsg  from './pages/TeamFoundMsg';
+import MatchContests from './pages/MatchContests';
 
 function App() {
   const dispatch = useDispatch();
@@ -43,10 +44,10 @@ useEffect(()=>{
        <Route path="/contests" element={<Contests/>}/>
        <Route path="/my-contests" element={<MyContests/>}/>
        <Route path="/matches" element={<UpcomingMatches />}/>
+       <Route path="/matches/contests/:gameId" element={<MatchContests />} />
        <Route path="/select-team/:gameId" element={<SelectPlayers />} />
        <Route path="/contest/:contestId" element={<ContestDetails/>}/>
-       <Route path="/team-found" element={<TeamFoundMsg/>}/>
-
+       <Route path="/team-found" element={<TeamFoundMsg/>}/> 
        
 
        </Route>

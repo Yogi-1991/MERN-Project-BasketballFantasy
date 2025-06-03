@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LogOut, Home, Users, Trophy } from 'lucide-react';
+import { LogOut, Home, Users, Trophy, Gamepad } from 'lucide-react';
 
 export default function Sidebar({ onLogout }) {
   const location = useLocation();
@@ -25,6 +25,10 @@ export default function Sidebar({ onLogout }) {
         <Link to="/my-team" className={linkStyle('/my-team')}>
           <Users className="w-5 h-5 mr-2" />
           My Team
+        </Link>
+        <Link to="/matches" className={linkStyle('/matches')}>
+          <Gamepad className="w-5 h-5 mr-2" />
+          Matches
         </Link>
         <Link to="/contests" className={linkStyle('/contests')}>
           <Trophy className="w-5 h-5 mr-2" />

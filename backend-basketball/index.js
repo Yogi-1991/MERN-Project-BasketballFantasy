@@ -106,8 +106,8 @@ app.put('/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('ma
 //Fantasy Team
 
 app.post('/fantasy-team',authenticate,checkSchema(fantasyTeamValidation),fantasyTeamControl.createFantasyTeam);
-app.put('/fantasy-team',authenticate,checkSchema(fantasyTeamValidation),fantasyTeamControl.updateFantasyTeam);
-app.get('/fantasy-teams',authenticate,fantasyTeamControl.myteams);
+app.put('/fantasy-team/:teamId',authenticate,checkSchema(fantasyTeamValidation),fantasyTeamControl.updateFantasyTeam);
+app.get('/fantasy-team/:gameId',authenticate,fantasyTeamControl.myteam);
 app.get('/fantasy-contest',authenticate,fantasyTeamControl.myContest);
 //try to load the players to create the fantasy team 
 app.get('/fantasy/players/:gameId',authenticate,fantasyTeamControl.getPlayersForMatch)
@@ -116,10 +116,11 @@ app.get('/fantasy/players/:gameId',authenticate,fantasyTeamControl.getPlayersFor
 //contest
 app.post('/contest-public',authenticate,authorization(['admin']),contestControl.createPublicContest);
 app.post('/contest-private',authenticate,contestControl.createPrivateContest);
-app.put('/join-contest',authenticate,contestControl.joinContest);
+app.put('/join-contest/:contestId',authenticate,contestControl.joinContest);
 app.get('/contest/joined',authenticate,contestControl.getJoinedContests);
 app.put('/contest-status/:contestId',authenticate,authorization(['admin']),contestControl.updateContestStatus);
 app.get('/contest',authenticate,contestControl.allContest)
+app.get('/contest/:gameId',authenticate,contestControl.contestByGameId)
 
 
 //Leaderboard

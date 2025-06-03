@@ -2,9 +2,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../config/axios";
 
-export const myContestTeam = createAsyncThunk('fantasyTeam/myContestTeam', async(gameIdContetst,{rejectWithValue})=>{
+export const myContestTeam = createAsyncThunk('fantasyTeam/myContestTeam', async(gameId,{rejectWithValue})=>{
     try{
-        const response = await axios.get(`/fantasy-teams?gameId=${gameIdContetst}`,{headers:{Authorization: localStorage.getItem('token')}});
+        console.log("gameID redux", gameId)
+        const response = await axios.get(`/fantasy-team/${gameId}`,{headers:{Authorization: localStorage.getItem('token')}});
         return response.data
     }catch(err){
         console.log(err)
@@ -33,7 +34,7 @@ export const createFantasyTeam = createAsyncThunk('fantasyTeams/createFantasyTea
 const fantasyTeamSlice = createSlice({
     name:'fantasyTeam',
     initialState: {
-        fantasyTeamData:[],
+        fantasyTeamData:null,
         fantasyTeamCreated: null,
         loading: false,
         serverError: null

@@ -183,9 +183,9 @@ fantasyTeamControl.updateFantasyTeam = async (req, res) => {
         }
       }
 
-      fantasyTeamControl.myteams = async (req, res) => {
+      fantasyTeamControl.myteam = async (req, res) => {
         try {
-          const gameId = req.query.gameId;
+          const {gameId} = req.params;
       
           if (!gameId) {
             return res.status(400).json({ error: 'gameId is required' });
