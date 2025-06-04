@@ -1,5 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
+dotenv.config();
+console.log('Stripe Key:', process.env.STRIPE_SECRET_KEY);
+
 import configDb from './config/db.js';
 import userControl from './app/controllers/user-controller.js';
 import { checkSchema } from 'express-validator';
@@ -27,13 +30,13 @@ import fantasyTeamControl from './app/controllers/fantasyTeam-controller.js';
 import fantasyTeamValidation from './app/validations/fantasyTeam-validation.js';
 import contestControl from './app/controllers/contest-controller.js';
 import leaderboardContrl from './app/controllers/leaderboard-controller.js';
-// import walletControl from './app/controllers/wallet-controller.js'
+import walletControl from './app/controllers/wallet-controller.js'
 
 import cors from 'cors';
 
 
 const app = express();
-dotenv.config();
+
 const port = process.env.PORT_NUMBER;
 configDb();
 app.use(cors());
@@ -116,19 +119,20 @@ app.get('/fantasy/players/:gameId',authenticate,fantasyTeamControl.getPlayersFor
 //contest
 app.post('/contest-public',authenticate,authorization(['admin']),contestControl.createPublicContest);
 app.post('/contest-private',authenticate,contestControl.createPrivateContest);
-app.put('/join-contest/:contestId',authenticate,contestControl.joinContest);
+app.put('/join-contest/:contestId',authenticate,contestControl.joinContest); 
 app.get('/contest/joined',authenticate,contestControl.getJoinedContests);
 app.put('/contest-status/:contestId',authenticate,authorization(['admin']),contestControl.updateContestStatus);
 app.get('/contest',authenticate,contestControl.allContest)
 app.get('/contest/:gameId',authenticate,contestControl.contestByGameId)
+app.get('/contest-user/:contestId',authenticate,contestControl.contestByUser)
 
 
 //Leaderboard
 app.get('/leaderboard/:contestId',authenticate,checkSchema(idValidation),leaderboardContrl.leaderboard);
 
-//Stripe payment
-// app.post('/createPaymentIntent',authenticate,walletControl.createPaymentIntent)
-// app.post('/confirmPayment',authenticate,walletControl.confirmPayment)
+// Stripe payment
+app.post('/createPaymentIntent',authenticate,walletControl.createPaymentIntent)
+app.post('/confirmPayment',authenticate,walletControl.confirmPayment)
 
 
 app.listen(port,()=>{

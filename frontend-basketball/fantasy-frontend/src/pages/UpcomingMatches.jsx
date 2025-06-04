@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { scheduleUpcoming } from '../slices/scheduleSlice';
 import { useNavigate } from 'react-router-dom';
+import { getContestsByGame } from '../slices/contestsSlice';
+import { myContestTeam } from '../slices/fantasyTeamSlice';
 
 export default function Matches() {
   const dispatch = useDispatch();
@@ -11,6 +13,7 @@ export default function Matches() {
 
   useEffect(() => {
     dispatch(scheduleUpcoming());
+    
   }, [dispatch]);
 
   if (loading) return <p>Loading matches...</p>;
@@ -23,7 +26,11 @@ export default function Matches() {
         {scheduleData.map((match) => (
           <div
             key={match._id}
-            onClick={() => navigate(`/matches/contests/${match._id}`)}
+            onClick={() => {
+              // dispatch(getContestsByGame(match._id));
+              // dispatch(myContestTeam(match._id));
+              navigate(`/matches/contests/${match._id}`)
+            }}
             className="bg-white shadow-md p-4 rounded cursor-pointer hover:bg-orange-50"
           >
             <p className="font-bold">

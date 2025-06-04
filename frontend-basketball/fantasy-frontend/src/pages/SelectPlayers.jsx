@@ -66,18 +66,26 @@ export default function SelectPlayers() {
       isViceCaptain: player._id === viceCaptainId
     }));
 
+  //  dispatch(createFantasyTeam({ gameId, teamName, players }))
+  //   setTimeout(() => {
+  //         navigate(`/matches/contests/${gameId}`);
+  //       }, 500);
+
     try {
-  const response = await dispatch(createFantasyTeam({ gameId, teamName, players })).unwrap();
+        const response = await dispatch(createFantasyTeam({ gameId, teamName, players })).unwrap();// here used unwrap to get the promise fail or sucess
 
-  // if successful, response will be the new fantasy team
-  console.log("new fantasy team created:", response);
-  navigate('/contests');
+        // if successful, response will be the new fantasy team
+        alert("Fantasy team created")
+        setTimeout(() => {
+        navigate(`/matches/contests/${gameId}`);
+      }, 500);
 
-} catch (err) {
-  // If there's an error, navigate to an error/fallback page
-  console.error("Failed to create fantasy team:", err);
-  navigate('/team-found'); // or any fallback page
-}
+    }catch (err) {
+  // If there's an error
+      alert("Unknown error while creating the fantasy team")
+      console.error("Failed to create fantasy team:", err);
+    return
+  }
     
   };
 
@@ -122,27 +130,7 @@ export default function SelectPlayers() {
                 <p className="text-sm text-gray-700">Credit: {player.credit}</p>
                 <p className="text-sm text-gray-600">Team: {player.teamId?.teamName}</p>
               </div>
-              {/* {isSelected && (
-                <div className="mt-2 space-x-2 flex justify-center">
-                  <label>
-                    <input
-                      type="radio"
-                      name="captain"
-                      checked={captainId === player._id}
-                      onChange={() => setCaptainId(player._id)}
-                    /> C
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="viceCaptain"
-                      checked={viceCaptainId === player._id}
-                      onChange={() => setViceCaptainId(player._id)}
-                    /> VC
-                  </label>
-                </div>
-              )} */}
-
+              
           {isSelected && (
                  <p className="text-xs text-center text-green-600 mt-2">Selected</p>
               )}

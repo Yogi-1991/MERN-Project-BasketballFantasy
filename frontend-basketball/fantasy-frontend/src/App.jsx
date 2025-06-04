@@ -22,8 +22,15 @@ import SelectPlayers from './pages/SelectPlayers';
 import TeamFoundMsg  from './pages/TeamFoundMsg';
 import MatchContests from './pages/MatchContests';
 
+import AddWalletAmount from './pages/AddWalletAmount';
+import { Elements } from "@stripe/react-stripe-js";
+import { stripePromise } from './stripe';
+
+
 function App() {
   const dispatch = useDispatch();
+  console.log("Stripe Key:", import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+
 
 useEffect(()=>{ 
   if(localStorage.getItem('token')){
@@ -48,6 +55,13 @@ useEffect(()=>{
        <Route path="/select-team/:gameId" element={<SelectPlayers />} />
        <Route path="/contest/:contestId" element={<ContestDetails/>}/>
        <Route path="/team-found" element={<TeamFoundMsg/>}/> 
+       {/* <Route path="/add-wallet" element={<AddWalletAmount />} /> */}
+       <Route  path="/add-wallet"  element={
+            <Elements stripe={stripePromise}>
+            <AddWalletAmount />
+          </Elements>
+        }/>
+
        
 
        </Route>

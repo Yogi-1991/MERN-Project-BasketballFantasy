@@ -35,7 +35,7 @@ const fantasyTeamSlice = createSlice({
     name:'fantasyTeam',
     initialState: {
         fantasyTeamData:null,
-        fantasyTeamCreated: null,
+        // fantasyTeamCreated: null,
         loading: false,
         serverError: null
     },
@@ -43,22 +43,27 @@ const fantasyTeamSlice = createSlice({
         //My team
         builder.addCase(myContestTeam.pending,(state,action)=>{
             state.loading = true;
+            state.serverError = null;
         });
         builder.addCase(myContestTeam.fulfilled,(state,action)=>{
             state.loading = false;
             state.fantasyTeamData = action.payload;  
+            state.serverError = null;
         });
         builder.addCase(myContestTeam.rejected,(state,action)=>{
             state.loading = false;
             state.serverError = action.payload
+
         });
         // create fanstasy team
         builder.addCase(createFantasyTeam.pending,(state,action)=>{
             state.loading = true;
+            state.serverError = null;
         });
         builder.addCase(createFantasyTeam.fulfilled,(state,action)=>{
             state.loading = false;
-            state.fantasyTeamCreated = action.payload;
+            state.fantasyTeamData = action.payload;
+            state.serverError = null;
         })
         builder.addCase(createFantasyTeam.rejected,(state,action)=>{
             state.loading = false;

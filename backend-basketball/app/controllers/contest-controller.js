@@ -69,9 +69,19 @@ contestControl.createPrivateContest = async(req,res)=>{
 
 contestControl.joinContest = async(req,res)=>{
 
+    
+   
+    console.log("Params:", req.params);          // contestId
+    console.log("Body:", req.body);       
+
     const {contestId} = req.params;
     const { fantasyTeamId, invitationCode } = req.body;
     const userId = req.userId;
+
+    if (typeof contestId !== 'string' || typeof fantasyTeamId !== 'string' || !contestId.trim() || !fantasyTeamId.trim()) {
+        return res.status(400).json({ error: 'Invalid contestId or fantasyTeamId' });
+      }
+
     try{
 
         if (!contestId || !fantasyTeamId) {
@@ -88,7 +98,7 @@ contestControl.joinContest = async(req,res)=>{
     const matchStartTime = new Date(contest.gameId.matchDate); 
 
     if (now >= matchStartTime) {
-            return res.status(400).json({ notice: 'Cannot create team after match has started.' });
+            return res.status(400).json({ error: 'Cannot create team after match has started.' });
         }
 
     const fantasyTeam = await FantasyTeams.findOne({_id:fantasyTeamId,userId:userId});
@@ -100,12 +110,12 @@ contestControl.joinContest = async(req,res)=>{
         return p.userId.toString() === userId.toString()
     })
     if(alreadyParticipant){
-        return res.status(400).json({notice:'You have already joined the contest'})
+        return res.status(400).json({error:'You have already joined the contest'})
     }
 
     //checking to see whether contest is full
     if(contest.participants.length >= contest.maxPlayers){
-        return res.status(400).json({notice: 'contest is full'})
+        return res.status(400).json({error: 'contest is full'})
     }
 
     //checking invitation code if contest is private
@@ -215,6 +225,21 @@ contestControl.contestByGameId = async(req,res)=>{
         return res.status(500).json({error:"Something went wrong"})
     }
 
+}
+
+contestControl.contestByUser = async(req,res)=>{
+        const {contestId} = req.params;
+        const userId = req.userId
+    try{
+        const contestUser = await Contest.find({_id : contestId, 'participants.userId': userId})
+        if(contestUser.length === 0){
+            return res.status(404).json({error:"Not joined the contest yet"})
+        }
+        return res.status(200).json(contestUser)
+    }catch(err){
+            console.log(err)
+            return res.status(500).json({error: "Something went wrong"})
+    }
 }
 
 export default contestControl;

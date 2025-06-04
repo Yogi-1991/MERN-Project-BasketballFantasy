@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate,Link} from "react-router-dom";
 import {scheduleUpcoming} from '../slices/scheduleSlice';
 import { getUserContests } from "../slices/contestsSlice";
+import {fetchUserdetails} from "../slices/userSlice";
 
 export default function Dashboard() {
 
@@ -22,6 +23,7 @@ export default function Dashboard() {
   })
 
   useEffect(()=>{
+    dispatch(fetchUserdetails());
     dispatch(scheduleUpcoming());
     dispatch(getUserContests());
   },[dispatch]);
@@ -58,14 +60,20 @@ const upcomingMatches = scheduleData.filter((match) => {
      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">   
         <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
-          <h2 className="text-lg font-semibold text-gray-700">Wallet Balance</h2>
+        
+            <h2 className="text-lg font-semibold text-gray-700">Wallet Balance</h2>          
           <p className="text-2xl font-bold text-green-600 mt-2">₹{userData.wallet.balance || 0}</p>
+          <Link to="/add-wallet" className="mt-2 inline-block text-sm text-orange-600 underline hover:text-orange-800">
+          Add Funds
+          </Link>
         </div>
 
         <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
           <h2 className="text-lg font-semibold text-gray-700">Upcoming Matches</h2>
+         
           <p className="text-2xl mt-2 text-blue-600">{loading ? 'Loading...': `${upcomingMatches.length} matches today`}</p>
           <Link to="/matches" className="text-blue-600 hover:underline float-right"> View All</Link>
+          
         </div>
 
         <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">

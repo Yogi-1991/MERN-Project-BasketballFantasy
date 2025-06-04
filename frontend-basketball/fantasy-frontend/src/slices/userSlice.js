@@ -39,9 +39,12 @@ const userSlice = createSlice({
         logout:(state)=>{
             state.userData = null;
             state.isLoggedIn = false;
+        },
+        resetUserData:(state,action)=>{
+            state.userData = null
         }
     }
 })
 
-export const {login,logout} = userSlice.actions;
+export const {login,logout,resetUserData} = userSlice.actions;
 export default userSlice.reducer;
