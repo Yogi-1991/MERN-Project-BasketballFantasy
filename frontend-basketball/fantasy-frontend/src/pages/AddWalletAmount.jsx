@@ -36,7 +36,7 @@ export default function AddWalletAmount() {
       } else if (result.paymentIntent.status === "succeeded") {
         // Confirm wallet credit
         await axios.post(
-          "/confirmPayment'",
+          "/confirmPayment",
           { amount },
           {
             headers: {
@@ -69,7 +69,25 @@ export default function AddWalletAmount() {
           required
         />
 
-        <CardElement className="p-4 border rounded mb-4" />
+        {/* <CardElement className="p-4 border rounded mb-4" /> */}
+        <CardElement
+  options={{
+    hidePostalCode: true,
+    style: {
+      base: {
+        fontSize: "16px",
+        color: "#32325d",
+        "::placeholder": {
+          color: "#a0aec0",
+        },
+      },
+      invalid: {
+        color: "#fa755a",
+      },
+    },
+  }}
+  className="p-4 border rounded mb-4"
+/>
 
         <button
           type="submit"

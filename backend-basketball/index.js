@@ -114,6 +114,7 @@ app.get('/fantasy-team/:gameId',authenticate,fantasyTeamControl.myteam);
 app.get('/fantasy-contest',authenticate,fantasyTeamControl.myContest);
 //try to load the players to create the fantasy team 
 app.get('/fantasy/players/:gameId',authenticate,fantasyTeamControl.getPlayersForMatch)
+app.get('/fantasy-team-user',authenticate,fantasyTeamControl.getFantasyTeamByUser)
 
 
 //contest

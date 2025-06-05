@@ -17,7 +17,7 @@ export const myContestTeam = createAsyncThunk('fantasyTeam/myContestTeam', async
     }
 })
 
-export const createFantasyTeam = createAsyncThunk('fantasyTeams/createFantasyTeam',async (teamData, { rejectWithValue }) => {
+export const createFantasyTeam = createAsyncThunk('fantasyTeam/createFantasyTeam',async (teamData, { rejectWithValue }) => {
       try {
         const response = await axios.post('/fantasy-team', teamData, {headers:{Authorization:localStorage.getItem('token')}});
         return response.data;
@@ -31,11 +31,26 @@ export const createFantasyTeam = createAsyncThunk('fantasyTeams/createFantasyTea
     }
   );
 
+  export const fetchMyFantasyTeams = createAsyncThunk('fantasyTeam/fetchMyFantasyTeams',async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get('/fantasy-team-user', {headers:{Authorization:localStorage.getItem('token')}});
+      return response.data;
+    } catch (err) {    
+        console.log(err)    
+      return rejectWithValue({          
+          message: err.message,
+          error: err.response?.data?.error || "Unknown error"
+      })
+
+    }
+  }
+);
+
 const fantasyTeamSlice = createSlice({
     name:'fantasyTeam',
     initialState: {
         fantasyTeamData:null,
-        // fantasyTeamCreated: null,
+        fantasyTeamByUser: [],
         loading: false,
         serverError: null
     },
@@ -69,7 +84,20 @@ const fantasyTeamSlice = createSlice({
             state.loading = false;
             state.serverError = action.payload
         })
-
+        //fetch my fantasy team
+        builder.addCase(fetchMyFantasyTeams.pending,(state,action)=>{
+            state.loading = true;
+            state.serverError = null;
+        });
+        builder.addCase(fetchMyFantasyTeams.fulfilled,(state,action)=>{
+            state.loading = false;
+            state.fantasyTeamByUser = action.payload;
+            state.serverError = null;
+        })
+        builder.addCase(fetchMyFantasyTeams.rejected,(state,action)=>{
+            state.loading = false;
+            state.serverError = action.payload
+        })
     }
 })
 

@@ -332,4 +332,39 @@ const players1 = await Player.find({
 };
 
 
+fantasyTeamControl.getFantasyTeamByUser = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    // Find all fantasy teams for this user, populate the game (Schedule) info and players' details
+    const fantasyTeams = await FantasyTeams.find({ userId })
+      .populate({
+        path: 'gameId',
+        select: 'matchDate homeTeam awayTeam seasonYear status', 
+        populate: [
+          { path: 'homeTeam', select: 'teamName logoImage' },
+          { path: 'awayTeam', select: 'teamName logoImage' }
+        ]
+      })
+      .populate({
+        path: 'players.playerId',
+        select: 'firstName lastName position credit teamId profileImage',
+        populate: {
+          path: 'teamId',
+          select: 'teamName logoImage'
+        }
+      })
+      .sort({ createdAt: -1 }); // newest first (optional)
+
+    if (!fantasyTeams || fantasyTeams.length === 0) {
+      return res.status(404).json({ notice: 'No fantasy teams found for this user.' });
+    }
+
+    res.status(200).json(fantasyTeams);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Something went wrong fetching fantasy teams.' });
+  }
+};
+
 export default fantasyTeamControl;
