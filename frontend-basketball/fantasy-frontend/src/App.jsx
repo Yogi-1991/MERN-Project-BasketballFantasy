@@ -60,11 +60,8 @@ useEffect(()=>{
             <Elements stripe={stripePromise}>
             <AddWalletAmount />
           </Elements>
-        }/>
-
-       
-
-       </Route>
+        }/>      
+     </Route>
     </Routes>
     <ToastContainer position="top-center" autoClose={500} />
     </>
