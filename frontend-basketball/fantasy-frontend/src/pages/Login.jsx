@@ -44,7 +44,17 @@ export default function Login() {
             const userResponse = await axios.get('/user',{headers:{Authorization: localStorage.getItem('token')}});
             console.log("userResponse",userResponse.data);
             dispatch(login(userResponse.data));
-            navigate('/dashboard');
+
+            if (userResponse.data.role === 'admin') {
+              navigate('/admin/leagues');
+             } else if (userResponse.data.role === 'dataentry') {
+                navigate('/data-entry/teams'); // or their first assigned task
+              } else if (userResponse.data.role === 'registered') {
+                 navigate('/dashboard');
+              } else {
+                  navigate('/unauthorized');
+                 }
+            
         }catch(err){
             console.log(err);
             const errors = err.response?.data?.errors;

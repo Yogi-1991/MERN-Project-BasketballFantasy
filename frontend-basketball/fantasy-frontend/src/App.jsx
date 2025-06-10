@@ -11,6 +11,7 @@ import MyTeam from './pages/MyTeam';
 import Contests from './pages/Contests';
 import Sidebar from './components/Sidebar';
 import Layout from './components/Layout';
+// import AdminLayout from './components/AdminLayout';
 import {fetchUserdetails} from './slices/userSlice';
 import ProtectedRoute from './components/ProtectedRoute';
 import Unauthorized from './pages/Unauthorized';
@@ -62,8 +63,76 @@ useEffect(()=>{
           </Elements>
         }/>      
      </Route>
-    </Routes>
-    <ToastContainer position="top-center" autoClose={500} />
+  
+    
+      {/* Admin Routes */}
+<Route
+  element={
+    <PrivateRoute>
+      <ProtectedRoute roles={['admin']}>
+        <Layout />
+      </ProtectedRoute>
+    </PrivateRoute>
+  }
+>
+  <Route path="/admin/leagues" element={<div>Manage Leagues</div>} />
+  <Route path="/admin/seasons" element={<div>Manage Seasons</div>} />
+  <Route path="/admin/contests" element={<div>Manage Contests</div>} />
+</Route>
+
+{/* Data Entry Routes */}
+<Route
+  element={
+    <PrivateRoute>
+      <ProtectedRoute roles={['dataentry']}>
+        <Layout />
+      </ProtectedRoute>
+    </PrivateRoute>
+  }
+>
+  <Route
+    path="/data-entry/teams"
+    element={
+      <ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}>
+        <div>Enter Teams Page</div>
+      </ProtectedRoute>
+    }
+  />
+  <Route
+    path="/data-entry/players"
+    element={
+      <ProtectedRoute roles={['dataentry']} requiredTasks={['players']}>
+        <div>Enter Players Page</div>
+      </ProtectedRoute>
+    }
+  />
+  <Route
+    path="/data-entry/schedule"
+    element={
+      <ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}>
+        <div>Enter Schedule Page</div>
+      </ProtectedRoute>
+    }
+  />
+  <Route
+    path="/data-entry/match-stats"
+    element={
+      <ProtectedRoute roles={['dataentry']} requiredTasks={['matchStats']}>
+        <div>Enter Match Stats Page</div>
+      </ProtectedRoute>
+    }
+  />
+  <Route
+    path="/data-entry/lineups"
+    element={
+      <ProtectedRoute roles={['dataentry']} requiredTasks={['lineup']}>
+        <div>Enter Lineups Page</div>
+      </ProtectedRoute>
+    }
+  />
+</Route>
+  </Routes>
+<ToastContainer position="top-center" autoClose={500} />
     </>
     
   )

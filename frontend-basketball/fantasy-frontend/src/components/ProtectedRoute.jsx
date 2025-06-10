@@ -18,24 +18,24 @@ import { useSelector } from "react-redux";
 
 //protected route updated
 
-export default function ProtectedRoute(props) {
+export default function ProtectedRoute({ roles = [], requiredTasks = [], children }) {
   const { userData } = useSelector((state) => state.user);
 
-  // If no user or role mismatch
-  if (!userData || !props.roles.includes(userData.role)) {
+  // Block if no user or role mismatch
+  if (!userData || !roles.includes(userData.role)) {
+    console.log("userData & roles",userData , userData.role )
+    console.log("executed first if block")
     return <Navigate to="/unauthorized" />;
   }
 
-  // If dataEntry user and a task is required, check for that task
-  if (
-    userData.role === 'dataEntry' &&
-    props.requiredTask && 
-    !userData.dataEntryTasks?.includes(props.requiredTask)
-  ) {
+  // If role is dataEntry and tasks are specified, ensure they have at least one
+  if (userData.role === 'dataentry' && requiredTasks.length > 0 && !requiredTasks.some(task => userData.dataEntryTasks?.includes(task))){
+    console.log("executed second if block")
     return <Navigate to="/unauthorized" />;
   }
 
-  return props.children;
+  return children;
 }
+
 
 
