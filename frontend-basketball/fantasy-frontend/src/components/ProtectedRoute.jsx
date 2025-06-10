@@ -22,18 +22,20 @@ export default function ProtectedRoute({ roles = [], requiredTasks = [], childre
   const { userData } = useSelector((state) => state.user);
 
   // Block if no user or role mismatch
-  if (!userData || !roles.includes(userData.role)) {
-    console.log("userData & roles",userData , userData.role )
-    console.log("executed first if block")
-    return <Navigate to="/unauthorized" />;
+  if (!userData || (!roles.includes(userData.role) && userData.role !== 'admin')) {
+      return <Navigate to="/unauthorized" />;
+  }
+
+  if (userData.role === 'admin') {
+    return children; // Admin bypasses all
   }
 
   // If role is dataEntry and tasks are specified, ensure they have at least one
   if (userData.role === 'dataentry' && requiredTasks.length > 0 && !requiredTasks.some(task => userData.dataEntryTasks?.includes(task))){
-    console.log("executed second if block")
     return <Navigate to="/unauthorized" />;
   }
 
+  
   return children;
 }
 

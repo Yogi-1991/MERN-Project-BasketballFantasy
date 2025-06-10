@@ -60,44 +60,45 @@ export default function Sidebar({ onLogout }) {
               <FileText className="w-5 h-5 mr-2" />
               Manage Contests
             </Link>
+            
           </>
         )}
 
 
         {/* Data Entry Section */}
-        {userData?.role === 'dataentry' && (
+        {(userData?.role === 'dataentry' || userData?.role === 'admin') && (
           <>
             <h3 className="text-xs uppercase text-gray-500 mt-4 mb-1">Data Entry</h3>
 
-            {userData.dataEntryTasks?.includes('teams') && (
+            {(userData.dataEntryTasks?.includes('teams') || userData?.role === 'admin')&& (
               <Link to="/data-entry/teams" className={linkStyle('/data-entry/teams')}>
                 <Users className="w-5 h-5 mr-2" />
                 Enter Teams
               </Link>
             )}
 
-            {userData.dataEntryTasks?.includes('players') && (
+            {(userData.dataEntryTasks?.includes('players') || userData?.role === 'admin') && (
               <Link to="/data-entry/players" className={linkStyle('/data-entry/players')}>
                 <UserCog className="w-5 h-5 mr-2" />
                 Enter Players
               </Link>
             )}
 
-            {userData.dataEntryTasks?.includes('schedule') && (
+            {(userData.dataEntryTasks?.includes('schedule')|| userData?.role === 'admin') && (
               <Link to="/data-entry/schedule" className={linkStyle('/data-entry/schedule')}>
                 <Calendar className="w-5 h-5 mr-2" />
                 Enter Schedule
               </Link>
             )}
 
-            {userData.dataEntryTasks?.includes('matchStats') && (
+            {(userData.dataEntryTasks?.includes('matchStats')|| userData?.role === 'admin') && (
               <Link to="/data-entry/match-stats" className={linkStyle('/data-entry/match-stats')}>
                 <Trophy className="w-5 h-5 mr-2" />
                 Enter Match Stats
               </Link>
             )}
 
-            {userData.dataEntryTasks?.includes('lineup') && (
+            {(userData.dataEntryTasks?.includes('lineup') || userData?.role === 'admin')&& (
               <Link to="/data-entry/lineups" className={linkStyle('/data-entry/lineups')}>
                 <Settings className="w-5 h-5 mr-2" />
                 Enter Lineups
