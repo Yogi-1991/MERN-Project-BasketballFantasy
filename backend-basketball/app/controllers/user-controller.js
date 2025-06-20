@@ -127,6 +127,23 @@ userControl.userList = async(req,res)=>{
     }
 }
 
+userControl.DataEntryUserList = async(req,res)=>{
+
+    try{
+      const users = await User.find({role:'dataentry'})
+      if(users){
+        return res.status(200).json(users)
+      }else{
+        return res.status(404).json({errors:"No user record found"})
+      }
+
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: 'Something went wrong'})
+
+    }
+}
+
 userControl.createDataEntryAccount = async(req,res)=>{
     const error = validationResult(req);
     if(!error.isEmpty()){

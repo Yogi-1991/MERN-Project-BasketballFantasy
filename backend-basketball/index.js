@@ -52,10 +52,13 @@ app.put('/user/profile',authenticate, checkSchema(userLoginValidation), userCont
 app.put('/user/profile/:id',authenticate, checkSchema(idValidation),authorization(['admin']), userControl.updatebyId);//Deactivate user isactive false
 app.get('/users',authenticate,authorization(['admin']), userControl.userList)
 
+
 //registred user wallet update
 app.put('/user-wallet/:id',authenticate,userControl.walletUpdate)
 
-//admin create data entry account
+//admin create/list data entry account
+app.get('/admin/data-entry-users',authenticate,authorization(['admin']), userControl.DataEntryUserList)
+
 app.post('/dataentry',authenticate,authorization(['admin']),checkSchema(userRegisterValidation),userControl.createDataEntryAccount);
 app.put('/dataentry/:id',authenticate,authorization(['admin']),checkSchema(idValidation),userControl.createDataEntryAccountUpdate);
 
