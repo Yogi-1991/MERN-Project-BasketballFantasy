@@ -11,11 +11,11 @@ legaueControl.create = async(req,res)=>{
         return res.status(400).json({errors: error.array()})
     }
 
-    const {name,country,active} = req.body;
+    const {name,country,isActive} = req.body;
     const logo = req.file ? `/uploads/${req.file.filename}` : null; // used turnery operator
 
     try{
-        const league = await League.create({name,country,logo,active});
+        const league = await League.create({name,country,logo,isActive});
         return res.status(201).json(league)
     }catch(err){
         console.log(err);
@@ -26,8 +26,19 @@ legaueControl.create = async(req,res)=>{
 legaueControl.listLeagues = async(req,res)=>{
 
     try{
-        const leagues = await League.find().select('name country');
+        const leagues = await League.find();
         return res.status(200).json(leagues);
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: 'Something went wrong'})
+    }
+}
+
+legaueControl.listLeagueById = async(req,res)=>{
+    const id = req.params.id
+ try{
+        const league = await League.findById(id);
+        return res.status(200).json(league);
     }catch(err){
         console.log(err);
         return res.status(500).json({error: 'Something went wrong'})
@@ -47,6 +58,25 @@ legaueControl.leagueUpdate = async(req,res)=>{
     try{
         const league = await League.findByIdAndUpdate(id,{name,country,logo,isActive},{new:true});
             return res.status(200).json(league);
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error:'Something went wrong'});
+    }
+
+}
+
+legaueControl.leagueStatusUpdate =async (req,res)=>{
+const error = validationResult(req);
+    if(!error.isEmpty()){
+        return res.status(400).json({errors: error.array()})
+    }
+
+    const id = req.params.id;
+    const {isActive} = req.body;
+    
+    try{
+        const league = await League.findByIdAndUpdate(id,{isActive},{new:true});
+        return res.status(200).json(league);
     }catch(err){
         console.log(err);
         return res.status(500).json({error:'Something went wrong'});

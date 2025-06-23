@@ -48,7 +48,7 @@ export default function Sidebar({ onLogout }) {
         {userData?.role === 'admin' && (
           <>
             <h3 className="text-xs uppercase text-gray-500 mt-4 mb-1">Admin Panel</h3>
-            <Link to="/admin/leagues" className={linkStyle('/admin/leagues')}>
+            <Link to="/admin/leagues" className={linkStyle('/admin/leagues')}> 
               <Shield className="w-5 h-5 mr-2" />
               Manage Leagues
             </Link>

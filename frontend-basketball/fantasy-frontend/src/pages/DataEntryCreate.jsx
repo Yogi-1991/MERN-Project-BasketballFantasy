@@ -71,7 +71,7 @@ export default function DataEntryCreate() {
             }
              try {
                   await axios.post('/admin/dataentry/create/', formDataValues, {headers:{Authorization: localStorage.getItem('token')}});
-                  navigate('/admin/data-entry');
+                  navigate('/admin/data-entry-list');
             } catch (err) {
                 console.log(err);
                 setError(err.response?.data?.errors || 'Failed to create user');

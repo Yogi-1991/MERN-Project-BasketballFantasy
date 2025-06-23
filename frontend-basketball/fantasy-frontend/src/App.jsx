@@ -24,7 +24,13 @@ import TeamFoundMsg  from './pages/TeamFoundMsg';
 import MatchContests from './pages/MatchContests';
 import DataEntryList from './pages/DataEntryList';
 import DataEntryCreate from './pages/DataEntryCreate';
-import DataEntryEdit from  './pages/DataEntryEdit'
+import DataEntryEdit from  './pages/DataEntryEdit';
+import ManageLeagues from './pages/ManageLeagues';
+import CreateLeague from './pages/CreateLeague';
+import EditLeague from './pages/EditLeague';
+import ManageSeasons from './pages/ManageSeasons';
+import CreateSeason from './pages/CreateSeason';
+import EditSeason from './pages/EditSeason';
 
 import AddWalletAmount from './pages/AddWalletAmount';
 import { Elements } from "@stripe/react-stripe-js";
@@ -78,8 +84,12 @@ useEffect(()=>{
     </PrivateRoute>
   }
 >
-  <Route path="/admin/leagues" element={<div>Manage Leagues</div>} />
-  <Route path="/admin/seasons" element={<div>Manage Seasons</div>} />
+  <Route path="/admin/leagues" element={<ManageLeagues />} />
+  <Route path="/admin/leagues/create" element={<CreateLeague />} />
+  <Route path="/admin/leagues/edit/:id" element={<EditLeague />} />
+  <Route path="/admin/seasons" element={<ManageSeasons/>} />
+  <Route path="/admin/seasons/create" element={<CreateSeason/>} /> 
+  <Route path="/admin/seasons/edit/:id" element={<EditSeason/>} />    
   <Route path="/admin/contests" element={<div>Manage Contests</div>} />
   <Route path="/admin/data-entry-list" element={<DataEntryList />} />
   <Route path="/admin/data-entry/create" element={<DataEntryCreate/>} />

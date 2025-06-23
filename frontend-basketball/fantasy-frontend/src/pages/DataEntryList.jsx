@@ -36,6 +36,7 @@ export default function AdminDataEntryList() {
               <th className="border px-4 py-2">Name</th>
               <th className="border px-4 py-2">Email</th>
               <th className="border px-4 py-2">Tasks</th>
+              <th className="border px-4 py-2">Is-Active</th>
               <th className="border px-4 py-2">Actions</th>
             </tr>
           </thead>
@@ -45,6 +46,7 @@ export default function AdminDataEntryList() {
                 <td className="border px-4 py-2">{user.name}</td>
                 <td className="border px-4 py-2">{user.email}</td>
                 <td className="border px-4 py-2">{user.dataEntryTasks?.join(', ')}</td>
+                <td className="border px-4 py-2">{user.isActive ? '✅ Enabled' : '❌ Disabled'}</td>
                 <td className="border px-4 py-2">
                   <Link
                     to={`/admin/data-entry/edit/${user._id}`}

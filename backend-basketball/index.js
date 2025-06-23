@@ -63,15 +63,19 @@ app.post('/admin/dataentry/create/',authenticate,authorization(['admin']),checkS
 app.put('/admin/dataentry/:id',authenticate,authorization(['admin']),checkSchema(idValidation),userControl.dataEntryAccountUpdate);
 
 //League 
-app.post('/league',authenticate,authorization(['admin']),checkSchema(leagueValidations),legaueControl.create);
-app.get('/leagues',authenticate,legaueControl.listLeagues);
-app.put('/league/:id',authenticate,authorization(['admin']),checkSchema(idValidation),checkSchema(leagueValidations),legaueControl.leagueUpdate);
-app.delete('/league/:id',authenticate,authorization(['admin']),checkSchema(idValidation),legaueControl.leagueRemove)
+app.post('/admin/leagues',authenticate,authorization(['admin']),upload.single('logo') ,checkSchema(leagueValidations),legaueControl.create);
+app.get('/admin/leagues',authenticate,legaueControl.listLeagues);
+app.get('/admin/league/:id',authenticate,legaueControl.listLeagueById);
+app.put('/admin/league/:id',authenticate,authorization(['admin']),upload.single('logo'),checkSchema(idValidation),checkSchema(leagueValidations),legaueControl.leagueUpdate);
+app.put('/admin/league/status/:id',authenticate,authorization(['admin']),checkSchema(idValidation),legaueControl.leagueStatusUpdate);
+
+app.delete('/admin/league/:id',authenticate,authorization(['admin']),checkSchema(idValidation),legaueControl.leagueRemove)
 
 //season 
-app.post('/season',authenticate,authorization(['admin']),checkSchema(seasonValidations),seasonControl.create);
-app.get('/seasons',authenticate,seasonControl.listseasons);
-app.put('/season/:id',authenticate,authorization(['admin']),checkSchema(idValidation),checkSchema(seasonValidations),seasonControl.seasonUpdate);
+app.post('/admin/season',authenticate,authorization(['admin']),checkSchema(seasonValidations),seasonControl.create);
+app.get('/admin/seasons',authenticate,seasonControl.listseasons);
+app.get('/admin/seasons/:id',authenticate,seasonControl.listseasonsById);
+app.put('/admin/season/:id',authenticate,authorization(['admin']),checkSchema(idValidation),seasonControl.seasonUpdate);
 app.delete('/season/remove/:id',authenticate,authorization(['admin']),checkSchema(idValidation),seasonControl.seasonRemove)
 
 //Team 

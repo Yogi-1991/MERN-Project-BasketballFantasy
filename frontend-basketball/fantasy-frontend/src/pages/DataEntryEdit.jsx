@@ -57,8 +57,8 @@ export default function DataEntryEdit() {
     e.preventDefault();
     console.log("formdata", formData)
     try {
-      await axios.put(`/admin/dataentry/:${id}`, formData, {headers: {Authorization: localStorage.getItem('token')}});
-      navigate('/admin/data-entry');
+      await axios.put(`/admin/dataentry/${id}`, formData, {headers: {Authorization: localStorage.getItem('token')}});
+      navigate('/admin/data-entry-list');
     } catch (err) {
       console.log(err)
       setError(err.response?.data?.message || 'Failed to update user');

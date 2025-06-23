@@ -15,6 +15,7 @@ seasonControl.create = async(req,res)=>{
     try{
         const season = new Season({name,startDate,endDate});
         const league = await League.findById(leagueId);
+        console.log(league)
         if(!league){
             return res.status(404).json({error:'League not found'});
         }
@@ -30,8 +31,20 @@ seasonControl.create = async(req,res)=>{
 seasonControl.listseasons = async(req,res)=>{
 
     try{
-        const seasons = await Season.find();
+        const seasons = await Season.find().populate({ path: 'leagueId', select: 'name' });
         return res.status(200).json(seasons);
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: 'Something went wrong'})
+    }
+}
+
+seasonControl.listseasonsById = async(req,res)=>{
+
+     const id = req.params.id;
+    try{
+        const season = await Season.findById(id)
+        return res.status(200).json(season);
     }catch(err){
         console.log(err);
         return res.status(500).json({error: 'Something went wrong'})
@@ -45,14 +58,14 @@ seasonControl.seasonUpdate = async(req,res)=>{
     }
 
     const id = req.params.id;
-    const {name,startDate,endDate,leagueId} = req.body;
+    const {startDate,endDate,isActive} = req.body;
     try{
-    const league = await League.findById(leagueId);
-        if(!league){
-            return res.status(404).json({error:'League not found'});
-        }
+    // const league = await League.findById(id);
+    //     if(!league){
+    //         return res.status(404).json({error:'League not found'});
+    //     }
    
-        const season = await Season.findByIdAndUpdate(id,{name,startDate,endDate,leagueId},{new:true});
+        const season = await Season.findByIdAndUpdate(id,{startDate,endDate,isActive},{new:true});
             return res.status(200).json(season);
     }catch(err){
         console.log(err);
