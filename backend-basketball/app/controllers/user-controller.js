@@ -1,7 +1,8 @@
 import User from "../modules/user-schema-module.js";
 import { validationResult } from "express-validator";
 import bcryptjs from 'bcryptjs';
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
+import mongoose from "mongoose";
 const userControl = {};
 
 
@@ -144,6 +145,23 @@ userControl.DataEntryUserList = async(req,res)=>{
     }
 }
 
+userControl.DataEntryUserListById = async (req,res)=>{
+    const userId = req.params.id
+    try{
+      const user = await User.findById({_id:userId})
+      if(user){
+        return res.status(200).json(user)
+      }else{
+        return res.status(404).json({errors:"No user record found"})
+      }
+
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({error: 'Something went wrong'})
+
+    }
+}
+
 userControl.createDataEntryAccount = async(req,res)=>{
     const error = validationResult(req);
     if(!error.isEmpty()){
@@ -167,7 +185,7 @@ userControl.createDataEntryAccount = async(req,res)=>{
 
 }
 
-userControl.createDataEntryAccountUpdate = async(req,res)=>{
+userControl.dataEntryAccountUpdate = async(req,res)=>{
     const error = validationResult(req);
     if(!error.isEmpty){
         return res.status(400).json({errors: error.array()});
@@ -175,6 +193,11 @@ userControl.createDataEntryAccountUpdate = async(req,res)=>{
 
     const id = req.params.id;
     const {isActive , dataEntryTasks} = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
     try{
         const user = await User.findByIdAndUpdate(id,{isActive,dataEntryTasks},{new:true});
         return res.status(200).json(user);

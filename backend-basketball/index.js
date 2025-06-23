@@ -58,9 +58,9 @@ app.put('/user-wallet/:id',authenticate,userControl.walletUpdate)
 
 //admin create/list data entry account
 app.get('/admin/data-entry-users',authenticate,authorization(['admin']), userControl.DataEntryUserList)
-
+app.get('/admin/data-entry-user/:id',authenticate,authorization(['admin']),userControl.DataEntryUserListById)
 app.post('/admin/dataentry/create/',authenticate,authorization(['admin']),checkSchema(userRegisterValidation),userControl.createDataEntryAccount);
-app.put('/dataentry/:id',authenticate,authorization(['admin']),checkSchema(idValidation),userControl.createDataEntryAccountUpdate);
+app.put('/admin/dataentry/:id',authenticate,authorization(['admin']),checkSchema(idValidation),userControl.dataEntryAccountUpdate);
 
 //League 
 app.post('/league',authenticate,authorization(['admin']),checkSchema(leagueValidations),legaueControl.create);

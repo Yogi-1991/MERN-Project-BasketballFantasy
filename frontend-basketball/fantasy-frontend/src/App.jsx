@@ -22,6 +22,9 @@ import UpcomingMatches from './pages/UpcomingMatches';
 import SelectPlayers from './pages/SelectPlayers';
 import TeamFoundMsg  from './pages/TeamFoundMsg';
 import MatchContests from './pages/MatchContests';
+import DataEntryList from './pages/DataEntryList';
+import DataEntryCreate from './pages/DataEntryCreate';
+import DataEntryEdit from  './pages/DataEntryEdit'
 
 import AddWalletAmount from './pages/AddWalletAmount';
 import { Elements } from "@stripe/react-stripe-js";
@@ -78,6 +81,10 @@ useEffect(()=>{
   <Route path="/admin/leagues" element={<div>Manage Leagues</div>} />
   <Route path="/admin/seasons" element={<div>Manage Seasons</div>} />
   <Route path="/admin/contests" element={<div>Manage Contests</div>} />
+  <Route path="/admin/data-entry-list" element={<DataEntryList />} />
+  <Route path="/admin/data-entry/create" element={<DataEntryCreate/>} />
+  <Route path="/admin/data-entry/edit/:id" element={<DataEntryEdit/>} />
+
 </Route>
 
 {/* Data Entry Routes */}
