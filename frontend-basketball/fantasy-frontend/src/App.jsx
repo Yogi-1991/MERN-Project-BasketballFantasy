@@ -31,6 +31,9 @@ import EditLeague from './pages/EditLeague';
 import ManageSeasons from './pages/ManageSeasons';
 import CreateSeason from './pages/CreateSeason';
 import EditSeason from './pages/EditSeason';
+import ManageTeams from './pages/ManageTeams';
+import CreateTeam from './pages/CreateTeam';
+
 
 import AddWalletAmount from './pages/AddWalletAmount';
 import { Elements } from "@stripe/react-stripe-js";
@@ -107,14 +110,13 @@ useEffect(()=>{
     </PrivateRoute>
   }
 >
-  <Route
-    path="/data-entry/teams"
-    element={
-      <ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}>
-        <div>Enter Teams Page</div>
-      </ProtectedRoute>
-    }
+  <Route  path="/data-entry/teams"
+          element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><ManageTeams/></ProtectedRoute>}
   />
+  <Route  path="/data-entry/teams/create"
+          element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><CreateTeam/> </ProtectedRoute>}
+  />
+
   <Route
     path="/data-entry/players"
     element={

@@ -20,7 +20,7 @@ teamControl.create = async(req,res)=>{
     try{
         const teamNameExsits = await Teams.findOne({teamName:teamName});
         if(teamNameExsits){
-            return res.status(400).json({notice:`Team name ${teamName} already exists in the Database`})
+            return res.status(400).json({error:`Team name ${teamName} already exists in the Database`})
         }
         for(const season of parsedSeasons){
             const {seasonYear, players} = season;
@@ -81,6 +81,8 @@ teamControl.addPlayerToTeamSeason = async(req,res)=>{
 teamControl.listTeams = async(req,res)=>{
     try{
         const teams = await Teams.find()
+        .populate({ path: 'leagueId', select: 'name' })
+        .populate({ path: 'seasons.seasonYear', select: 'name' });
         if(teams){
             return res.status(200).json(teams);
         }else{

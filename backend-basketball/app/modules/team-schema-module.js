@@ -33,7 +33,7 @@ const teamSchema = new Schema({
   }],
   leagueId: {
     type: Schema.Types.ObjectId,
-    ref: 'League',  // Reference to the League model
+    ref: 'League',  
     required: true,
   },
   createdBy: {
