@@ -83,8 +83,9 @@ app.delete('/season/remove/:id',authenticate,authorization(['admin']),checkSchem
 app.post('/data-entry/teams',authenticate,authorization(['admin']),upload.single('logoImage'),checkSchema(teamValidation),teamControl.create);
 app.put('/team/add-player',authenticate,dataEntryAuthorization('teams'),teamControl.addPlayerToTeamSeason);
 app.get('/data-entry/teams',authenticate,teamControl.listTeams);
+app.get('/data-entry/teams/:id',authenticate,teamControl.listTeamsById);
 app.get('/team/:id',authenticate,checkSchema(idValidation),teamControl.listTeamsByLeague);
-app.put('/team/:id',authenticate,dataEntryAuthorization('teams'),checkSchema(idValidation),checkSchema(teamValidation),teamControl.teamUpdate);//added one more middleware dataEntryAuthorization to check data entry task
+app.put('/data-entry/teams/:id',authenticate,dataEntryAuthorization('teams'),checkSchema(idValidation),checkSchema(teamValidation),teamControl.teamUpdate);//added one more middleware dataEntryAuthorization to check data entry task
 app.delete('/team/:id',authenticate,dataEntryAuthorization(['teams']),checkSchema(idValidation),teamControl.teamRemove);
 app.put('/team/:teamId/player-remove',authenticate,dataEntryAuthorization(['teams']),teamControl.teamPlayerRemove);
 

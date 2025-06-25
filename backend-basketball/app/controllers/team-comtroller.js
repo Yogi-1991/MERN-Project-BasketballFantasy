@@ -24,6 +24,9 @@ teamControl.create = async(req,res)=>{
         }
         for(const season of parsedSeasons){
             const {seasonYear, players} = season;
+
+            if (!players || !Array.isArray(players)) continue;
+
              for(const playerId of players){
                 const existingTeam = await Teams.findOne({seasons:{$elemMatch:{seasonYear:seasonYear,players:playerId}}});
                 if (existingTeam) {
@@ -81,6 +84,25 @@ teamControl.addPlayerToTeamSeason = async(req,res)=>{
 teamControl.listTeams = async(req,res)=>{
     try{
         const teams = await Teams.find()
+        .populate({ path: 'leagueId', select: 'name' })
+        .populate({ path: 'seasons.seasonYear', select: 'name' });
+        if(teams){
+            return res.status(200).json(teams);
+        }else{
+            return res.status(404).json({error:'No teams found'});
+        }
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({error: 'Something went wrong'});
+    }
+}
+
+
+teamControl.listTeamsById  = async(req,res)=>{
+    const id = req.params.id
+    try{
+        const teams = await Teams.findById(id)
         .populate({ path: 'leagueId', select: 'name' })
         .populate({ path: 'seasons.seasonYear', select: 'name' });
         if(teams){

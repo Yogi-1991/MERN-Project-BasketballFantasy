@@ -33,6 +33,7 @@ import CreateSeason from './pages/CreateSeason';
 import EditSeason from './pages/EditSeason';
 import ManageTeams from './pages/ManageTeams';
 import CreateTeam from './pages/CreateTeam';
+import EditTeam from './pages/EditTeam';
 
 
 import AddWalletAmount from './pages/AddWalletAmount';
@@ -115,6 +116,9 @@ useEffect(()=>{
   />
   <Route  path="/data-entry/teams/create"
           element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><CreateTeam/> </ProtectedRoute>}
+  />
+  <Route  path="/data-entry/teams/edit/:id"
+          element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><EditTeam/> </ProtectedRoute>}
   />
 
   <Route
