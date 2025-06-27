@@ -85,12 +85,13 @@ app.put('/team/add-player',authenticate,dataEntryAuthorization('teams'),teamCont
 app.get('/data-entry/teams',authenticate,teamControl.listTeams);
 app.get('/data-entry/teams/:id',authenticate,teamControl.listTeamsById);
 app.get('/team/:id',authenticate,checkSchema(idValidation),teamControl.listTeamsByLeague);
-app.put('/data-entry/teams/:id',authenticate,dataEntryAuthorization('teams'),checkSchema(idValidation),checkSchema(teamValidation),teamControl.teamUpdate);//added one more middleware dataEntryAuthorization to check data entry task
+app.put('/data-entry/teams/:id',authenticate,dataEntryAuthorization('teams'),upload.single('logoImage'),teamControl.teamUpdate);//added one more middleware dataEntryAuthorization to check data entry task
+app.put('/data-entry/teams/season/:id',authenticate,dataEntryAuthorization('teams'),teamControl.teamSeasonUpdate)
 app.delete('/team/:id',authenticate,dataEntryAuthorization(['teams']),checkSchema(idValidation),teamControl.teamRemove);
 app.put('/team/:teamId/player-remove',authenticate,dataEntryAuthorization(['teams']),teamControl.teamPlayerRemove);
 
 //player
-app.post('/player',authenticate,dataEntryAuthorization('players'),upload.single('logoImage'),checkSchema(playerValidation),playerControl.create)
+app.post('/data-entry/players',authenticate,dataEntryAuthorization('players'),upload.single('profileImage'),checkSchema(playerValidation),playerControl.createPlayer)
 app.get('/players',authenticate,playerControl.listplayers);
 app.get('/player/:id',authenticate,checkSchema(idValidation),playerControl.listplayersById);
 app.put('/player/:id',authenticate,dataEntryAuthorization('player'),checkSchema(idValidation),checkSchema(playerValidation),playerControl.playerUpdate); 
