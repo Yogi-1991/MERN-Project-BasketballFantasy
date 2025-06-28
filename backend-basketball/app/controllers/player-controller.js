@@ -73,38 +73,71 @@ playerControl.createPlayer = async (req, res) => {
 };
 
 
-playerControl.listplayers = async(req,res)=>{
-    try{
-        const players = await Player.find();
-        if(players){
-            return res.status(200).json(players);
-        }else{
-            return res.status(404).json({error:'No players found'});
-        }
-    }
-    catch(err){
-        console.log(err);
-        return res.status(500).json({error: 'Something went wrong'});
-    }
+playerControl.getPlayersByTeamSeason = async(req,res)=>{
+
+
+    const { teamId, seasonId } = req.params;
+
+  try {
+    const players = await Player.find({ teamId, seasonYear: seasonId })
+      .populate('teamId', 'teamName')
+      .populate('seasonYear', 'name')
+    //   .select('-__v');
+
+    res.status(200).json(players);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch players' });
+  }
+
+    // try{
+    //     const players = await Player.find();
+    //     if(players){
+    //         return res.status(200).json(players);
+    //     }else{
+    //         return res.status(404).json({error:'No players found'});
+    //     }
+    // }
+    // catch(err){
+    //     console.log(err);
+    //     return res.status(500).json({error: 'Something went wrong'});
+    // }
 }
 
 playerControl.listplayersById = async(req,res)=>{
-    const error = validationResult(req);
-    if(!error.isEmpty()){
-        return res.status(400).json({errors :error.array()});
+//     const error = validationResult(req);
+//     if(!error.isEmpty()){
+//         return res.status(400).json({errors :error.array()});
+//     }
+//  const {playerId} = req.params;
+//  console.log(req.params)
+//  try{
+//     const player = await Player.find({_id: id})
+//     if(player.length ===0){
+//         return res.status(404).json({error:'No players found for this league'});
+//     }
+//     return res.status(200).json(player);
+//  }catch(err){
+//     console.log(err)
+//     return res.status(500).json({error:'Something went wrong'});
+//  }
+
+try {
+    const { id } = req.params;
+
+    const player = await Player.findById({_id:id})
+      .populate('teamId', 'teamName') // optional: to return team name if needed
+      .populate('seasonYear', 'name'); // optional: if your Player model has seasonYear
+
+    if (!player) {
+      return res.status(404).json({ error: 'Player not found' });
     }
- const {id} = req.params;
- console.log(req.params)
- try{
-    const player = await Player.find({_id: id})
-    if(player.length ===0){
-        return res.status(404).json({error:'No players found for this league'});
-    }
+
     return res.status(200).json(player);
- }catch(err){
-    console.log(err)
-    return res.status(500).json({error:'Something went wrong'});
- }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
 }
 
 playerControl.playerUpdate = async(req,res)=>{
@@ -135,8 +168,10 @@ playerControl.playerRemove = async(req,res)=>{
  const {id} = req.params;
  try{
     const player = await Player.findByIdAndDelete(id)
+    if (!player) return res.status(404).json({ error: 'Player not found' });
     return res.status(200).json(player);
  }catch(err){
+    console.error(err);
     return res.status(500).json({error: 'Something went wrong'});
  }
 

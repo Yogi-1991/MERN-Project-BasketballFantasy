@@ -81,17 +81,17 @@ export default function Sidebar({ onLogout }) {
               </Link>
             )}
 
-            {(userData.dataEntryTasks?.includes('players') || userData?.role === 'admin') && (
+            {/* {(userData.dataEntryTasks?.includes('players') || userData?.role === 'admin') && (
               <Link to="/data-entry/players" className={linkStyle('/data-entry/players')}>
                 <UserCog className="w-5 h-5 mr-2" />
                 Enter Players
               </Link>
-            )}
+            )} */}
 
             {(userData.dataEntryTasks?.includes('schedule')|| userData?.role === 'admin') && (
               <Link to="/data-entry/schedule" className={linkStyle('/data-entry/schedule')}>
                 <Calendar className="w-5 h-5 mr-2" />
-                Enter Schedule
+                Manage Schedule
               </Link>
             )}
 
