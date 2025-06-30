@@ -98,8 +98,9 @@ app.put('/data-entry/player/:id',authenticate,dataEntryAuthorization('player'),u
 app.delete('/data-entry/players/:id',authenticate,dataEntryAuthorization(['teams']),checkSchema(idValidation),playerControl.playerRemove)
 
 //Schedule
-app.post('/schedule',authenticate,dataEntryAuthorization('schedule'),checkSchema(scheduleValidation),scheduleControl.create)
-app.get('/schedule',authenticate,scheduleControl.listschedules);
+// app.post('/data-entry/schedules',authenticate,dataEntryAuthorization('schedule'),checkSchema(scheduleValidation),scheduleControl.create)
+app.post('/data-entry/schedules',authenticate,dataEntryAuthorization('schedule'),scheduleControl.create)
+app.get('/data-entry/schedules',authenticate,scheduleControl.listschedules);
 app.get('/schedule/upcoming',authenticate,scheduleControl.upcomingSchedule);
 app.get('/schedule/:id',authenticate,checkSchema(idValidation),scheduleControl.listschedulesById);
 app.put('/schedule/:id',authenticate,dataEntryAuthorization('schedule'),checkSchema(idValidation),checkSchema(scheduleValidation),scheduleControl.scheduleUpdate);

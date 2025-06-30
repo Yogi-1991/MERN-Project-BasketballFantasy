@@ -6,28 +6,43 @@ import Teams from "../modules/team-schema-module.js";
 const scheduleControl = {};
 
 scheduleControl.create = async(req,res)=>{
-    const error = validationResult(req);
-    if(!error.isEmpty()){
-        return res.status(400).json({errors : error.array()});
-    }
+    // const error = validationResult(req);
+    // if(!error.isEmpty()){
+    //     return res.status(400).json({errors : error.array()});
+    // }
  
-    const { seasonYear, matchDate, homeTeam, awayTeam, venue, status, homeTeamScore, awayTeamScore, attendance, periodScores } = req.body;
-    const userId = req.userId
+    // const { seasonYear, matchDate, homeTeam, awayTeam, venue, status, homeTeamScore, awayTeamScore, attendance, periodScores } = req.body;
+    // const userId = req.userId
 
-    try{
-        const schedule = await Schedule.create({seasonYear, matchDate, homeTeam, awayTeam, venue, status, homeTeamScore, awayTeamScore, attendance, periodScores,createdBy:userId});
-        console.log(schedule)
-        return res.status(201).json(schedule);
-    }catch(err){
-        console.log(err);
-        return res.status(500).json({error: 'Something went wrong'});
-    }
+    // try{
+    //     const schedule = await Schedule.create({seasonYear, matchDate, homeTeam, awayTeam, venue, status, homeTeamScore, awayTeamScore, attendance, periodScores,createdBy:userId});
+    //     console.log(schedule)
+    //     return res.status(201).json(schedule);
+    // }catch(err){
+    //     console.log(err);
+    //     return res.status(500).json({error: 'Something went wrong'});
+    // }
+
+  try {
+    const userId = req.userId;
+    const {seasonYear,homeTeam,awayTeam,matchDate,venue} = req.body;
+    const newMatch = await Schedule.create({seasonYear,homeTeam,awayTeam,matchDate,venue, createdBy: userId, status: 'pre-game' });
+
+    res.status(201).json(newMatch);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to create match' });
+  }
+};
+
     
-}
 
 scheduleControl.listschedules = async(req,res)=>{
     try{
-        const schedule = await Schedule.find();
+        const schedule = await Schedule.find()
+         .populate('homeTeam', 'teamName')
+         .populate('awayTeam', 'teamName')
+         .populate('seasonYear', 'name')
         if(schedule){
             return res.status(200).json(schedule);
         }else{

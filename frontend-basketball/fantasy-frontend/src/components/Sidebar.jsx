@@ -48,14 +48,6 @@ export default function Sidebar({ onLogout }) {
         {userData?.role === 'admin' && (
           <>
             <h3 className="text-xs uppercase text-gray-500 mt-4 mb-1">Admin Panel</h3>
-            <Link to="/admin/leagues" className={linkStyle('/admin/leagues')}> 
-              <Shield className="w-5 h-5 mr-2" />
-              Manage Leagues
-            </Link>
-            <Link to="/admin/seasons" className={linkStyle('/admin/seasons')}>
-              <Calendar className="w-5 h-5 mr-2" />
-              Manage Seasons
-            </Link>
             <Link to="/admin/contests" className={linkStyle('/admin/contests')}>
               <FileText className="w-5 h-5 mr-2" />
               Manage Contests
@@ -74,6 +66,25 @@ export default function Sidebar({ onLogout }) {
           <>
             <h3 className="text-xs uppercase text-gray-500 mt-4 mb-1">Data Entry</h3>
 
+
+            
+
+            {(userData.dataEntryTasks?.includes('leagues') || userData?.role === 'admin')&& (
+              <Link to="/admin/leagues" className={linkStyle('/admin/leagues')}> 
+              <Shield className="w-5 h-5 mr-2" />
+              Manage Leagues
+            </Link>
+            )}
+
+           
+
+             {(userData.dataEntryTasks?.includes('seasons') || userData?.role === 'admin')&& (
+               <Link to="/admin/seasons" className={linkStyle('/admin/seasons')}>
+              <Calendar className="w-5 h-5 mr-2" />
+              Manage Seasons
+            </Link>
+            )}
+
             {(userData.dataEntryTasks?.includes('teams') || userData?.role === 'admin')&& (
               <Link to="/data-entry/teams" className={linkStyle('/data-entry/teams')}>
                 <Users className="w-5 h-5 mr-2" />
@@ -89,7 +100,7 @@ export default function Sidebar({ onLogout }) {
             )} */}
 
             {(userData.dataEntryTasks?.includes('schedule')|| userData?.role === 'admin') && (
-              <Link to="/data-entry/schedule" className={linkStyle('/data-entry/schedule')}>
+              <Link to="/data-entry/schedules" className={linkStyle('/data-entry/schedule')}>
                 <Calendar className="w-5 h-5 mr-2" />
                 Manage Schedule
               </Link>

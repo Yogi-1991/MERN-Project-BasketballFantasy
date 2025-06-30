@@ -37,6 +37,9 @@ import EditTeam from './pages/EditTeam';
 import AddPlayer from './pages/AddPlayer';
 import ViewPlayers from './pages/ViewPlayers';
 import EditPlayer from './pages/EditPlayer';
+import ManageSchedule from './pages/ManageSchedule';
+import CreateSchedule from './pages/CreateSchedule';
+import EditSchedule from './pages/EditSchedule';
 
 import AddWalletAmount from './pages/AddWalletAmount';
 import { Elements } from "@stripe/react-stripe-js";
@@ -89,13 +92,7 @@ useEffect(()=>{
       </ProtectedRoute>
     </PrivateRoute>
   }
->
-  <Route path="/admin/leagues" element={<ManageLeagues />} />
-  <Route path="/admin/leagues/create" element={<CreateLeague />} />
-  <Route path="/admin/leagues/edit/:id" element={<EditLeague />} />
-  <Route path="/admin/seasons" element={<ManageSeasons/>} />
-  <Route path="/admin/seasons/create" element={<CreateSeason/>} /> 
-  <Route path="/admin/seasons/edit/:id" element={<EditSeason/>} />    
+>    
   <Route path="/admin/contests" element={<div>Manage Contests</div>} />
   <Route path="/admin/data-entry-list" element={<DataEntryList />} />
   <Route path="/admin/data-entry/create" element={<DataEntryCreate/>} />
@@ -113,6 +110,26 @@ useEffect(()=>{
     </PrivateRoute>
   }
 >
+
+  <Route path="/admin/leagues" 
+        element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><ManageLeagues /></ProtectedRoute>} 
+  />
+  <Route path="/admin/leagues/create" 
+      element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><CreateLeague /></ProtectedRoute>}
+   />
+  <Route path="/admin/leagues/edit/:id" 
+        element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><EditLeague /></ProtectedRoute>} 
+    />
+  <Route path="/admin/seasons" 
+      element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><ManageSeasons/></ProtectedRoute>} 
+    />
+  <Route path="/admin/seasons/create" 
+      element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><CreateSeason/></ProtectedRoute>} 
+    /> 
+  <Route path="/admin/seasons/edit/:id" 
+      element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><EditSeason/></ProtectedRoute>} 
+    />  
+
   <Route  path="/data-entry/teams"
           element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><ManageTeams/></ProtectedRoute>}
   />
@@ -141,12 +158,17 @@ useEffect(()=>{
     }
   /> */}
   <Route
-    path="/data-entry/schedule"
-    element={
-      <ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}>
-        <div>Enter Schedule Page</div>
-      </ProtectedRoute>
-    }
+    path="/data-entry/schedules"
+    element={<ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}><ManageSchedule/></ProtectedRoute>}
+  />
+  <Route
+    path="/data-entry/schedules/create"
+    element={<ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}><CreateSchedule/></ProtectedRoute>}
+  />
+
+  <Route
+    path="/data-entry/schedules/edit/:matchId"
+    element={<ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}><EditSchedule/></ProtectedRoute>}
   />
   <Route
     path="/data-entry/match-stats"
