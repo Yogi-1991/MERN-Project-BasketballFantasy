@@ -46,7 +46,7 @@ export default function Login() {
             dispatch(login(userResponse.data));
 
             if (userResponse.data.role === 'admin') {
-              navigate('/admin/leagues');
+              navigate('/data-entry/leagues');
              } else if (userResponse.data.role === 'dataentry') {
                 navigate('/data-entry/teams'); // or their first assigned task
               } else if (userResponse.data.role === 'registered') {

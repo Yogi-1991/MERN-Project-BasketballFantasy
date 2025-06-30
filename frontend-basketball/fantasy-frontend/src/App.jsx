@@ -40,6 +40,8 @@ import EditPlayer from './pages/EditPlayer';
 import ManageSchedule from './pages/ManageSchedule';
 import CreateSchedule from './pages/CreateSchedule';
 import EditSchedule from './pages/EditSchedule';
+import ManageLivePage from './pages/ManageLivePage';
+import LiveCoverage from './pages/LiveCoverage';
 
 import AddWalletAmount from './pages/AddWalletAmount';
 import { Elements } from "@stripe/react-stripe-js";
@@ -111,22 +113,22 @@ useEffect(()=>{
   }
 >
 
-  <Route path="/admin/leagues" 
+  <Route path="/data-entry/leagues" 
         element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><ManageLeagues /></ProtectedRoute>} 
   />
-  <Route path="/admin/leagues/create" 
+  <Route path="/data-entry/leagues/create" 
       element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><CreateLeague /></ProtectedRoute>}
    />
-  <Route path="/admin/leagues/edit/:id" 
+  <Route path="/data-entry/leagues/edit/:id" 
         element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><EditLeague /></ProtectedRoute>} 
     />
-  <Route path="/admin/seasons" 
+  <Route path="/data-entry/seasons" 
       element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><ManageSeasons/></ProtectedRoute>} 
     />
-  <Route path="/admin/seasons/create" 
+  <Route path="/data-entry/seasons/create" 
       element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><CreateSeason/></ProtectedRoute>} 
     /> 
-  <Route path="/admin/seasons/edit/:id" 
+  <Route path="/data-entry/seasons/edit/:id" 
       element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><EditSeason/></ProtectedRoute>} 
     />  
 
@@ -170,6 +172,23 @@ useEffect(()=>{
     path="/data-entry/schedules/edit/:matchId"
     element={<ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}><EditSchedule/></ProtectedRoute>}
   />
+
+{/* <Route
+    path="/data-entry/schedule/live/"
+    element={<ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}><ManageLivePage/></ProtectedRoute>}
+  /> */}
+
+<Route
+    path="/data-entry/schedule/live-coverage/" 
+    element={<ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}><ManageLivePage/></ProtectedRoute>}
+  />
+
+
+  <Route
+    path="/data-entry/live-coverage/:matchId"
+    element={<ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}><LiveCoverage/></ProtectedRoute>}
+  />
+
   <Route
     path="/data-entry/match-stats"
     element={

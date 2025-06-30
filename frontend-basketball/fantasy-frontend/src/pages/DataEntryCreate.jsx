@@ -3,7 +3,7 @@ import axios from '../config/axios';
 import { useNavigate } from 'react-router-dom';
 import { isEmail } from 'validator';
 
-const TASK_OPTIONS = ['teams', 'players', 'schedule', 'matchStats', 'lineups'];
+const TASK_OPTIONS = ['teams', 'players', 'schedule', 'matchStats', 'lineups','seasons','leagues'];
 
 
 export default function DataEntryCreate() {

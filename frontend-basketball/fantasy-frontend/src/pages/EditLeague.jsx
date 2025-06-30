@@ -17,7 +17,7 @@ export default function EditLeague() {
   useEffect(() => {
     const fetchLeagues = async () => {
       try {
-        const response = await axios.get(`/admin/league/${id}`,{headers: {Authorization: localStorage.getItem('token')}});
+        const response = await axios.get(`/data-entry/league/${id}`,{headers: {Authorization: localStorage.getItem('token')}});
         const league = response.data;
         setFormData({
           name: league.name || '',
@@ -56,7 +56,7 @@ export default function EditLeague() {
         data.append('logo', logoFile);
       }
 
-      await axios.put(`/admin/league/${id}`, data, {headers: {Authorization: localStorage.getItem('token')}});
+      await axios.put(`/data-entry/league/${id}`, data, {headers: {Authorization: localStorage.getItem('token')}});
       navigate('/admin/leagues');
     } catch (err) {
       console.error(err);

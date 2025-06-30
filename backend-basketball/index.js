@@ -63,19 +63,19 @@ app.post('/admin/dataentry/create/',authenticate,authorization(['admin']),checkS
 app.put('/admin/dataentry/:id',authenticate,authorization(['admin']),checkSchema(idValidation),userControl.dataEntryAccountUpdate);
 
 //League 
-app.post('/admin/leagues',authenticate,authorization(['admin']),upload.single('logo') ,checkSchema(leagueValidations),legaueControl.create);
-app.get('/admin/leagues',authenticate,legaueControl.listLeagues);
-app.get('/admin/league/:id',authenticate,legaueControl.listLeagueById);
-app.put('/admin/league/:id',authenticate,authorization(['admin']),upload.single('logo'),checkSchema(idValidation),checkSchema(leagueValidations),legaueControl.leagueUpdate);
-app.put('/admin/league/status/:id',authenticate,authorization(['admin']),checkSchema(idValidation),legaueControl.leagueStatusUpdate);
+app.post('/data-entry/leagues',authenticate,authorization(['admin']),upload.single('logo') ,checkSchema(leagueValidations),legaueControl.create);
+app.get('/data-entry/leagues',authenticate,legaueControl.listLeagues);
+app.get('/data-entry/league/:id',authenticate,legaueControl.listLeagueById);
+app.put('/data-entry/league/:id',authenticate,authorization(['admin']),upload.single('logo'),checkSchema(idValidation),checkSchema(leagueValidations),legaueControl.leagueUpdate);
+app.put('/data-entry/league/status/:id',authenticate,authorization(['admin']),checkSchema(idValidation),legaueControl.leagueStatusUpdate);
 
 app.delete('/admin/league/:id',authenticate,authorization(['admin']),checkSchema(idValidation),legaueControl.leagueRemove)
 
 //season 
-app.post('/admin/season',authenticate,authorization(['admin']),checkSchema(seasonValidations),seasonControl.create);
-app.get('/admin/seasons',authenticate,seasonControl.listseasons);
-app.get('/admin/seasons/:id',authenticate,seasonControl.listseasonsById);
-app.put('/admin/season/:id',authenticate,authorization(['admin']),checkSchema(idValidation),seasonControl.seasonUpdate);
+app.post('/data-entry/season',authenticate,authorization(['admin']),checkSchema(seasonValidations),seasonControl.create);
+app.get('/data-entry/seasons',authenticate,seasonControl.listseasons);
+app.get('/data-entry/seasons/:id',authenticate,seasonControl.listseasonsById);
+app.put('/data-entry/season/:id',authenticate,authorization(['admin']),checkSchema(idValidation),seasonControl.seasonUpdate);
 app.delete('/season/remove/:id',authenticate,authorization(['admin']),checkSchema(idValidation),seasonControl.seasonRemove)
 
 //Team 
@@ -102,8 +102,11 @@ app.delete('/data-entry/players/:id',authenticate,dataEntryAuthorization(['teams
 app.post('/data-entry/schedules',authenticate,dataEntryAuthorization('schedule'),scheduleControl.create)
 app.get('/data-entry/schedules',authenticate,scheduleControl.listschedules);
 app.get('/schedule/upcoming',authenticate,scheduleControl.upcomingSchedule);
-app.get('/schedule/:id',authenticate,checkSchema(idValidation),scheduleControl.listschedulesById);
-app.put('/schedule/:id',authenticate,dataEntryAuthorization('schedule'),checkSchema(idValidation),checkSchema(scheduleValidation),scheduleControl.scheduleUpdate);
+app.get('/data-entry/schedules/:id',authenticate,checkSchema(idValidation),scheduleControl.listschedulesById);
+app.put('/data-entry/updateLive/:id',authenticate,checkSchema(idValidation),scheduleControl.updateLive);
+
+app.put('/data-entry/schedules/:id',authenticate,dataEntryAuthorization('schedule'),checkSchema(idValidation),scheduleControl.scheduleUpdate);
+app.get('/data-entry/schedule/live-coverage',authenticate,scheduleControl.listPreGame);
 app.delete('/schedule/:id',authenticate,authorization(['schedule']),checkSchema(idValidation),scheduleControl.scheduleRemove)
 
 //lineups

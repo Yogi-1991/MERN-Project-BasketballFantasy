@@ -70,7 +70,7 @@ export default function Sidebar({ onLogout }) {
             
 
             {(userData.dataEntryTasks?.includes('leagues') || userData?.role === 'admin')&& (
-              <Link to="/admin/leagues" className={linkStyle('/admin/leagues')}> 
+              <Link to="/data-entry/leagues" className={linkStyle('/data-entry/leagues')}> 
               <Shield className="w-5 h-5 mr-2" />
               Manage Leagues
             </Link>
@@ -79,7 +79,7 @@ export default function Sidebar({ onLogout }) {
            
 
              {(userData.dataEntryTasks?.includes('seasons') || userData?.role === 'admin')&& (
-               <Link to="/admin/seasons" className={linkStyle('/admin/seasons')}>
+               <Link to="/data-entry/seasons" className={linkStyle('/data-entry/seasons')}>
               <Calendar className="w-5 h-5 mr-2" />
               Manage Seasons
             </Link>
@@ -103,6 +103,13 @@ export default function Sidebar({ onLogout }) {
               <Link to="/data-entry/schedules" className={linkStyle('/data-entry/schedule')}>
                 <Calendar className="w-5 h-5 mr-2" />
                 Manage Schedule
+              </Link>
+            )}
+
+            {(userData.dataEntryTasks?.includes('schedule')|| userData?.role === 'admin') && (
+              <Link to="/data-entry/schedule/live-coverage/" className={linkStyle('/data-entry/schedule/live-coverage/')}>
+                <Calendar className="w-5 h-5 mr-2" />
+                Manage Live
               </Link>
             )}
 

@@ -38,9 +38,9 @@ export default function CreateLeague() {
     console.log(`${pair[0]}:`, pair[1]);
 }
 
-      await axios.post('/admin/leagues', data, {headers: {Authorization: localStorage.getItem('token')}});//,'Content-Type': 'multipart/form-data'
+      await axios.post('/data-entry/leagues', data, {headers: {Authorization: localStorage.getItem('token')}});//,'Content-Type': 'multipart/form-data'
 
-      navigate('/admin/leagues');
+      navigate('/data-entry/leagues');
     } catch (err) {
       console.error(err);
       alert('Failed to create league');

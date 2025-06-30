@@ -6,13 +6,13 @@ export default function ManageSeasons() {
   const [seasons, setSeasons] = useState([]);
 
   const fetchSeasons = async () => {
-    const res = await axios.get('/admin/seasons', {headers: { Authorization: localStorage.getItem('token') }});
+    const res = await axios.get('/data-entry/seasons', {headers: { Authorization: localStorage.getItem('token') }});
     setSeasons(res.data);
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Delete this season?')) {
-      await axios.delete(`/admin/seasons/${id}`, {
+      await axios.delete(`/data-entry/seasons/${id}`, {
         headers: { Authorization: localStorage.getItem('token') },
       });
       fetchSeasons();
@@ -20,7 +20,7 @@ export default function ManageSeasons() {
   };
 
   const toggleStatus = async (id) => {
-    await axios.patch(`/admin/seasons/${id}/toggle`, null, {
+    await axios.patch(`/data-entry/seasons/${id}/toggle`, null, {
       headers: { Authorization: localStorage.getItem('token') },
     });
     fetchSeasons();
@@ -45,7 +45,7 @@ export default function ManageSeasons() {
       {seasons.map((season) => (
         <Link
           key={season._id}
-          to={`/admin/seasons/edit/${season._id}`}
+          to={`/data-entry/seasons/edit/${season._id}`}
           className="block border p-4 mb-3 rounded shadow-sm bg-white hover:bg-orange-50 transition"
         >
           <h2 className="text-xl font-semibold">{season.name}</h2>

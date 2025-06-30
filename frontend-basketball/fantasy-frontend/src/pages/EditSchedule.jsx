@@ -28,7 +28,7 @@ export default function EditSchedule() {
         axios.get('/data-entry/teams', {
           headers: { Authorization: localStorage.getItem('token') }
         }),
-        axios.get('/admin/seasons', {
+        axios.get('/dataentry/seasons', {
           headers: { Authorization: localStorage.getItem('token') }
         })
       ]);
@@ -36,15 +36,16 @@ export default function EditSchedule() {
       const match = matchRes.data;
       setSchedule(match);
       setForm({
-        matchDate: match.matchDate.split('T')[0],
-        homeTeam: match.homeTeam._id,
+        matchDate: new Date(match.matchDate).toISOString().split('T')[0], // local YYYY-MM-DD
+        homeTeam: match.homeTeam._id, 
         awayTeam: match.awayTeam._id,
         venue: match.venue || '',
-        kickOffTime: new Date(match.matchDate).toISOString().split('T')[1]?.slice(0, 5) || '',
-        seasonYear: match.seasonYear._id
+        kickOffTime: new Date(match.matchDate).toTimeString().slice(0, 5), // local HH:mm
+        seasonYear: match.seasonYear
       });
       setTeams(teamRes.data);
       setSeasons(seasonRes.data);
+      
     } catch (err) {
       console.error('Error fetching schedule/team/season data:', err);
       alert('Failed to fetch data. Please try again.');
@@ -64,7 +65,7 @@ export default function EditSchedule() {
     const matchDate = `${form.matchDate}T${form.kickOffTime || '00:00'}`;
 
     await axios.put(
-      `/data-entry/schedules/${id}`,
+      `/data-entry/schedules/${matchId}`,
       { ...form, matchDate },
       { headers: { Authorization: localStorage.getItem('token') } }
     );

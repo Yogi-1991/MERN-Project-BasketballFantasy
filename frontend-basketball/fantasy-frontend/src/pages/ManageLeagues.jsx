@@ -7,7 +7,7 @@ export default function ManageLeagues() {
 
   const fetchLeagues = async () => {
     try {
-      const res = await axios.get('/admin/leagues', {headers: { Authorization: localStorage.getItem('token') }});
+      const res = await axios.get('/data-entry/leagues', {headers: { Authorization: localStorage.getItem('token') }});
       setLeagues(res.data);
       console.log("check bolean",res.data)
     } catch (err) {
@@ -18,7 +18,7 @@ export default function ManageLeagues() {
 
   const toggleStatus = async (id, currentStatus) => {
     try{
-    const res = await axios.put(`/admin/league/status/${id}`, {isActive: !currentStatus},{headers: { Authorization: localStorage.getItem('token') }});
+    const res = await axios.put(`/data-entry/league/status/${id}`, {isActive: !currentStatus},{headers: { Authorization: localStorage.getItem('token') }});
     console.log("toggle",res.data)
     }catch(err){
         console.log(err)
@@ -45,7 +45,7 @@ export default function ManageLeagues() {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-orange-600">Manage Leagues</h2>
         <Link
-          to="/admin/leagues/create"
+          to="/dataentry/leagues/create"
           className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
         >
           + Add League
@@ -102,7 +102,7 @@ export default function ManageLeagues() {
         </td>
         <td className="border px-4 py-2 space-x-3">
           <Link
-            to={`/admin/leagues/edit/${league._id}`}
+            to={`/dataentry/leagues/edit/${league._id}`}
             className="text-blue-600 hover:underline"
           >
             Edit

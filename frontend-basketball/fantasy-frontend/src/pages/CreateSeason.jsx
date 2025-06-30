@@ -15,7 +15,7 @@ export default function CreateSeason() {
 
   useEffect(() => {
    const fetchleagues =async () => {
-      const res = await axios.get('/admin/leagues', {headers: { Authorization: localStorage.getItem('token') }});
+      const res = await axios.get('/data-entry/leagues', {headers: { Authorization: localStorage.getItem('token') }});
       setLeagues(res.data);
     }
     fetchleagues();
@@ -55,8 +55,8 @@ export default function CreateSeason() {
   }
 
     try {
-      await axios.post('/admin/season', formData, {headers: { Authorization: localStorage.getItem('token') }});
-      navigate('/admin/seasons');
+      await axios.post('/data-entry/season', formData, {headers: { Authorization: localStorage.getItem('token') }});
+      navigate('/data-entry/seasons');
     } catch (err) {
         console.log(err)
       alert('Failed to create season');

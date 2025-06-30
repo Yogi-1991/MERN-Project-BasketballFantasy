@@ -14,7 +14,7 @@ export default function ManageSchedule() {
   };
 
   const fetchSeasons = async () => {
-    const res = await axios.get('/admin/seasons', {
+    const res = await axios.get('/data-entry/seasons', {
       headers: { Authorization: localStorage.getItem('token') },
     });
     setSeasons(res.data);
@@ -73,8 +73,11 @@ export default function ManageSchedule() {
             {filteredSchedules.map((match) => (
               <tr key={match._id} className="hover:bg-gray-50">
                 <td className="py-2 px-4 border">
-                  {new Date(match.matchDate).toLocaleDateString()}
-                </td>
+                     {new Date(match.matchDate).toLocaleString(undefined, {
+                        dateStyle: 'medium',
+                        timeStyle: 'short',
+                       })}
+                  </td>
                 <td className="py-2 px-4 border">{match.seasonYear?.name}</td>
                 <td className="py-2 px-4 border">{match.homeTeam?.teamName}</td>
                 <td className="py-2 px-4 border">{match.awayTeam?.teamName}</td>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../config/axios';
 
-const TASK_OPTIONS = ['teams', 'players', 'schedule', 'matchStats', 'lineups'];
+const TASK_OPTIONS = ['teams', 'players', 'schedule', 'matchStats', 'lineups','seasons','leagues'];
 
 export default function DataEntryEdit() {
   const { id } = useParams();

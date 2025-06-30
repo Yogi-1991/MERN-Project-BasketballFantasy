@@ -14,7 +14,7 @@ export default function EditSeason() {
 
   useEffect(() => {
     const fetchSeason = async () => {
-      const res = await axios.get(`/admin/seasons/${id}`, {headers: { Authorization: localStorage.getItem('token') }});
+      const res = await axios.get(`/data-entry/seasons/${id}`, {headers: { Authorization: localStorage.getItem('token') }});
 
       const season = res.data;
 
@@ -47,7 +47,7 @@ export default function EditSeason() {
     return;
   }
   try{
-    await axios.put(`admin/season/${id}`,
+    await axios.put(`data-entry/season/${id}`,
       {
         startDate: formData.startDate,
         endDate: formData.endDate,
@@ -61,7 +61,7 @@ export default function EditSeason() {
     console.error(err);
       alert('Failed to update league');
 }
-    navigate('/admin/seasons');
+    navigate('/data-entry/seasons');
   };
 
   return (
