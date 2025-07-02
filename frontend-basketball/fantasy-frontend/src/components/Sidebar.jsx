@@ -72,7 +72,7 @@ export default function Sidebar({ onLogout }) {
             {(userData.dataEntryTasks?.includes('leagues') || userData?.role === 'admin')&& (
               <Link to="/data-entry/leagues" className={linkStyle('/data-entry/leagues')}> 
               <Shield className="w-5 h-5 mr-2" />
-              Manage Leagues
+              Leagues
             </Link>
             )}
 
@@ -81,14 +81,14 @@ export default function Sidebar({ onLogout }) {
              {(userData.dataEntryTasks?.includes('seasons') || userData?.role === 'admin')&& (
                <Link to="/data-entry/seasons" className={linkStyle('/data-entry/seasons')}>
               <Calendar className="w-5 h-5 mr-2" />
-              Manage Seasons
+              Seasons
             </Link>
             )}
 
             {(userData.dataEntryTasks?.includes('teams') || userData?.role === 'admin')&& (
               <Link to="/data-entry/teams" className={linkStyle('/data-entry/teams')}>
                 <Users className="w-5 h-5 mr-2" />
-                Manage Teams
+                Teams
               </Link>
             )}
 
@@ -102,30 +102,29 @@ export default function Sidebar({ onLogout }) {
             {(userData.dataEntryTasks?.includes('schedule')|| userData?.role === 'admin') && (
               <Link to="/data-entry/schedules" className={linkStyle('/data-entry/schedule')}>
                 <Calendar className="w-5 h-5 mr-2" />
-                Manage Schedule
+                Schedules
               </Link>
             )}
 
             {(userData.dataEntryTasks?.includes('schedule')|| userData?.role === 'admin') && (
               <Link to="/data-entry/schedule/live-coverage/" className={linkStyle('/data-entry/schedule/live-coverage/')}>
                 <Calendar className="w-5 h-5 mr-2" />
-                Manage Live
+                Live
               </Link>
             )}
-
             {(userData.dataEntryTasks?.includes('matchStats')|| userData?.role === 'admin') && (
               <Link to="/data-entry/match-stats" className={linkStyle('/data-entry/match-stats')}>
                 <Trophy className="w-5 h-5 mr-2" />
-                Enter Match Stats
+                Lineups & Match Stats
               </Link>
             )}
 
-            {(userData.dataEntryTasks?.includes('lineup') || userData?.role === 'admin')&& (
+            {/* {(userData.dataEntryTasks?.includes('lineup') || userData?.role === 'admin')&& (
               <Link to="/data-entry/lineups" className={linkStyle('/data-entry/lineups')}>
                 <Settings className="w-5 h-5 mr-2" />
                 Enter Lineups
               </Link>
-            )}
+            )} */}
           </>
         )}
 

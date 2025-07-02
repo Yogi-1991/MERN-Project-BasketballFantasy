@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import Player from "../modules/player-schema-module.js";
+import Schedule from "../modules/schedule-schema-module.js";
 
 const playerControl = {};
 
@@ -159,6 +160,31 @@ playerControl.playerUpdate = async(req,res)=>{
     }
 
 }
+
+
+playerControl.getPlayersByMatch = async (req, res) => {
+  
+  try {
+    const { id } = req.params;
+
+    const match = await Schedule.findById(id);
+    if (!match) return res.status(404).json({ error: 'Match not found' });
+
+    const [homePlayers, awayPlayers] = await Promise.all([
+      Player.find({ teamId: match.homeTeam, seasonYear: match.seasonYear }),
+      Player.find({ teamId: match.awayTeam, seasonYear: match.seasonYear }),
+    ]);
+
+    res.json({
+      home: homePlayers,
+      away: awayPlayers,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch players for match' });
+  }
+};
+
 
 playerControl.playerRemove = async(req,res)=>{
  const error = validationResult(req);

@@ -92,7 +92,9 @@ app.put('/team/:teamId/player-remove',authenticate,dataEntryAuthorization(['team
 
 //player
 app.post('/data-entry/players',authenticate,dataEntryAuthorization('players'),upload.single('profileImage'),checkSchema(playerValidation),playerControl.createPlayer)
+app.get('/data-entry/players/by-match/:id',authenticate,checkSchema(idValidation),playerControl.getPlayersByMatch);
 app.get('/data-entry/players/:teamId/:seasonId',authenticate,playerControl.getPlayersByTeamSeason);
+app.get('/data-entry/players/by-match/:id',authenticate,checkSchema(idValidation),playerControl.getPlayersByMatch);
 app.get('/data-entry/players/:id',authenticate,checkSchema(idValidation),playerControl.listplayersById);
 app.put('/data-entry/player/:id',authenticate,dataEntryAuthorization('player'),upload.single('profileImage'),checkSchema(idValidation),checkSchema(playerValidation),playerControl.playerUpdate); 
 app.delete('/data-entry/players/:id',authenticate,dataEntryAuthorization(['teams']),checkSchema(idValidation),playerControl.playerRemove)
@@ -110,10 +112,10 @@ app.get('/data-entry/schedule/live-coverage',authenticate,scheduleControl.listPr
 app.delete('/schedule/:id',authenticate,authorization(['schedule']),checkSchema(idValidation),scheduleControl.scheduleRemove)
 
 //lineups
-app.post('/lineup',authenticate,dataEntryAuthorization('lineup'),checkSchema(lineupValidation),lineupControl.create)
-app.get('/lineup',authenticate,lineupControl.listLineupByGameId);
-app.put('/lineup/:id',authenticate,dataEntryAuthorization('lineup'),checkSchema(idValidation),checkSchema(lineupValidation),lineupControl.lineupUpdate); 
-app.delete('/lineup/',authenticate,authorization(['lineup']),checkSchema(idValidation),lineupControl.lineupRemovebyGameID)
+app.post('/data-entry/lineups',authenticate,dataEntryAuthorization('lineup'),lineupControl.create)
+app.get('/data-entry/lineups/check/:id',authenticate,dataEntryAuthorization('lineup'),lineupControl.listLineupByGameId);
+app.put('/data-entry/lineups/:id',authenticate,dataEntryAuthorization('lineup'),checkSchema(idValidation),lineupControl.lineupUpdate); 
+app.delete('/data-entry/lineups/:id',authenticate,dataEntryAuthorization('lineup'),checkSchema(idValidation),lineupControl.lineupRemovebyGameID)
 
 //matchStats
 app.post('/match-stats',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.create)

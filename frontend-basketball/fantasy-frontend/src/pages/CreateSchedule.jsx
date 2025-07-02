@@ -17,7 +17,7 @@ export default function CreateSchedule() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const seasonRes = await axios.get('/admin/seasons', {
+      const seasonRes = await axios.get('/data-entry/seasons', {
         headers: { Authorization: localStorage.getItem('token') }
       });
       const teamRes = await axios.get('/data-entry/teams', {

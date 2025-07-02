@@ -42,6 +42,7 @@ import CreateSchedule from './pages/CreateSchedule';
 import EditSchedule from './pages/EditSchedule';
 import ManageLivePage from './pages/ManageLivePage';
 import LiveCoverage from './pages/LiveCoverage';
+import LineupAddPage from './pages/LineupAddPage';
 
 import AddWalletAmount from './pages/AddWalletAmount';
 import { Elements } from "@stripe/react-stripe-js";
@@ -188,6 +189,12 @@ useEffect(()=>{
     path="/data-entry/live-coverage/:matchId"
     element={<ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}><LiveCoverage/></ProtectedRoute>}
   />
+
+  <Route
+    path="/data-entry/lineups/add/:matchId"
+    element={<ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}><LineupAddPage/></ProtectedRoute>}
+  />
+  
 
   <Route
     path="/data-entry/match-stats"

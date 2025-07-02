@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import axios from '../config/axios';
 
 export default function LiveCoverage() {
   const { matchId } = useParams(); // Schedule ID
+const navigate = useNavigate();
   const [match, setMatch] = useState(null);
   const [status, setStatus] = useState('in-progress');
   const [attendance, setAttendance] = useState(0);
@@ -39,6 +40,23 @@ export default function LiveCoverage() {
   setHomeTeamScore(totalHome);
   setAwayTeamScore(totalAway);
 }, [periodScores]);
+
+const [lineupExists, setLineupExists] = useState(false);
+
+useEffect(() => {
+  const checkLineup = async () => {
+    console.log("matchId",matchId)
+    try {
+      const res = await axios.get(`/data-entry/lineups/check/${matchId}`, {
+        headers: { Authorization: localStorage.getItem('token') },
+      });
+      setLineupExists(res.data);
+    } catch (err) {
+      console.log("Lineup check failed", err);
+    }
+  };
+  checkLineup();
+}, [matchId]);
 
   const handlePeriodChange = (index, field, value) => {
     const updated = [...periodScores];
@@ -151,6 +169,32 @@ export default function LiveCoverage() {
     Update Live Coverage
   </button>
 </form>
+<div className="mt-8 border-t pt-6">
+  <h4 className="text-lg font-semibold mb-2">Lineup Management</h4>
+  {lineupExists ? (
+    <div className="flex gap-4">
+      <button
+        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        onClick={() => navigate(`/data-entry/lineups/add/${matchId}`)}
+      >
+        Edit Lineups
+      </button>
+      <button
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        onClick={() => navigate(`/data-entry/stats/add/${matchId}`)}
+      >
+        Continue to Match Stats
+      </button>
     </div>
+  ) : (
+    <button
+      className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
+      onClick={() => navigate(`/data-entry/lineups/add/${matchId}`)}
+    >
+      Add Lineups
+    </button>
+  )}
+</div>
+    </div>    
   );
 }

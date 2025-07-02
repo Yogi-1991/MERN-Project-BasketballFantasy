@@ -14,7 +14,7 @@ const lineupSchema = new Schema({
     starters: [
       {
         player: { type: Schema.Types.ObjectId,
-             ref: 'Players',
+             ref: 'Player',
               required: true 
             },
         position: { type: String, 
@@ -25,7 +25,7 @@ const lineupSchema = new Schema({
     substitutions: [
         {
             player: { type: Schema.Types.ObjectId,
-                 ref: 'Players',
+                 ref: 'Player',
                   required: true 
                 },
             position: { type: String, 
@@ -41,7 +41,7 @@ const lineupSchema = new Schema({
     starters: [
       {
         player: { type: Schema.Types.ObjectId,
-             ref: 'Players', 
+             ref: 'Player', 
              required: true
              },
         position: { type: String, 
@@ -52,7 +52,7 @@ const lineupSchema = new Schema({
     substitutions: [
         {
             player: { type: Schema.Types.ObjectId,
-                 ref: 'Players', 
+                 ref: 'Player', 
                  required: true
                  },
             position: { type: String, 

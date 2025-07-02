@@ -28,7 +28,7 @@ export default function EditSchedule() {
         axios.get('/data-entry/teams', {
           headers: { Authorization: localStorage.getItem('token') }
         }),
-        axios.get('/dataentry/seasons', {
+        axios.get('/data-entry/seasons', {
           headers: { Authorization: localStorage.getItem('token') }
         })
       ]);
