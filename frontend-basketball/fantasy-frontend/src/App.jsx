@@ -43,6 +43,7 @@ import EditSchedule from './pages/EditSchedule';
 import ManageLivePage from './pages/ManageLivePage';
 import LiveCoverage from './pages/LiveCoverage';
 import LineupAddPage from './pages/LineupAddPage';
+import MatchStatsPage from './pages/MatchStatsPage';
 
 import AddWalletAmount from './pages/AddWalletAmount';
 import { Elements } from "@stripe/react-stripe-js";
@@ -195,8 +196,13 @@ useEffect(()=>{
     element={<ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}><LineupAddPage/></ProtectedRoute>}
   />
   
+ <Route
+    path="/data-entry/match-stats/:matchId"
+    element={<ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}><MatchStatsPage/></ProtectedRoute>}
+  />
+  
 
-  <Route
+  {/* <Route
     path="/data-entry/match-stats"
     element={
       <ProtectedRoute roles={['dataentry']} requiredTasks={['matchStats']}>
@@ -211,7 +217,7 @@ useEffect(()=>{
         <div>Enter Lineups Page</div>
       </ProtectedRoute>
     }
-  />
+  /> */}
 </Route>
   </Routes>
 <ToastContainer position="top-center" autoClose={500} />

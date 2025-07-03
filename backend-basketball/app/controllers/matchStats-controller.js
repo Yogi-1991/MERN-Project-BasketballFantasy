@@ -69,6 +69,50 @@ matchStatsControl.matchStatsUpdate = async(req,res)=>{
           return res.status(500).json({ error: 'Something went wrong' });
         }
       }
+
+  matchStatsControl.getStatsByGameId = async (req, res) => {
+            try {
+                const { id } = req.params;
+                const stats = await MatchStat.find({ id })
+                .populate('playerId', 'firstName lastName')
+                .populate('teamId', 'teamName');
+                res.json(stats);
+            } catch (err) {
+              res.status(500).json({ error: 'Failed to fetch stats' });
+            }
+    };
+
+  matchStatsControl.insertUpdateMatchStats  = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const statsArray = req.body.stats;
+
+    if (!Array.isArray(statsArray)) {
+      return res.status(400).json({ error: 'Invalid data format' });
+    }
+
+    for (const stat of statsArray) {
+      const { gameId, playerId, teamId, stats } = stat;
+
+      await MatchStat.findOneAndUpdate(
+        { gameId, playerId },
+        {
+          $set: {
+            teamId,
+            stats,
+            updatedBy: userId
+          }
+        },
+        { upsert: true, new: true }
+      );
+    }
+
+    return res.json({ message: 'Match stats saved successfully' });
+  } catch (err) {
+    console.error('Failed to upsert match stats:', err);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
       
 
 

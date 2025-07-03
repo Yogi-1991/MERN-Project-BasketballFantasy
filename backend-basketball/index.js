@@ -118,8 +118,11 @@ app.put('/data-entry/lineups/:id',authenticate,dataEntryAuthorization('lineup'),
 app.delete('/data-entry/lineups/:id',authenticate,dataEntryAuthorization('lineup'),checkSchema(idValidation),lineupControl.lineupRemovebyGameID)
 
 //matchStats
-app.post('/match-stats',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.create)
-app.put('/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.matchStatsUpdate)
+// app.post('/match-stats',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.create)
+// app.put('/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.matchStatsUpdate)
+
+app.get('/data-entry/match-stats:id',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.getStatsByGameId )
+app.post('/data-entry/match-stats',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.insertUpdateMatchStats)
 
 //Fantasy Team
 
