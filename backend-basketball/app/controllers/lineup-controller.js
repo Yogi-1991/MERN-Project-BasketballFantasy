@@ -132,6 +132,45 @@ lineupControl.listLineupByGameId = async(req,res)=>{
  }
 }
 
+lineupControl.listLineupByGameIdForEditStats = async (req, res) => {
+  // try{
+  //   const lineup = await Lineup.findOne({ gameId: req.params.id });
+  // if (!lineup) return res.json([]);
+
+  // const players = [...lineup.teamHome.starters, ...lineup.teamHome.substitutions, ...lineup.teamAway.starters, ...lineup.teamAway.substitutions];
+
+  // const formatted = players.map(p => ({
+  //   playerId: p._id,
+  //   fullName: `${p.firstName} ${p.lastName}`,
+  //   teamId: p.teamId,
+  //   teamName: p.teamName,
+  // }));
+  // return res.status(200).json(formatted);
+
+  // }catch(err){
+  //   console.log(err)
+  //   return res.status(500).json({error:"Something went wrong"})
+  // }  
+  try {
+    const { matchId } = req.params;
+    const lineups = await Lineup.find({ gameId: matchId })
+      .populate('playerId', 'firstName lastName')
+      .populate('teamId', 'teamName');
+
+    const formatted = lineups.map(l => ({
+      playerId: l.playerId._id,
+      fullName: `${l.playerId.firstName} ${l.playerId.lastName}`,
+      teamId: l.teamId._id,
+      teamName: l.teamId.teamName,
+    }));
+
+    res.json(formatted);
+  } catch (err) {
+    console.error('Lineup fetch failed', err);
+    res.status(500).json({ error: 'Failed to fetch lineup players' });
+  }
+}
+
 lineupControl.lineupUpdate = async(req,res)=>{
     const error = validationResult(req);
     if(!error.isEmpty()){

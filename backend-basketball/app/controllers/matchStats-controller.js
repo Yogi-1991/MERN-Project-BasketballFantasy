@@ -72,11 +72,13 @@ matchStatsControl.matchStatsUpdate = async(req,res)=>{
 
   matchStatsControl.getStatsByGameId = async (req, res) => {
             try {
+               
                 const { id } = req.params;
-                const stats = await MatchStat.find({ id })
+                const stats = await MatchStat.find({ gameId: id })
                 .populate('playerId', 'firstName lastName')
                 .populate('teamId', 'teamName');
-                res.json(stats);
+
+                 res.json(stats);
             } catch (err) {
               res.status(500).json({ error: 'Failed to fetch stats' });
             }
@@ -114,6 +116,43 @@ matchStatsControl.matchStatsUpdate = async(req,res)=>{
   }
 };
       
+matchStatsControl.editStats = async (req, res) => {
+  const { gameId, playerId, teamId, stats } = req.body;
+  try{
+  const newStat = await MatchStat.create({ gameId, playerId, teamId, stats, updatedBy: req.user._id });
+  return res.json(newStat);
+  }catch(err){
+    console.log(err);
+    return res.status(500).json({error: 'Something went wrong'});
+  }
+  
+};
 
+matchStatsControl.UpdateStats = async (req, res) => {
+   try{
+    const updated = await MatchStat.findOneAndUpdate(
+    { gameId: req.params.gameId, playerId: req.params.playerId },
+    { stats: req.body.stats, updatedBy: req.userId },
+    { new: true }
+  );
+  return res.status(200).json(updated);
+   }catch(err){
+    console.log(err);
+    return res.status(500).json({error: 'Something went wrong'})
+   }
+  
+  
+}
+
+matchStatsControl.deleteStats = async (req, res) => {
+  try{
+     await MatchStat.deleteOne({ gameId: req.params.gameId, playerId: req.params.playerId });
+      res.status(200).json({ message: "Stats deleted successfully" });
+  }catch(err){
+    console.log(err)
+    return res.status(500).json({error:'Something went wrong'})
+  }
+ 
+};
 
 export default matchStatsControl;

@@ -114,6 +114,7 @@ app.delete('/schedule/:id',authenticate,authorization(['schedule']),checkSchema(
 //lineups
 app.post('/data-entry/lineups',authenticate,dataEntryAuthorization('lineup'),lineupControl.create)
 app.get('/data-entry/lineups/check/:id',authenticate,dataEntryAuthorization('lineup'),lineupControl.listLineupByGameId);
+app.get('/lineups/check-players/:id',authenticate,dataEntryAuthorization('schedule'),lineupControl.listLineupByGameIdForEditStats)
 app.put('/data-entry/lineups/:id',authenticate,dataEntryAuthorization('lineup'),checkSchema(idValidation),lineupControl.lineupUpdate); 
 app.delete('/data-entry/lineups/:id',authenticate,dataEntryAuthorization('lineup'),checkSchema(idValidation),lineupControl.lineupRemovebyGameID)
 
@@ -121,8 +122,12 @@ app.delete('/data-entry/lineups/:id',authenticate,dataEntryAuthorization('lineup
 // app.post('/match-stats',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.create)
 // app.put('/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.matchStatsUpdate)
 
-app.get('/data-entry/match-stats:id',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.getStatsByGameId )
+app.get('/data-entry/match-stats/:id',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.getStatsByGameId )
 app.post('/data-entry/match-stats',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.insertUpdateMatchStats)
+app.post('/data-entry/match-stats/edit',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.editStats)
+app.put('/data-entry/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.UpdateStats)
+app.delete('/data-entry/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.deleteStats)
+
 
 //Fantasy Team
 
