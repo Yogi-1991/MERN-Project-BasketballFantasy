@@ -45,6 +45,9 @@ import LiveCoverage from './pages/LiveCoverage';
 import LineupAddPage from './pages/LineupAddPage';
 import MatchStatsPage from './pages/MatchStatsPage';
 import EditMatchStats from './pages/EditMatchStats';
+import ManageLineupsStats from './pages/ManageLineupsStats';
+import ManageContests from './pages/ManageContests';
+import CreateContest from './pages/CreateContest';
 
 import AddWalletAmount from './pages/AddWalletAmount';
 import { Elements } from "@stripe/react-stripe-js";
@@ -89,32 +92,18 @@ useEffect(()=>{
   
     
       {/* Admin Routes */}
-<Route
-  element={
-    <PrivateRoute>
-      <ProtectedRoute roles={['admin']}>
-        <Layout />
-      </ProtectedRoute>
-    </PrivateRoute>
-  }
->    
-  <Route path="/admin/contests" element={<div>Manage Contests</div>} />
+<Route  element={<PrivateRoute><ProtectedRoute roles={['admin']}><Layout /></ProtectedRoute></PrivateRoute>}>    
+  <Route path="/admin/contests" element={<ManageContests/>} />
   <Route path="/admin/data-entry-list" element={<DataEntryList />} />
   <Route path="/admin/data-entry/create" element={<DataEntryCreate/>} />
   <Route path="/admin/data-entry/edit/:id" element={<DataEntryEdit/>} />
+  <Route path="/admin/contests/create" element={<CreateContest/>} />
+  
 
 </Route>
 
 {/* Data Entry Routes */}
-<Route
-  element={
-    <PrivateRoute>
-      <ProtectedRoute roles={['dataentry']}>
-        <Layout />
-      </ProtectedRoute>
-    </PrivateRoute>
-  }
->
+<Route  element={ <PrivateRoute><ProtectedRoute roles={['dataentry']}> <Layout /> </ProtectedRoute> </PrivateRoute>}>
 
   <Route path="/data-entry/leagues" 
         element={<ProtectedRoute roles={['dataentry']} requiredTasks={['teams']}><ManageLeagues /></ProtectedRoute>} 
@@ -209,14 +198,15 @@ useEffect(()=>{
 
 
 
-  {/* <Route
+  <Route
     path="/data-entry/match-stats"
     element={
-      <ProtectedRoute roles={['dataentry']} requiredTasks={['matchStats']}>
-        <div>Enter Match Stats Page</div>
+      <ProtectedRoute roles={['dataentry']} requiredTasks={['schedule']}>
+        <ManageLineupsStats/>
       </ProtectedRoute>
     }
   />
+  {/* 
   <Route
     path="/data-entry/lineups"
     element={

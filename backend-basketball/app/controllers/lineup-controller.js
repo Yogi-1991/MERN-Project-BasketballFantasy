@@ -2,8 +2,8 @@
 import Lineup from "../modules/lineups-schema-module.js";
 import Teams from "../modules/team-schema-module.js";
 import Schedule from "../modules/schedule-schema-module.js";
-import mongoose from "mongoose";
 import { validationResult } from "express-validator";
+import MatchStat from "../modules/matchStats-schema-module.js";
 
 const lineupControl = {};
 
@@ -257,30 +257,56 @@ lineupControl.lineupUpdate = async(req,res)=>{
 //     }
 }
 
-lineupControl.lineupRemovebyGameID = async(req,res)=>{
- const error = validationResult(req);
- if(!error.isEmpty()){
-    return res.status(400).json({errors:error.array()});
- }
- try {
-    const { id } = req.params;
-    await Lineup.findByIdAndDelete(id);
-    res.json({ message: 'Lineup deleted successfully' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to delete lineup' });
+// lineupControl.lineupRemovebyGameID = async(req,res)=>{
+//  const error = validationResult(req);
+//  if(!error.isEmpty()){
+//     return res.status(400).json({errors:error.array()});
+//  }
+//  try {
+//     const { id } = req.params;
+//     await Lineup.findByIdAndDelete(id);
+//     res.json({ message: 'Lineup deleted successfully' });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'Failed to delete lineup' });
+//   }
+
+// //  const {gameId} = req.params;
+
+// //  //need logic here - if I planned to delete the lineup then lineups related this gameId also needs to be deleted
+// //  try{
+// //     const lineup = await Lineup.findOneAndDelete({gameId})
+// //     return res.status(200).json(lineup);
+// //  }catch(err){
+// //     return res.status(500).json({error: 'Something went wrong'});
+// //  }
+
+// }
+
+lineupControl.lineupRemovebyGameID = async (req, res) => {
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    return res.status(400).json({ errors: error.array() });
   }
 
-//  const {gameId} = req.params;
+  try {
+    const { id } = req.params;
 
-//  //need logic here - if I planned to delete the lineup then lineups related this gameId also needs to be deleted
-//  try{
-//     const lineup = await Lineup.findOneAndDelete({gameId})
-//     return res.status(200).json(lineup);
-//  }catch(err){
-//     return res.status(500).json({error: 'Something went wrong'});
-//  }
+    const lineup = await Lineup.findById(id);
+    if (!lineup) {
+      return res.status(404).json({ error: 'Lineup not found' });
+    }
+    const gameId = lineup.gameId;
 
-}
+    await Lineup.findByIdAndDelete(id);
+
+    const result = await MatchStat.deleteMany({ gameId });
+
+    res.json({message: 'Lineup and related match stats deleted successfully'});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete lineup and stats' });
+  }
+};
 
 export default lineupControl;

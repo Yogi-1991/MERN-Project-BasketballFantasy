@@ -35,7 +35,7 @@ export default function ManageSeasons() {
     <h1 className="text-2xl font-bold text-orange-600 mb-4">Manage Seasons</h1>
 
     <Link
-      to="/admin/seasons/create"
+      to="/data-entry/seasons/create"
       className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
     >
       + Create New Season

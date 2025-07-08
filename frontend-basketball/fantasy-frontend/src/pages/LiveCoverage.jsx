@@ -180,10 +180,25 @@ export default function LiveCoverage() {
             </div>
           ))}
         </div>
+        <div className="flex items-center gap-4 mt-4">
+        <button type="button"
+                className="text-blue-600 text-sm mt-2"
+                onClick={() => {
+                const otCount = periodScores.filter(p => p.periodLabel.startsWith('OT')).length + 1;
+                setPeriodScores([...periodScores, {
+                    periodLabel: `OT${otCount}`,
+                    homeScore: 0,
+                    awayScore: 0,
+                }]);
+                }}
+            >
+                + Add Overtime
+        </button>
 
         <button type="submit" className="bg-orange-600 text-white px-6 py-2 rounded hover:bg-orange-700">
-          Update Live Coverage
+            Update Live Coverage
         </button>
+        </div>
       </form>
 
       {/* Lineup and Stats Navigation */}

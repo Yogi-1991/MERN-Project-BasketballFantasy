@@ -57,7 +57,7 @@ export default function EditLeague() {
       }
 
       await axios.put(`/data-entry/league/${id}`, data, {headers: {Authorization: localStorage.getItem('token')}});
-      navigate('/admin/leagues');
+      navigate('/data-entry/leagues');
     } catch (err) {
       console.error(err);
       alert('Failed to update league');

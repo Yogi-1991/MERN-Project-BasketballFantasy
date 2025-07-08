@@ -27,14 +27,6 @@ export default function ManageLeagues() {
 
   };
 
-//   const handleDelete = async (id) => {
-//     if (window.confirm('Are you sure to delete this league?')) {
-//       await axios.delete(`/admin/leagues/${id}`, {
-//         headers: { Authorization: localStorage.getItem('token') },
-//       });
-//       fetchLeagues();
-//     }
-//   };
 
   useEffect(() => {
     fetchLeagues();
@@ -45,7 +37,7 @@ export default function ManageLeagues() {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-orange-600">Manage Leagues</h2>
         <Link
-          to="/dataentry/leagues/create"
+          to="/data-entry/leagues/create"
           className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
         >
           + Add League
@@ -102,7 +94,7 @@ export default function ManageLeagues() {
         </td>
         <td className="border px-4 py-2 space-x-3">
           <Link
-            to={`/dataentry/leagues/edit/${league._id}`}
+            to={`/data-entry/leagues/edit/${league._id}`}
             className="text-blue-600 hover:underline"
           >
             Edit

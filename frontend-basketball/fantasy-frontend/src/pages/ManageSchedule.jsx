@@ -6,16 +6,19 @@ export default function ManageSchedule() {
   const [schedules, setSchedules] = useState([]);
   const [seasons, setSeasons] = useState([]);
   const [selectedSeason, setSelectedSeason] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
   const navigate = useNavigate();
 
   const fetchSchedules = async () => {
-    const res = await axios.get('/data-entry/schedules', {headers: { Authorization: localStorage.getItem('token') }});
+    const res = await axios.get('/data-entry/schedules', {
+      headers: { Authorization: localStorage.getItem('token') }
+    });
     setSchedules(res.data);
   };
 
   const fetchSeasons = async () => {
     const res = await axios.get('/data-entry/seasons', {
-      headers: { Authorization: localStorage.getItem('token') },
+      headers: { Authorization: localStorage.getItem('token') }
     });
     setSeasons(res.data);
   };
@@ -25,9 +28,18 @@ export default function ManageSchedule() {
     fetchSeasons();
   }, []);
 
-  const filteredSchedules = selectedSeason
-    ? schedules.filter((s) => s.seasonYear._id === selectedSeason)
-    : schedules;
+  const formatLocalDate = (d) => {
+    const date = new Date(d);
+    return date.getFullYear() + '-' +
+      String(date.getMonth() + 1).padStart(2, '0') + '-' +
+      String(date.getDate()).padStart(2, '0');
+  };
+
+  const filteredSchedules = schedules.filter((s) => {
+    const seasonMatch = selectedSeason ? s.seasonYear._id === selectedSeason : true;
+    const dateMatch = selectedDate ? formatLocalDate(s.matchDate) === selectedDate : true;
+    return seasonMatch && dateMatch;
+  });
 
   return (
     <div className="p-6">
@@ -41,19 +53,32 @@ export default function ManageSchedule() {
         </Link>
       </div>
 
-      <div className="mb-4">
-        <select
-          value={selectedSeason}
-          onChange={(e) => setSelectedSeason(e.target.value)}
-          className="border p-2 rounded"
-        >
-          <option value="">All Seasons</option>
-          {seasons.map((s) => (
-            <option key={s._id} value={s._id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
+      <div className="flex flex-wrap gap-4 mb-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Season</label>
+          <select
+            value={selectedSeason}
+            onChange={(e) => setSelectedSeason(e.target.value)}
+            className="border p-2 rounded w-40"
+          >
+            <option value="">All Seasons</option>
+            {seasons.map((s) => (
+              <option key={s._id} value={s._id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Match Date</label>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="border p-2 rounded"
+          />
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -73,15 +98,15 @@ export default function ManageSchedule() {
             {filteredSchedules.map((match) => (
               <tr key={match._id} className="hover:bg-gray-50">
                 <td className="py-2 px-4 border">
-                     {new Date(match.matchDate).toLocaleString(undefined, {
-                        dateStyle: 'medium',
-                        timeStyle: 'short',
-                       })}
-                  </td>
+                  {new Date(match.matchDate).toLocaleString(undefined, {
+                    dateStyle: 'medium',
+                    timeStyle: 'short'
+                  })}
+                </td>
                 <td className="py-2 px-4 border">{match.seasonYear?.name}</td>
                 <td className="py-2 px-4 border">{match.homeTeam?.teamName}</td>
                 <td className="py-2 px-4 border">{match.awayTeam?.teamName}</td>
-                <td className="py-2 px-4 border">{match.venue || 'N/A'}</td>
+                <td className="py-2 px-4 border">{match.venue || '—'}</td>
                 <td className="py-2 px-4 border capitalize">{match.status}</td>
                 <td className="py-2 px-4 border">
                   <button

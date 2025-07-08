@@ -19,10 +19,10 @@ export default function CreateTeam() {
   useEffect(() => {
     const fetchLeaguesSeasons = async () => {
       const [leagueRes, seasonRes] = await Promise.all([
-        axios.get('/admin/leagues', {
+        axios.get('/data-entry/leagues', {
           headers: { Authorization: localStorage.getItem('token') },
         }),
-        axios.get('/admin/seasons', {
+        axios.get('/data-entry/seasons', {
           headers: { Authorization: localStorage.getItem('token') },
         }),
       ]);

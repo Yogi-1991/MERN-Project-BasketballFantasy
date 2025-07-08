@@ -270,10 +270,10 @@ export default function LineupAddPage() {
               onClick={async () => {
                 if (window.confirm('Are you sure you want to delete the lineup?')) {
                   try {
-                    await axios.delete(`/data-entry/lineups/${lineupId}`, {
+                    const res = await axios.delete(`/data-entry/lineups/${lineupId}`, {
                       headers: { Authorization: localStorage.getItem('token') },
                     });
-                    alert('Lineup deleted!');
+                    alert(res.data.message);
                     navigate(`/data-entry/live-coverage/${matchId}`);
                   } catch (err) {
                     console.error(err);

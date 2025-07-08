@@ -112,12 +112,12 @@ export default function Sidebar({ onLogout }) {
                 Live
               </Link>
             )}
-            {/* {(userData.dataEntryTasks?.includes('matchStats')|| userData?.role === 'admin') && (
+             {(userData.dataEntryTasks?.includes('matchStats')|| userData?.role === 'admin') && (
               <Link to="/data-entry/match-stats" className={linkStyle('/data-entry/match-stats')}>
                 <Trophy className="w-5 h-5 mr-2" />
                 Lineups & Match Stats
               </Link>
-            )} */}
+            )} 
 
             {/* {(userData.dataEntryTasks?.includes('lineup') || userData?.role === 'admin')&& (
               <Link to="/data-entry/lineups" className={linkStyle('/data-entry/lineups')}>
