@@ -1,3 +1,5 @@
+
+
 // import { useEffect, useState } from 'react';
 // import { useParams } from 'react-router-dom';
 // import axios from '../config/axios';
@@ -15,39 +17,47 @@
 //           }),
 //           axios.get(`/data-entry/match-stats/${matchId}`, {
 //             headers: { Authorization: localStorage.getItem('token') },
-//           })
+//           }),
 //         ]);
 
-//         const lineupPlayers = lineupRes.data; // [{ playerId, fullName, teamId, teamName }]
-//         const existingStats = statsRes.data;   // [{ playerId, stats, teamId }]
+//         const lineupPlayers = lineupRes.data || []; // Expected: [{ playerId, fullName, teamId, teamName }]
+//         const existingStats = statsRes.data || [];   // Expected: [{ playerId: {_id, firstName, lastName}, teamId: {...}, stats: {...} }]
 
 //         const merged = [];
-
-//         // Build map of existing stats
 //         const statsMap = new Map();
-//         existingStats.forEach(s => statsMap.set(s.playerId, s));
 
-//         // Merge with lineup players
+//         // Step 1: Create a map of existing stats by playerId string
+//         existingStats.forEach(s => {
+//           const pid = s.playerId?._id?.toString?.();
+//           if (pid) statsMap.set(pid, s);
+//         });
+
+//         // Step 2: Combine lineup players with existing stats
 //         lineupPlayers.forEach(p => {
+//           const pid = p.playerId?.toString?.();
+//           const statEntry = statsMap.get(pid);
 //           merged.push({
-//             ...p,
-//             stats: statsMap.get(p.playerId)?.stats || {
+//             playerId: pid,
+//             fullName: p.fullName || `${statEntry?.playerId?.firstName || ''} ${statEntry?.playerId?.lastName || ''}`.trim(),
+//             teamId: p.teamId,
+//             teamName: p.teamName || statEntry?.teamId?.teamName,
+//             stats: statEntry?.stats || {
 //               points: 0, rebounds: 0, assists: 0, steals: 0,
 //               blocks: 0, fouls: 0, minutesPlayed: 0,
 //             },
-//             isNew: !statsMap.has(p.playerId),
+//             isNew: !statEntry,
 //             isMissingFromLineup: false,
 //           });
-//           statsMap.delete(p.playerId);
+//           statsMap.delete(pid); // remove from map
 //         });
 
-//         // Remaining in statsMap = no longer in lineup
-//         statsMap.forEach((stat, playerId) => {
+//         // Step 3: Add leftover stats that are no longer in lineup
+//         statsMap.forEach((stat, pid) => {
 //           merged.push({
-//             playerId,
-//             fullName: `${stat.playerId.firstName} ${stat.playerId.lastName}`,
-//             teamName: stat.teamId?.teamName,
+//             playerId: pid,
+//             fullName: `${stat.playerId?.firstName || ''} ${stat.playerId?.lastName || ''}`.trim(),
 //             teamId: stat.teamId?._id,
+//             teamName: stat.teamId?.teamName || '',
 //             stats: stat.stats,
 //             isNew: false,
 //             isMissingFromLineup: true,
@@ -59,6 +69,7 @@
 //         console.error('Failed to load stats data', err);
 //       }
 //     };
+
 //     fetchData();
 //   }, [matchId]);
 
@@ -124,14 +135,14 @@
 //         </thead>
 //         <tbody>
 //           {playersStats.map((p, idx) => (
-//             <tr key={p.playerId} className={p.isMissingFromLineup ? 'bg-red-100' : ''}>
-//               <td className="p-2">{p.fullName}</td>
-//               <td className="p-2">{p.teamName}</td>
-//               {['points','rebounds','assists','steals','blocks','fouls','minutesPlayed'].map(field => (
+//             <tr key={`${p.playerId}-${idx}`} className={p.isMissingFromLineup ? 'bg-red-100' : ''}>
+//               <td className="p-2">{p.fullName || 'Unknown Player'}</td>
+//               <td className="p-2">{p.teamName || 'N/A'}</td>
+//               {['points', 'rebounds', 'assists', 'steals', 'blocks', 'fouls', 'minutesPlayed'].map(field => (
 //                 <td key={field} className="p-1">
 //                   <input
 //                     type="number"
-//                     value={p.stats[field] || 0}
+//                     value={p.stats[field] ?? 0}
 //                     onChange={(e) => handleChange(idx, field, e.target.value)}
 //                     className="border px-1 py-0.5 w-14 text-center rounded"
 //                   />
@@ -157,6 +168,7 @@
 //   );
 // }
 
+
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from '../config/axios';
@@ -177,45 +189,46 @@ export default function EditMatchStats() {
           }),
         ]);
 
-        const lineupPlayers = lineupRes.data || []; // Expected: [{ playerId, fullName, teamId, teamName }]
-        const existingStats = statsRes.data || [];   // Expected: [{ playerId: {_id, firstName, lastName}, teamId: {...}, stats: {...} }]
+        const lineupPlayers = lineupRes.data || [];
+        const existingStats = statsRes.data || [];
 
-        const merged = [];
         const statsMap = new Map();
-
-        // Step 1: Create a map of existing stats by playerId string
         existingStats.forEach(s => {
-          const pid = s.playerId?._id?.toString?.();
+          const pid = s.playerId?._id?.toString();
           if (pid) statsMap.set(pid, s);
         });
 
-        // Step 2: Combine lineup players with existing stats
+        const merged = [];
+
+        // Add lineup players
         lineupPlayers.forEach(p => {
-          const pid = p.playerId?.toString?.();
-          const statEntry = statsMap.get(pid);
+          const pid = p.playerId?.toString();
+          const existing = statsMap.get(pid);
+
           merged.push({
             playerId: pid,
-            fullName: p.fullName || `${statEntry?.playerId?.firstName || ''} ${statEntry?.playerId?.lastName || ''}`.trim(),
+            fullName: p.fullName || `${existing?.playerId?.firstName || ''} ${existing?.playerId?.lastName || ''}`.trim(),
             teamId: p.teamId,
-            teamName: p.teamName || statEntry?.teamId?.teamName,
-            stats: statEntry?.stats || {
+            teamName: p.teamName || existing?.teamId?.teamName || 'N/A',
+            stats: existing?.stats || {
               points: 0, rebounds: 0, assists: 0, steals: 0,
               blocks: 0, fouls: 0, minutesPlayed: 0,
             },
-            isNew: !statEntry,
+            isNew: !existing,
             isMissingFromLineup: false,
           });
-          statsMap.delete(pid); // remove from map
+
+          statsMap.delete(pid);
         });
 
-        // Step 3: Add leftover stats that are no longer in lineup
-        statsMap.forEach((stat, pid) => {
+        // Add players in stats but no longer in lineup
+        statsMap.forEach((s, pid) => {
           merged.push({
             playerId: pid,
-            fullName: `${stat.playerId?.firstName || ''} ${stat.playerId?.lastName || ''}`.trim(),
-            teamId: stat.teamId?._id,
-            teamName: stat.teamId?.teamName || '',
-            stats: stat.stats,
+            fullName: `${s.playerId?.firstName || ''} ${s.playerId?.lastName || ''}`.trim(),
+            teamId: s.teamId?._id,
+            teamName: s.teamId?.teamName || 'N/A',
+            stats: s.stats,
             isNew: false,
             isMissingFromLineup: true,
           });
@@ -230,6 +243,79 @@ export default function EditMatchStats() {
     fetchData();
   }, [matchId]);
 
+// useEffect(() => {
+//   const fetchData = async () => {
+//     try {
+//       const [lineupRes, statsRes] = await Promise.all([
+//         axios.get(`/lineups/check-players/${matchId}`, {
+//           headers: { Authorization: localStorage.getItem('token') },
+//         }),
+//         axios.get(`/data-entry/match-stats/${matchId}`, {
+//           headers: { Authorization: localStorage.getItem('token') },
+//         }),
+//       ]);
+
+//       const lineupPlayers = lineupRes.data || []; // [{ playerId, fullName, teamId, teamName }]
+//       const existingStats = statsRes.data || [];   // [{ playerId: {_id, firstName, lastName}, stats: {}, teamId: {_id, teamName} }]
+
+//       const statsMap = new Map();
+
+//       existingStats.forEach(s => {
+//         const pid = s.playerId?._id?.toString();
+//         if (pid) statsMap.set(pid, s);
+//       });
+
+//       const merged = [];
+
+//       // Merge lineup with existing stats
+//       lineupPlayers.forEach(p => {
+//         const pid = p.playerId?.toString();
+//         const stat = statsMap.get(pid);
+
+//         merged.push({
+//           playerId: pid,
+//           fullName: p.fullName || `${stat?.playerId?.firstName || ''} ${stat?.playerId?.lastName || ''}`.trim(),
+//           teamName: p.teamName || stat?.teamId?.teamName || 'N/A',
+//           teamId: p.teamId,
+//           stats: stat?.stats || {
+//             points: 0, rebounds: 0, assists: 0, steals: 0,
+//             blocks: 0, fouls: 0, minutesPlayed: 0
+//           },
+//           isNew: !stat,
+//           isMissingFromLineup: false
+//         });
+
+//         statsMap.delete(pid);
+//       });
+
+//       // Add leftover stats (not in current lineup)
+//       statsMap.forEach((s, pid) => {
+//         merged.push({
+//           playerId: pid,
+//           fullName: `${s.playerId?.firstName || ''} ${s.playerId?.lastName || ''}`.trim(),
+//           teamName: s.teamId?.teamName || 'N/A',
+//           teamId: s.teamId?._id,
+//           stats: s.stats,
+//           isNew: false,
+//           isMissingFromLineup: true
+//         });
+//       });
+
+//       console.log("Merged Players:", merged); // ✅ debug log
+
+//       setPlayersStats(merged);
+//     } catch (err) {
+//       console.error('Failed to load stats data', err);
+//     }
+//   };
+
+//   fetchData();
+// }, [matchId]);
+
+// useEffect(() => {
+//   console.log("💡 Players Stats Final:", playersStats);
+// }, [playersStats]);
+
   const handleChange = (index, field, value) => {
     const updated = [...playersStats];
     updated[index].stats[field] = Number(value);
@@ -243,13 +329,13 @@ export default function EditMatchStats() {
           gameId: matchId,
           playerId: player.playerId,
           teamId: player.teamId,
-          stats: player.stats
+          stats: player.stats,
         }, {
           headers: { Authorization: localStorage.getItem('token') },
         });
       } else {
         await axios.put(`/data-entry/match-stats/${matchId}/${player.playerId}`, {
-          stats: player.stats
+          stats: player.stats,
         }, {
           headers: { Authorization: localStorage.getItem('token') },
         });
@@ -299,12 +385,14 @@ export default function EditMatchStats() {
                 <td key={field} className="p-1">
                   <input
                     type="number"
-                    value={p.stats[field] ?? 0}
+                    value={p.stats?.[field] ?? 0}
                     onChange={(e) => handleChange(idx, field, e.target.value)}
                     className="border px-1 py-0.5 w-14 text-center rounded"
                   />
                 </td>
-              ))}
+              ))} 
+              
+                         
               <td className="p-2">
                 <button
                   onClick={() => handleSave(p)}
@@ -316,7 +404,8 @@ export default function EditMatchStats() {
                     className="bg-red-600 text-white px-2 py-1 rounded"
                   >Delete</button>
                 )}
-              </td>
+              </td>               
+
             </tr>
           ))}
         </tbody>
