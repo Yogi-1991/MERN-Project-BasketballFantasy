@@ -48,6 +48,8 @@ import EditMatchStats from './pages/EditMatchStats';
 import ManageLineupsStats from './pages/ManageLineupsStats';
 import ManageContests from './pages/ManageContests';
 import CreateContest from './pages/CreateContest';
+import EditContest from './pages/EditContest';
+import AdminViewParticipants from './pages/AdminViewParticipants';
 
 import AddWalletAmount from './pages/AddWalletAmount';
 import { Elements } from "@stripe/react-stripe-js";
@@ -82,7 +84,6 @@ useEffect(()=>{
        <Route path="/select-team/:gameId" element={<SelectPlayers />} />
        <Route path="/contest/:contestId" element={<ContestDetails/>}/>
        <Route path="/team-found" element={<TeamFoundMsg/>}/> 
-       {/* <Route path="/add-wallet" element={<AddWalletAmount />} /> */}
        <Route  path="/add-wallet"  element={
             <Elements stripe={stripePromise}>
             <AddWalletAmount />
@@ -98,6 +99,8 @@ useEffect(()=>{
   <Route path="/admin/data-entry/create" element={<DataEntryCreate/>} />
   <Route path="/admin/data-entry/edit/:id" element={<DataEntryEdit/>} />
   <Route path="/admin/contests/create" element={<CreateContest/>} />
+  <Route path="/admin/contests/edit/:id" element={<EditContest/>} />
+  <Route path="/admin/contests/participants/:id" element={<AdminViewParticipants/>} /> 
   
 
 </Route>

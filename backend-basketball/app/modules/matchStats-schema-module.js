@@ -44,6 +44,10 @@ const matchStatSchema = new Schema({
          default: 0         
     }
   },
+  isFinalized: {
+       type: Boolean,
+      default: false
+  },
   updatedBy: {
     type: Schema.Types.ObjectId,
     ref: 'User'

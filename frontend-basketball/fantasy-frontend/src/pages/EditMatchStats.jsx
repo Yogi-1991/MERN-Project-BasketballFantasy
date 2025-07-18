@@ -20,45 +20,46 @@
 //           }),
 //         ]);
 
-//         const lineupPlayers = lineupRes.data || []; // Expected: [{ playerId, fullName, teamId, teamName }]
-//         const existingStats = statsRes.data || [];   // Expected: [{ playerId: {_id, firstName, lastName}, teamId: {...}, stats: {...} }]
+//         const lineupPlayers = lineupRes.data || [];
+//         const existingStats = statsRes.data || [];
 
-//         const merged = [];
 //         const statsMap = new Map();
-
-//         // Step 1: Create a map of existing stats by playerId string
 //         existingStats.forEach(s => {
-//           const pid = s.playerId?._id?.toString?.();
+//           const pid = s.playerId?._id?.toString();
 //           if (pid) statsMap.set(pid, s);
 //         });
 
-//         // Step 2: Combine lineup players with existing stats
+//         const merged = [];
+
+//         // Add lineup players
 //         lineupPlayers.forEach(p => {
-//           const pid = p.playerId?.toString?.();
-//           const statEntry = statsMap.get(pid);
+//           const pid = p.playerId?.toString();
+//           const existing = statsMap.get(pid);
+
 //           merged.push({
 //             playerId: pid,
-//             fullName: p.fullName || `${statEntry?.playerId?.firstName || ''} ${statEntry?.playerId?.lastName || ''}`.trim(),
+//             fullName: p.fullName || `${existing?.playerId?.firstName || ''} ${existing?.playerId?.lastName || ''}`.trim(),
 //             teamId: p.teamId,
-//             teamName: p.teamName || statEntry?.teamId?.teamName,
-//             stats: statEntry?.stats || {
+//             teamName: p.teamName || existing?.teamId?.teamName || 'N/A',
+//             stats: existing?.stats || {
 //               points: 0, rebounds: 0, assists: 0, steals: 0,
 //               blocks: 0, fouls: 0, minutesPlayed: 0,
 //             },
-//             isNew: !statEntry,
+//             isNew: !existing,
 //             isMissingFromLineup: false,
 //           });
-//           statsMap.delete(pid); // remove from map
+
+//           statsMap.delete(pid);
 //         });
 
-//         // Step 3: Add leftover stats that are no longer in lineup
-//         statsMap.forEach((stat, pid) => {
+//         // Add players in stats but no longer in lineup
+//         statsMap.forEach((s, pid) => {
 //           merged.push({
 //             playerId: pid,
-//             fullName: `${stat.playerId?.firstName || ''} ${stat.playerId?.lastName || ''}`.trim(),
-//             teamId: stat.teamId?._id,
-//             teamName: stat.teamId?.teamName || '',
-//             stats: stat.stats,
+//             fullName: `${s.playerId?.firstName || ''} ${s.playerId?.lastName || ''}`.trim(),
+//             teamId: s.teamId?._id,
+//             teamName: s.teamId?.teamName || 'N/A',
+//             stats: s.stats,
 //             isNew: false,
 //             isMissingFromLineup: true,
 //           });
@@ -73,6 +74,8 @@
 //     fetchData();
 //   }, [matchId]);
 
+
+
 //   const handleChange = (index, field, value) => {
 //     const updated = [...playersStats];
 //     updated[index].stats[field] = Number(value);
@@ -86,13 +89,13 @@
 //           gameId: matchId,
 //           playerId: player.playerId,
 //           teamId: player.teamId,
-//           stats: player.stats
+//           stats: player.stats,
 //         }, {
 //           headers: { Authorization: localStorage.getItem('token') },
 //         });
 //       } else {
 //         await axios.put(`/data-entry/match-stats/${matchId}/${player.playerId}`, {
-//           stats: player.stats
+//           stats: player.stats,
 //         }, {
 //           headers: { Authorization: localStorage.getItem('token') },
 //         });
@@ -142,12 +145,14 @@
 //                 <td key={field} className="p-1">
 //                   <input
 //                     type="number"
-//                     value={p.stats[field] ?? 0}
+//                     value={p.stats?.[field] ?? 0}
 //                     onChange={(e) => handleChange(idx, field, e.target.value)}
 //                     className="border px-1 py-0.5 w-14 text-center rounded"
 //                   />
 //                 </td>
-//               ))}
+//               ))} 
+              
+                         
 //               <td className="p-2">
 //                 <button
 //                   onClick={() => handleSave(p)}
@@ -159,7 +164,8 @@
 //                     className="bg-red-600 text-white px-2 py-1 rounded"
 //                   >Delete</button>
 //                 )}
-//               </td>
+//               </td>               
+
 //             </tr>
 //           ))}
 //         </tbody>
@@ -168,7 +174,6 @@
 //   );
 // }
 
-
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from '../config/axios';
@@ -176,6 +181,8 @@ import axios from '../config/axios';
 export default function EditMatchStats() {
   const { matchId } = useParams();
   const [playersStats, setPlayersStats] = useState([]);
+  const [isFinalized, setIsFinalized] = useState(false); // NEW: Finalize toggle
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -191,6 +198,10 @@ export default function EditMatchStats() {
 
         const lineupPlayers = lineupRes.data || [];
         const existingStats = statsRes.data || [];
+
+        if (existingStats.length > 0 && existingStats[0].isFinalized) {
+          setIsFinalized(true); // pre-check if already finalized
+        }
 
         const statsMap = new Map();
         existingStats.forEach(s => {
@@ -243,79 +254,6 @@ export default function EditMatchStats() {
     fetchData();
   }, [matchId]);
 
-// useEffect(() => {
-//   const fetchData = async () => {
-//     try {
-//       const [lineupRes, statsRes] = await Promise.all([
-//         axios.get(`/lineups/check-players/${matchId}`, {
-//           headers: { Authorization: localStorage.getItem('token') },
-//         }),
-//         axios.get(`/data-entry/match-stats/${matchId}`, {
-//           headers: { Authorization: localStorage.getItem('token') },
-//         }),
-//       ]);
-
-//       const lineupPlayers = lineupRes.data || []; // [{ playerId, fullName, teamId, teamName }]
-//       const existingStats = statsRes.data || [];   // [{ playerId: {_id, firstName, lastName}, stats: {}, teamId: {_id, teamName} }]
-
-//       const statsMap = new Map();
-
-//       existingStats.forEach(s => {
-//         const pid = s.playerId?._id?.toString();
-//         if (pid) statsMap.set(pid, s);
-//       });
-
-//       const merged = [];
-
-//       // Merge lineup with existing stats
-//       lineupPlayers.forEach(p => {
-//         const pid = p.playerId?.toString();
-//         const stat = statsMap.get(pid);
-
-//         merged.push({
-//           playerId: pid,
-//           fullName: p.fullName || `${stat?.playerId?.firstName || ''} ${stat?.playerId?.lastName || ''}`.trim(),
-//           teamName: p.teamName || stat?.teamId?.teamName || 'N/A',
-//           teamId: p.teamId,
-//           stats: stat?.stats || {
-//             points: 0, rebounds: 0, assists: 0, steals: 0,
-//             blocks: 0, fouls: 0, minutesPlayed: 0
-//           },
-//           isNew: !stat,
-//           isMissingFromLineup: false
-//         });
-
-//         statsMap.delete(pid);
-//       });
-
-//       // Add leftover stats (not in current lineup)
-//       statsMap.forEach((s, pid) => {
-//         merged.push({
-//           playerId: pid,
-//           fullName: `${s.playerId?.firstName || ''} ${s.playerId?.lastName || ''}`.trim(),
-//           teamName: s.teamId?.teamName || 'N/A',
-//           teamId: s.teamId?._id,
-//           stats: s.stats,
-//           isNew: false,
-//           isMissingFromLineup: true
-//         });
-//       });
-
-//       console.log("Merged Players:", merged); // ✅ debug log
-
-//       setPlayersStats(merged);
-//     } catch (err) {
-//       console.error('Failed to load stats data', err);
-//     }
-//   };
-
-//   fetchData();
-// }, [matchId]);
-
-// useEffect(() => {
-//   console.log("💡 Players Stats Final:", playersStats);
-// }, [playersStats]);
-
   const handleChange = (index, field, value) => {
     const updated = [...playersStats];
     updated[index].stats[field] = Number(value);
@@ -358,9 +296,50 @@ export default function EditMatchStats() {
     }
   };
 
+  const handleFinalize = async () => {
+    if (!window.confirm("Are you sure? Finalizing will distribute prizes and lock stats!")) return;
+    try {
+      setLoading(true);
+      await axios.put(`/data-entry/match-stats/finalize/${matchId}`, {
+        isFinalized: true
+      }, {
+        headers: { Authorization: localStorage.getItem('token') },
+      });
+      alert('Match finalized and prizes distributed!');
+      setIsFinalized(true);
+    } catch (err) {
+      console.error('Finalize failed', err);
+      alert('Finalize failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="p-6 max-w-5xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Edit Match Stats</h2>
+
+      <div className="mb-4 flex items-center gap-4">
+        <input
+          type="checkbox"
+          checked={isFinalized}
+          disabled={isFinalized || loading}
+          onChange={() => {}}
+        />
+        <span className="text-lg font-semibold">
+          {isFinalized ? 'Match Finalized' : 'Finalize Match'}
+        </span>
+        {!isFinalized && (
+          <button
+            onClick={handleFinalize}
+            disabled={loading}
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            {loading ? 'Finalizing...' : 'Finalize & Distribute Prizes'}
+          </button>
+        )}
+      </div>
+
       <table className="w-full table-auto text-sm border">
         <thead>
           <tr className="bg-gray-200">
@@ -387,25 +366,28 @@ export default function EditMatchStats() {
                     type="number"
                     value={p.stats?.[field] ?? 0}
                     onChange={(e) => handleChange(idx, field, e.target.value)}
+                    disabled={isFinalized}
                     className="border px-1 py-0.5 w-14 text-center rounded"
                   />
                 </td>
-              ))} 
-              
-                         
-              <td className="p-2">
-                <button
-                  onClick={() => handleSave(p)}
-                  className="bg-blue-600 text-white px-2 py-1 rounded mr-1"
-                >Save</button>
-                {p.isMissingFromLineup && (
-                  <button
-                    onClick={() => handleDelete(p.playerId)}
-                    className="bg-red-600 text-white px-2 py-1 rounded"
-                  >Delete</button>
-                )}
-              </td>               
+              ))}
 
+              <td className="p-2">
+                {!isFinalized && (
+                  <>
+                    <button
+                      onClick={() => handleSave(p)}
+                      className="bg-blue-600 text-white px-2 py-1 rounded mr-1"
+                    >Save</button>
+                    {p.isMissingFromLineup && (
+                      <button
+                        onClick={() => handleDelete(p.playerId)}
+                        className="bg-red-600 text-white px-2 py-1 rounded"
+                      >Delete</button>
+                    )}
+                  </>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

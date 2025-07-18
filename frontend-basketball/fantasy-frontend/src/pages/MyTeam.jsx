@@ -26,6 +26,7 @@ const dispatch = useDispatch();
     <div className="my-teams-container p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">My Fantasy Teams</h1>
       {fantasyTeamByUser.map(team => {
+        console.log("teamcheck",team)
         const matchDate = team.gameId.matchDate;
         const pastMatch = isMatchPast(matchDate);
 

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
  
 
-export default function CreateContestPage() {
+export default function CreateContest() {
 
 const userRole = useSelector((state) => state.user.userData?.role);
 
@@ -22,9 +22,7 @@ const userRole = useSelector((state) => state.user.userData?.role);
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const res = await axios.get('/data-entry/schedules', {
-          headers: { Authorization: localStorage.getItem('token') },
-        });
+        const res = await axios.get('/data-entry/schedules', { headers: { Authorization: localStorage.getItem('token') }});
 
         // Filter upcoming games based on local time
         const now = new Date();
@@ -49,16 +47,10 @@ const userRole = useSelector((state) => state.user.userData?.role);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url =
-      userRole === 'admin'
-        ? '/admin/contests/create-public'
-        : '/user/contests/create-private';
+    const url = userRole === 'admin' ? '/admin/contest-public' : '/contest-private';
 
     try {
-      const res = await axios.post(url, formData, {
-        headers: { Authorization: localStorage.getItem('token') },
-      });
-
+      const res = await axios.post(url, formData,{ headers: { Authorization: localStorage.getItem('token') }});
       alert(`Contest created successfully!`);
       navigate('/contests');
     } catch (err) {
@@ -86,7 +78,7 @@ const userRole = useSelector((state) => state.user.userData?.role);
             <option value="">Select Upcoming Match</option>
             {games.map((g) => (
               <option key={g._id} value={g._id}>
-                {g.homeTeam?.teamName} vs {g.awayTeam?.teamName} —{' '}
+                {g.homeTeam?.teamName} vs {g.awayTeam?.teamName} — {' '}
                 {new Date(g.matchDate).toLocaleString()}
               </option>
             ))}

@@ -14,7 +14,7 @@ const contestSchema = new Schema({
       {
         userId: { 
             type: Schema.Types.ObjectId, 
-                ref: 'Users' 
+                ref: 'User' 
             },
         fantasyTeamId: { 
             type: Schema.Types.ObjectId, 

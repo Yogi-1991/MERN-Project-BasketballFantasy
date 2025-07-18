@@ -109,6 +109,7 @@ matchStatsControl.matchStatsUpdate = async(req,res)=>{
       );
     }
 
+
     return res.json({ message: 'Match stats saved successfully' });
   } catch (err) {
     console.error('Failed to upsert match stats:', err);
@@ -128,19 +129,108 @@ matchStatsControl.editStats = async (req, res) => {
   
 };
 
+matchStatsControl.finalizeMatchStats = async (req, res) => {
+  const { gameId } = req.params;
+
+  try {
+    // 1. Update all stats for this match to isFinalized = true
+    const updated = await MatchStat.updateMany(
+      { gameId },
+      { $set: { isFinalized: true } }
+    );
+
+    if (updated.matchedCount === 0) {
+      return res.status(404).json({ error: 'No match stats found to finalize.' });
+    }
+
+     // 2. Update contests linked to this game -> status = 'completed'
+    await Contest.updateMany(
+      { gameId },
+      { $set: { status: 'completed' } }
+    );
+
+    // 3. Process fantasy points for all fantasy teams in contests related to this game
+    await processFantasyPoints(gameId); //  This should calculate fantasy points for all teams
+
+    // 4. Fetch contests related to this game where prizes are not distributed
+    const contests = await Contest.find({ gameId, prizesDistributed: false });
+
+    if (contests.length === 0) {
+      return res.status(200).json({
+        message: 'Match finalized. No contests pending for prize distribution.',
+      });
+    }
+
+    // 5. Distribute prizes for each contest
+    for (const contest of contests) {
+      await distributePrizes(contest._id);
+    }
+
+    return res.status(200).json({
+      notice: 'Match finalized successfully, fantasy points calculated, and prizes distributed.',
+    });
+  } catch (err) {
+    console.error('Error finalizing match stats:', err);
+    return res.status(500).json({ error: 'Something went wrong during finalization.' });
+  }
+};
+
 matchStatsControl.UpdateStats = async (req, res) => {
-   try{
-    const updated = await MatchStat.findOneAndUpdate(
-    { gameId: req.params.gameId, playerId: req.params.playerId },
-    { stats: req.body.stats, updatedBy: req.userId },
-    { new: true }
-  );
-  return res.status(200).json(updated);
-   }catch(err){
-    console.log(err);
-    return res.status(500).json({error: 'Something went wrong'})
-   }
+  //  try{
+  //   const updated = await MatchStat.findOneAndUpdate(
+  //   { gameId: req.params.gameId, playerId: req.params.playerId },
+  //   { stats: req.body.stats, updatedBy: req.userId },
+  //   { new: true }
+  // );
+
+  // if (req.body.isFinalized) {
+  //   await MatchStat.findOneAndUpdate({ gameId:req.params.gameId }, { isFinalized: true },{ new: true });
+
+  //   const contestList = await Contest.find({ gameId: gameId, prizesDistributed: false });
+
+  //   for (const contest of contestList) {
+  //     await distributePrizes(contest); // your existing logic
+  //     contest.prizesDistributed = true;
+  //     await contest.save();
+  //   }
+  // }
+  // return res.status(200).json(updated);
+  //  }catch(err){
+  //   console.log(err);
+  //   return res.status(500).json({error: 'Something went wrong'})
+  //  }
   
+  try {
+    const { gameId, playerId } = req.params;
+    const { stats, isFinalized } = req.body;
+
+    // Upsert player stats
+    const updated = await MatchStat.findOneAndUpdate(
+      { gameId, playerId },
+      { stats, updatedBy: req.userId },
+      { new: true, upsert: true }
+    );
+
+    // If finalized, update all game stats and distribute prizes
+    if (isFinalized) {
+      // Mark all stats for this game as finalized
+      await MatchStat.updateMany({ gameId }, { isFinalized: true });
+
+      // Find all contests for this game that haven't distributed prizes yet
+      const contestList = await Contest.find({ gameId, prizesDistributed: false });
+
+      for (const contest of contestList) {
+        await distributePrizes(contest); // your existing function
+        contest.prizesDistributed = true;
+        await contest.save();
+      }
+    }
+
+    return res.status(200).json(updated);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
   
 }
 

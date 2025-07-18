@@ -123,9 +123,11 @@ app.delete('/data-entry/lineups/:id',authenticate,dataEntryAuthorization('lineup
 // app.put('/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('matchStats'),matchStatsControl.matchStatsUpdate)
 
 app.get('/data-entry/match-stats/:id',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.getStatsByGameId )
-app.post('/data-entry/match-stats',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.insertUpdateMatchStats)
 app.post('/data-entry/match-stats/edit',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.editStats)
+app.post('/data-entry/match-stats',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.insertUpdateMatchStats)
+app.put('/data-entry/match-stats/finalize/:gameId',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.finalizeMatchStats)
 app.put('/data-entry/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.UpdateStats)
+
 app.delete('/data-entry/match-stats/:gameId/:playerId',authenticate,dataEntryAuthorization('schedule'),matchStatsControl.deleteStats)
 
 
@@ -142,14 +144,21 @@ app.get('/fantasy-team-user',authenticate,fantasyTeamControl.getFantasyTeamByUse
 
 //contest
 app.post('/admin/contest-public',authenticate,authorization(['admin']),contestControl.createPublicContest);
+app.put('/admin/contest-public/edit/:id',authenticate,authorization(['admin']),contestControl.updateContest); 
+app.get('/contests/show/:id',authenticate,authorization(['admin']),contestControl.contestById)
+app.delete('/admin/contests/:id',authenticate,authorization(['admin']),contestControl.contestRemove)
+app.get('/admin/contests/participants/:id',authenticate,authorization(['admin']),contestControl.getParticipants)
+
 app.post('/contest-private',authenticate,contestControl.createPrivateContest);
 app.put('/join-contest/:contestId',authenticate,contestControl.joinContest); 
 app.get('/contest/joined',authenticate,contestControl.getJoinedContests);
 app.put('/contest-status/:contestId',authenticate,authorization(['admin']),contestControl.updateContestStatus);
-app.get('/admin/contests',authenticate,contestControl.allContest)
+app.get('/contests',authenticate,contestControl.allContest)
 app.get('/contest/:gameId',authenticate,contestControl.contestByGameId)
 app.get('/contest-user/:contestId',authenticate,contestControl.contestByUser)
 
+//admin can distribute the price if automatic distribution fails
+app.post('/contests/distribute/:contestId',authenticate,authorization(['admin']),contestControl.distributeContestPrizes)
 
 //Leaderboard
 app.get('/leaderboard/:contestId',authenticate,checkSchema(idValidation),leaderboardContrl.leaderboard);

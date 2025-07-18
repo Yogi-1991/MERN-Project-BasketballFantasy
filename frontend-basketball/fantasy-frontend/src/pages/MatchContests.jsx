@@ -18,18 +18,6 @@ export default function MatchContests() {
     dispatch(myContestTeam(gameId));
   }, [dispatch ,gameId]);
 
-//   useEffect(() => {
-//     if (contestsData.length > 0) {
-//       contestsData.forEach((contest) => {
-//         dispatch(getContestByUser(contest._id));
-//       });
-//     }
-//   }, [contestsData, dispatch]);
-
-//   const checkAlreadyJoined = (contestId) => {
-//     return contestByUser?.[contestId] === true;
-//   };
-
   const handleJoin = (contest) => {
     if (!fantasyTeamData) {
       navigate(`/select-team/${gameId}`);

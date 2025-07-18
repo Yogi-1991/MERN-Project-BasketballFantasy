@@ -37,6 +37,87 @@ contestControl.createPublicContest  = async(req,res)=>{
     }
 }
 
+// controllers/contestController.js
+contestControl.updateContest = async (req, res) => {
+  const { id } = req.params;
+  const { name, entryFee, prizePool, maxPlayers } = req.body;
+
+  try {
+    const contest = await Contest.findById(id);
+
+    if (!contest) {
+      return res.status(404).json({ error: 'Contest not found' });
+    }
+
+    // Check match time to block updates if already started
+    const schedule = await Schedule.findById(contest.gameId);
+    if (!schedule || new Date(schedule.matchDate) <= new Date()) {
+      return res.status(400).json({ error: 'Cannot update contest after match has started' });
+    }
+
+    // Update fields
+    contest.name = name;
+    contest.entryFee = entryFee;
+    contest.prizePool = prizePool;
+    contest.maxPlayers = maxPlayers;
+
+    await contest.save();
+
+    return res.status(200).json({ message: 'Contest updated successfully', contest });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error while updating contest' });
+  }
+};
+
+contestControl.contestById = async(req,res)=>{
+    const {id} = req.params;
+
+    const contest = await Contest.findById(id)
+    if(!contest){
+        return res.status(404).json({error:"Data not found"})
+    }
+
+    return res.status(200).json(contest);
+
+}
+
+contestControl.contestRemove = async(req,res)=>{
+    const {id} = req.params;
+
+    const contest = await Contest.findByIdAndDelete(id)
+    if(!contest){
+        return res.status(404).json({error:"Data not found"})
+    }
+
+    return res.status(200).json(contest);
+
+}
+
+contestControl.getParticipants = async (req, res) => {
+  try {
+    const contest = await Contest.findById(req.params.id)
+      .populate({
+        path: 'participants.userId',
+        select: 'name email',
+      })
+      .populate({
+        path: 'participants.fantasyTeamId',
+        select: 'teamName totalFantasyPoints',
+      });
+
+    if (!contest) {
+      return res.status(404).json({ error: 'Contest not found' });
+    }
+
+    res.status(200).json(contest.participants);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch participants' });
+  }
+};
+
+
 contestControl.createPrivateContest = async(req,res)=>{
     const error = validationResult(req);
     if(!error.isEmpty()){
@@ -195,22 +276,29 @@ contestControl.updateContestStatus = async(req,res)=>{
       }
 }
 
-contestControl.allContest = async(req,res)=>{
-    try{
+contestControl.allContest = async (req, res) => {
+  try {
+    const contests = await Contest.find()
+      .populate({
+        path: 'gameId',
+        select: 'matchDate homeTeam awayTeam',
+        populate: [
+          { path: 'homeTeam', select: 'teamName' },
+          { path: 'awayTeam', select: 'teamName' }
+        ]
+      });
 
-        const contest = await Contest.find();
-        if(contest.length === 0){
-            return res.status(404).json({error: "No contest created"})
-        }
-        return res.status(200).json(contest);
-
-    }catch(err){
-        console.log(err);
-        return res.status(500).json({error:"Somehting went wrong"})
-
+    if (contests.length === 0) {
+      return res.status(404).json({ error: 'No contests created' });
     }
 
-}
+    return res.status(200).json(contests);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+};
+
 contestControl.contestByGameId = async(req,res)=>{
     const {gameId} = req.params;
     try{
@@ -241,5 +329,32 @@ contestControl.contestByUser = async(req,res)=>{
             return res.status(500).json({error: "Something went wrong"})
     }
 }
+
+contestControl.distributeContestPrizes = async (req, res) => {
+  try {
+    const { contestId } = req.params;
+
+    const contest = await Contest.findById(contestId);
+    if (!contest) {
+      return res.status(404).json({ error: 'Contest not found' });
+    }
+
+    if (contest.prizesDistributed) {
+      return res.status(400).json({ message: 'Prizes already distributed' });
+    }
+
+    if (contest.status !== 'completed') {
+      return res.status(400).json({ message: 'Cannot distribute prizes before contest is completed' });
+    }
+
+    // Call your existing prize distribution logic
+    await distributePrizes(contestId);
+
+    return res.status(200).json({ message: 'Prizes distributed successfully' });
+  } catch (err) {
+    console.error('Error distributing prizes:', err);
+    return res.status(500).json({ error: 'Failed to distribute prizes' });
+  }
+};
 
 export default contestControl;

@@ -18,7 +18,7 @@ export default function  Contests(){
     useEffect(() => {
       const fetchContests = async () => {
         try {
-          const res = await axios.get('/contest', {
+          const res = await axios.get('/contests/', {
             headers: { Authorization: localStorage.getItem('token') },
           });
           setContests(res.data);
@@ -32,6 +32,7 @@ export default function  Contests(){
     // Handle contest selection
     const handleSelectContest = (contest) => {
       setSelectedContest(contest);
+      console.log(contes)
       dispatch(myContestTeam(contest.gameId));
     };
   
