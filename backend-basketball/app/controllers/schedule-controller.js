@@ -1,6 +1,7 @@
 import Schedule from "../modules/schedule-schema-module.js";
 import { validationResult } from "express-validator";
 import Teams from "../modules/team-schema-module.js";
+import Contest from "../modules/contest-schema-module.js";
 
 
 const scheduleControl = {};
@@ -112,6 +113,13 @@ scheduleControl.updateLive = async (req, res) => {
     )
       .populate('homeTeam awayTeam', 'teamName')
       .populate('seasonYear', 'name');
+
+     
+      await Contest.updateMany(
+        { gameId: id },
+        { $set: { status: status } }
+      );
+      
     res.json(match);
   } catch (err) {
     res.status(500).json({ error: 'Failed to update live match' });

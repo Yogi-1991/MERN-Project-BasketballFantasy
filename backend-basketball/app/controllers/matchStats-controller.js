@@ -133,7 +133,7 @@ matchStatsControl.finalizeMatchStats = async (req, res) => {
   const { gameId } = req.params;
 
   try {
-    // 1. Update all stats for this match to isFinalized = true
+    // Update all stats for this match to isFinalized = true
     const updated = await MatchStat.updateMany(
       { gameId },
       { $set: { isFinalized: true } }
@@ -143,16 +143,16 @@ matchStatsControl.finalizeMatchStats = async (req, res) => {
       return res.status(404).json({ error: 'No match stats found to finalize.' });
     }
 
-     // 2. Update contests linked to this game -> status = 'completed'
+     // Update contests linked to this game -> status = completed and prize distribution = true
     await Contest.updateMany(
       { gameId },
-      { $set: { status: 'completed' } }
+      { $set: { status: 'completed'} }
     );
 
-    // 3. Process fantasy points for all fantasy teams in contests related to this game
+    //  Process fantasy points for all fantasy teams in contests related to this game
     await processFantasyPoints(gameId); //  This should calculate fantasy points for all teams
 
-    // 4. Fetch contests related to this game where prizes are not distributed
+    // Fetch contests related to this game where prizes are not distributed
     const contests = await Contest.find({ gameId, prizesDistributed: false });
 
     if (contests.length === 0) {
@@ -161,7 +161,7 @@ matchStatsControl.finalizeMatchStats = async (req, res) => {
       });
     }
 
-    // 5. Distribute prizes for each contest
+    //  Distribute prizes for each contest
     for (const contest of contests) {
       await distributePrizes(contest._id);
     }

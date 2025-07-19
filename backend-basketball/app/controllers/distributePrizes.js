@@ -26,7 +26,7 @@ for (const p of contest.participants) {
     } ;
   
     participantPoints.push({
-      userId: p.userId.toString(),
+      userId: p.userId._id.toString(),
       fantasyPoints: pointsDoc.totalPoints,
     });
   }

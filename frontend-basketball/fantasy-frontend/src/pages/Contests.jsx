@@ -32,7 +32,7 @@ export default function  Contests(){
     // Handle contest selection
     const handleSelectContest = (contest) => {
       setSelectedContest(contest);
-      console.log(contes)
+      console.log(contest)
       dispatch(myContestTeam(contest.gameId));
     };
   

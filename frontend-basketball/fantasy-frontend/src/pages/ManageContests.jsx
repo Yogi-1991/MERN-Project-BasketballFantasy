@@ -206,7 +206,7 @@ export default function ManageContests() {
         >
           <option value="">All Status</option>
           <option value="upcoming">Upcoming</option>
-          <option value="running">Running</option>
+          <option value="in-progress">In-Progress</option>
           <option value="completed">Completed</option>
         </select>
       </div>
