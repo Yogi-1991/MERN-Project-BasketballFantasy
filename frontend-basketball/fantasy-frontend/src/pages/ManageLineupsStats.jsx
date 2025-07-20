@@ -147,7 +147,8 @@ export default function ManageLineupsStats() {
                 {m.homeTeam?.teamName} vs {m.awayTeam?.teamName}
               </div>
               <button
-                onClick={() => navigate(`/data-entry/match-stats/${m._id}`)}
+                // onClick={() => navigate(`/data-entry/match-stats/${m._id}`)}
+                 onClick={() => navigate(`/data-entry/live-coverage/${m._id}`)}
                 className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
               >
                 Add Game Stats

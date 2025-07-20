@@ -39,7 +39,15 @@ const contestSchema = new Schema({
     prizesDistributed: {
             type: Boolean,
             default: false
-    }
+    },
+    winners: [
+                {
+                  userId: { type: Schema.Types.ObjectId, ref: 'User' },
+                  userName: String,
+                  fantasyPoints: Number,
+                  amount: Number,
+                }
+              ]
   });
   
   const Contest = model('Contest',contestSchema);

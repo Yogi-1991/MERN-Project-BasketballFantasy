@@ -117,6 +117,25 @@ contestControl.getParticipants = async (req, res) => {
   }
 };
 
+contestControl.getContestWinnerById  = async (req, res) => {
+  try {
+    const contest = await Contest.findById(req.params.id)
+      .populate("gameId", "homeTeam awayTeam matchDate")
+      .populate("winners.userId", "name email");
+
+    if (!contest) return res.status(404).json({ error: "Contest not found" });
+
+    return res.json({
+      id: contest._id,
+      name: contest.name,
+      winners: contest.winners || [],
+    });
+  } catch (err) {
+    console.error("Error fetching contest:", err);
+    res.status(500).json({ error: "Failed to fetch contest" });
+  }
+};
+
 
 contestControl.createPrivateContest = async(req,res)=>{
     const error = validationResult(req);

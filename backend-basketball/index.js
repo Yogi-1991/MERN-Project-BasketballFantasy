@@ -148,6 +148,7 @@ app.put('/admin/contest-public/edit/:id',authenticate,authorization(['admin']),c
 app.get('/contests/show/:id',authenticate,authorization(['admin']),contestControl.contestById)
 app.delete('/admin/contests/:id',authenticate,authorization(['admin']),contestControl.contestRemove)
 app.get('/admin/contests/participants/:id',authenticate,authorization(['admin']),contestControl.getParticipants)
+app.get('/admin/contests/winners/:id',authenticate,authorization(['admin']),contestControl.getContestWinnerById )
 
 app.post('/contest-private',authenticate,contestControl.createPrivateContest);
 app.put('/join-contest/:contestId',authenticate,contestControl.joinContest); 
