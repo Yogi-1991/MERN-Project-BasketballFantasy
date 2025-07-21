@@ -4,6 +4,8 @@ import User from '../modules/user-schema-module.js';
 import Schedule from '../modules/schedule-schema-module.js';
 import {nanoid} from 'nanoid';
 import FantasyTeams from '../modules/fantasyTeam-schema-module.js';
+import FantasyPoints from '../modules/fantasyPoint-schema-module.js';
+
 
 const contestControl = {};
 
@@ -94,6 +96,31 @@ contestControl.contestRemove = async(req,res)=>{
 
 }
 
+// contestControl.getParticipants = async (req, res) => {
+//   try {
+//     const contest = await Contest.findById(req.params.id)
+//       .populate({
+//         path: 'participants.userId',
+//         select: 'name email',
+//       })
+//       .populate({
+//         path: 'participants.fantasyTeamId',
+//         select: 'teamName',
+//       })
+      
+      
+//     if (!contest) {
+//       return res.status(404).json({ error: 'Contest not found' });
+//     }
+
+//     res.status(200).json(contest.participants);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'Failed to fetch participants' });
+//   }
+// };
+
+
 contestControl.getParticipants = async (req, res) => {
   try {
     const contest = await Contest.findById(req.params.id)
@@ -103,19 +130,31 @@ contestControl.getParticipants = async (req, res) => {
       })
       .populate({
         path: 'participants.fantasyTeamId',
-        select: 'teamName totalFantasyPoints',
+        select: 'teamName',
       });
 
     if (!contest) {
       return res.status(404).json({ error: 'Contest not found' });
     }
 
-    res.status(200).json(contest.participants);
+    // Fetch totalPoints for each participant
+    const participantsWithPoints = await Promise.all(
+      contest.participants.map(async (p) => {
+        const pointsDoc = await FantasyPoints.findOne({contestId: contest._id, fantasyTeamId: p.fantasyTeamId}).select('totalPoints');
+        return {
+          ...p.toObject(),
+          totalPoints: pointsDoc ? pointsDoc.totalPoints : 0,
+        };
+      })
+    );
+    console.log("participantsWithPoints",participantsWithPoints)
+   return res.status(200).json(participantsWithPoints);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch participants' });
   }
 };
+
 
 contestControl.getContestWinnerById  = async (req, res) => {
   try {

@@ -33,10 +33,13 @@ const processFantasyPoints = async (gameId) => {
           const playerStats = stats.find((s) => {
                 return s.playerId.toString() === playerId.toString();
               });
+              console.log("playerStats",playerStats)
            if(playerStats){
-            const points = calculateFantasyPoints(playerStats,isCaptain,isViceCaptain);
+            const points = calculateFantasyPoints(playerStats.stats,isCaptain,isViceCaptain);
+            console.log("points",points )
             playerPoints.push({playerId,points})
             totalPoints=totalPoints+points
+            console.log("totalPoints",totalPoints )
            }
         }
 
