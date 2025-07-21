@@ -27,9 +27,12 @@ const processFantasyPoints = async (gameId) => {
         const playerPoints = [];
         for(const player of team.players){
            const {playerId, isCaptain,isViceCaptain} = player
-           const playerStats = stats.find((s)=>{
-              return s.playerId.toString === playerId.toString()
-           })
+          //  const playerStats = stats.find((s)=>{
+          //     return s.playerId.toString === playerId.toString()
+          //  })
+          const playerStats = stats.find((s) => {
+                return s.playerId.toString() === playerId.toString();
+              });
            if(playerStats){
             const points = calculateFantasyPoints(playerStats,isCaptain,isViceCaptain);
             playerPoints.push({playerId,points})
@@ -60,29 +63,7 @@ const processFantasyPoints = async (gameId) => {
     }
   }
  console.log("Fantasy points processed for all contests and participants");
-  // for (const contest  of contests) {
-  //   let totalPoints = 0;
-  //   const playerPoints = [];
-
-  //   for (const player of team.players) {
-  //     const { playerId, isCaptain, isViceCaptain } = player;
-  //     const playerStat = stats.find(s => s.playerId.toString() === playerId.toString());
-
-  //     if (playerStat) {
-  //       const points = calculateFantasyPoints(playerStat, isCaptain, isViceCaptain);
-  //       playerPoints.push({ playerId, points });
-  //       totalPoints = totalPoints+ points;
-  //     }
-  //   }
-
-  //   await FantasyPoints.create({
-  //     userId: team.userId,
-  //     gameId,
-  //     fantasyTeamId: team._id,
-  //     playerPoints,
-  //     totalPoints
-  //   });
-  // }
+  
 }catch(err){
   return res.status(500).json({error:'Somethign went wrong'});
 }

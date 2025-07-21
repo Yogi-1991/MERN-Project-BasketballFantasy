@@ -144,10 +144,7 @@ matchStatsControl.finalizeMatchStats = async (req, res) => {
     }
 
      // Update contests linked to this game -> status = completed and prize distribution = true
-    await Contest.updateMany(
-      { gameId },
-      { $set: { status: 'completed'} }
-    );
+    await Contest.updateMany({ gameId },{ $set: { status: 'completed'}});
 
     //  Process fantasy points for all fantasy teams in contests related to this game
     await processFantasyPoints(gameId); //  This should calculate fantasy points for all teams
@@ -156,9 +153,7 @@ matchStatsControl.finalizeMatchStats = async (req, res) => {
     const contests = await Contest.find({ gameId, prizesDistributed: false });
 
     if (contests.length === 0) {
-      return res.status(200).json({
-        message: 'Match finalized. No contests pending for prize distribution.',
-      });
+      return res.status(200).json({message: 'Match finalized. No contests pending for prize distribution.'});
     }
 
     //  Distribute prizes for each contest
