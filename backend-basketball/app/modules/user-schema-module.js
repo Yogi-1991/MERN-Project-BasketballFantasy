@@ -18,7 +18,7 @@ const userSchema = new Schema({
     },
     dataEntryTasks: [{
         type: String,
-        enum:['teams', 'players', 'schedule', 'matchStats', 'lineups','seasons','leagues']
+        enum:['teams', 'schedule']
     }],
     profileImage:{
         type: String

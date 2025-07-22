@@ -231,7 +231,7 @@ fantasyTeamControl.updateFantasyTeam = async (req, res) => {
             createdAt: team.createdAt,
             updatedAt: team.updatedAt
           };
-      
+          console.log("responseData", responseData)
           res.json(responseData);
       
         } catch (err) {
@@ -283,37 +283,36 @@ fantasyTeamControl.getPlayersForMatch = async (req, res) => {
 
     const schedule = await Schedule.findById(gameId);
     if (!schedule) {
-        console.log(schedule)
       return res.status(404).json({ notice: 'Match not found.' });
     }
 
     const { homeTeam, awayTeam, seasonYear } = schedule;
+//debug 
+//   console.log("homeTeam:", homeTeam.toString());
+// console.log("awayTeam:", awayTeam.toString());
+// console.log("seasonYear:", seasonYear.toString());
 
-    console.log("homeTeam:", homeTeam.toString());
-console.log("awayTeam:", awayTeam.toString());
-console.log("seasonYear:", seasonYear.toString());
 
+// const players11 = await Player.find({});
+// players11.forEach(p => {
+//   console.log("player.teamId:", p.teamId.toString());
+//   console.log("player.seasonYear:", p.seasonYear.toString());
+// });
 
-const players11 = await Player.find({});
-players11.forEach(p => {
-  console.log("player.teamId:", p.teamId.toString());
-  console.log("player.seasonYear:", p.seasonYear.toString());
-});
+// console.log("Schedule seasonYear:", seasonYear.toString());
 
-console.log("Schedule seasonYear:", seasonYear.toString());
+// console.log("Match ID:", gameId);
+// console.log("Schedule found:", schedule);
+// console.log("homeTeam:", homeTeam);
+// console.log("awayTeam:", awayTeam);
+// console.log("seasonYear:", seasonYear);
 
-console.log("Match ID:", gameId);
-console.log("Schedule found:", schedule);
-console.log("homeTeam:", homeTeam);
-console.log("awayTeam:", awayTeam);
-console.log("seasonYear:", seasonYear);
-
-const players1 = await Player.find({
-    teamId: { $in: [homeTeam, awayTeam] },
-    seasonYear,
-    isActive: true
-  });
-  console.log("Found players:", players1);
+// const players1 = await Player.find({
+//     teamId: { $in: [homeTeam, awayTeam] },
+//     seasonYear,
+//     isActive: true
+//   });
+//   console.log("Found players:", players1);
 
     const players = await Player.find({
       teamId: { $in: [homeTeam, awayTeam] },
@@ -337,7 +336,7 @@ fantasyTeamControl.getFantasyTeamByUser = async (req, res) => {
     const userId = req.userId;
 
     // Find all fantasy teams for this user, populate the game (Schedule) info and players' details
-    const fantasyTeams = await FantasyTeams.find({ userId })
+    const fantasyTeams = await FantasyTeams.find({ userId, gameId })
       .populate({
         path: 'gameId',
         select: 'matchDate homeTeam awayTeam seasonYear status', 

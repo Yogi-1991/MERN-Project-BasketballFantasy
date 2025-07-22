@@ -91,12 +91,12 @@ app.delete('/team/:id',authenticate,dataEntryAuthorization(['teams']),checkSchem
 app.put('/team/:teamId/player-remove',authenticate,dataEntryAuthorization(['teams']),teamControl.teamPlayerRemove);
 
 //player
-app.post('/data-entry/players',authenticate,dataEntryAuthorization('players'),upload.single('profileImage'),checkSchema(playerValidation),playerControl.createPlayer)
+app.post('/data-entry/players',authenticate,dataEntryAuthorization('teams'),upload.single('profileImage'),checkSchema(playerValidation),playerControl.createPlayer)
 app.get('/data-entry/players/by-match/:id',authenticate,checkSchema(idValidation),playerControl.getPlayersByMatch);
 app.get('/data-entry/players/:teamId/:seasonId',authenticate,playerControl.getPlayersByTeamSeason);
 app.get('/data-entry/players/by-match/:id',authenticate,checkSchema(idValidation),playerControl.getPlayersByMatch);
 app.get('/data-entry/players/:id',authenticate,checkSchema(idValidation),playerControl.listplayersById);
-app.put('/data-entry/player/:id',authenticate,dataEntryAuthorization('player'),upload.single('profileImage'),checkSchema(idValidation),checkSchema(playerValidation),playerControl.playerUpdate); 
+app.put('/data-entry/player/:id',authenticate,dataEntryAuthorization('teams'),upload.single('profileImage'),checkSchema(idValidation),checkSchema(playerValidation),playerControl.playerUpdate); 
 app.delete('/data-entry/players/:id',authenticate,dataEntryAuthorization(['teams']),checkSchema(idValidation),playerControl.playerRemove)
 
 //Schedule
@@ -139,7 +139,7 @@ app.get('/fantasy-team/:gameId',authenticate,fantasyTeamControl.myteam);
 app.get('/fantasy-contest',authenticate,fantasyTeamControl.myContest);
 //try to load the players to create the fantasy team 
 app.get('/fantasy/players/:gameId',authenticate,fantasyTeamControl.getPlayersForMatch)
-app.get('/fantasy-team-user',authenticate,fantasyTeamControl.getFantasyTeamByUser)
+app.get('/fantasy-team-user/:gameId',authenticate,fantasyTeamControl.getFantasyTeamByUser)
 
 
 //contest
