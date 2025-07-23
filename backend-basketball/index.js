@@ -135,7 +135,8 @@ app.delete('/data-entry/match-stats/:gameId/:playerId',authenticate,dataEntryAut
 
 app.post('/fantasy-team',authenticate,checkSchema(fantasyTeamValidation),fantasyTeamControl.createFantasyTeam);
 app.put('/fantasy-team/:teamId',authenticate,checkSchema(fantasyTeamValidation),fantasyTeamControl.updateFantasyTeam);
-app.get('/fantasy-team/:gameId',authenticate,fantasyTeamControl.myteam);
+app.get('/fantasy-game-team/:gameId',authenticate,fantasyTeamControl.myteam);
+app.get('/fantasy-team/:teamId',authenticate,fantasyTeamControl.myteamByTeamId);
 app.get('/fantasy-contest',authenticate,fantasyTeamControl.myContest);
 //try to load the players to create the fantasy team 
 app.get('/fantasy/players/:gameId',authenticate,fantasyTeamControl.getPlayersForMatch)

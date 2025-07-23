@@ -252,6 +252,26 @@ fantasyTeamControl.updateFantasyTeam = async (req, res) => {
         // }
       
 
+        fantasyTeamControl.myteamByTeamId = async(req,res)=>{
+        try {
+              const {teamId} = req.params;
+              const userId = req.userId;
+
+              const team = await FantasyTeams.findOne({ _id: teamId, userId })
+                      .populate('players.playerId', 'firstName lastName position credit teamId profileImage');
+
+            if (!team) {
+              return res.status(404).json({ error: 'Fantasy team not found' });
+            }
+
+            return res.status(200).json(team);
+
+            }catch(err){
+                console.log(err);
+                return res.status(500).json({error: 'Something went wrong'})
+               }
+            }
+
       fantasyTeamControl.myContest = async(req,res)=>{
         try{
             const contest = await Contest.find({userId:req.userId});
@@ -323,7 +343,7 @@ fantasyTeamControl.getPlayersForMatch = async (req, res) => {
     .select('firstName lastName position credit profileImage teamId'); // optional fields  
       
 
-    return res.json({players});
+    return res.json(players);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'Something went wrong while fetching players.' });
